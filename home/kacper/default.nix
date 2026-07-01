@@ -23,16 +23,10 @@
 
     unzip
     tree
-    foundry
     nodejs
     pnpm
     rustup
-    pkg-config
-    openssl
-    protobuf
-    clang
-    llvm
-    cmake
+    nixfmt
   ];
 
   programs.git = {
