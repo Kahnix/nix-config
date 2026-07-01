@@ -1,4 +1,11 @@
-{ config, lib, pkgs, inputs, username, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  username,
+  ...
+}:
 
 {
   wsl.enable = true;
@@ -38,7 +45,7 @@
     inherit inputs username;
   };
 
-  home-manager.users.${username} = import ../../home/kacper;
+  home-manager.users.${username} = import ../../home/${username};
 
   system.stateVersion = "26.05";
 }

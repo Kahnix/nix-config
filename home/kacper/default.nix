@@ -1,5 +1,14 @@
-{ config, pkgs, inputs, username, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  username,
+  ...
+}:
 
+let
+  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in
 {
   home.username = username;
   home.homeDirectory = "/home/${username}";
@@ -15,11 +24,9 @@
 
     ripgrep
     fd
-    fzf
     jq
     bat
     eza
-    zoxide
 
     unzip
     tree
@@ -33,23 +40,54 @@
     enable = true;
     settings = {
       user = {
-      name =   "kahnix";
-      email = "kacperdev@gmail.com";
+        name = "kahnix";
+        email = "kacperdev@gmail.com";
       };
     };
   };
 
   programs.zsh = {
     enable = true;
-
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
     shellAliases = {
       ll = "eza -la";
       gs = "git status";
-      rebuild = "sudo nixos-rebuild switch --flake ~/code/nixos-config#wsl";
+      rebuild = "sudo nixos-rebuild switch --flake ~/nix-config#wsl";
     };
   };
 
   programs.starship.enable = true;
+
+  programs.fzf = {
+    enable = true;
+    package = unstable.fzf;
+    enableZshIntegration = true;
+    enableNushellIntegration = false;
+
+    defaultCommand = "fd --type f --hidden --follow --exclude .git";
+    fileWidgetCommand = "fd --type f --hidden --follow --exclude .git";
+    changeDirWidgetCommand = "fd --type d --hidden --follow --exclude .git";
+
+    defaultOptions = [
+      "--height 40%"
+      "--layout=reverse"
+      "--border"
+    ];
+    fileWidgetOptions = [
+      "--preview 'bat --style=numbers --color=always --line-range :200 {}'"
+    ];
+    changeDirWidgetOptions = [
+      "--preview 'eza --tree --level=2 --color=always {}'"
+    ];
+  };
+
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+    enableNushellIntegration = false;
+  };
 
   programs.direnv = {
     enable = true;
