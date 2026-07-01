@@ -1,21 +1,42 @@
-{ inputs, username }:
+{ inputs }:
 
-{ name, system, wsl ? false }:
+{
+  name,
+  system,
+  username,
+  homeDirectory,
+  darwin ? false,
+  wsl ? false,
+}:
 
-inputs.nixpkgs.lib.nixosSystem {
+let
+  lib = inputs.nixpkgs.lib;
+  systemFunc =
+    if darwin then
+      inputs.darwin.lib.darwinSystem
+    else
+      inputs.nixpkgs.lib.nixosSystem;
+  homeManagerModule =
+    if darwin then
+      inputs.home-manager.darwinModules.home-manager
+    else
+      inputs.home-manager.nixosModules.home-manager;
+in
+systemFunc {
   inherit system;
 
   specialArgs = {
-    inherit inputs username;
+    inherit inputs system username homeDirectory;
+    isDarwin = darwin;
     isWSL = wsl;
   };
 
   modules =
     [
       ../hosts/${name}
-      inputs.home-manager.nixosModules.home-manager
+      homeManagerModule
     ]
-    ++ inputs.nixpkgs.lib.optionals wsl [
+    ++ lib.optionals wsl [
       inputs.nixos-wsl.nixosModules.default
     ];
 }

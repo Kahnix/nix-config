@@ -1,18 +1,16 @@
 {
-  config,
-  lib,
   pkgs,
   inputs,
+  system,
   username,
   homeDirectory,
   ...
 }:
 
 {
-  wsl.enable = true;
-  wsl.defaultUser = username;
+  nixpkgs.hostPlatform = system;
 
-  wsl.interop.includePath = true;
+  system.primaryUser = username;
 
   nix.settings.experimental-features = [
     "nix-command"
@@ -20,10 +18,7 @@
   ];
 
   users.users.${username} = {
-    isNormalUser = true;
-    extraGroups = [
-      "wheel"
-    ];
+    home = homeDirectory;
     shell = pkgs.zsh;
   };
 
@@ -36,17 +31,16 @@
     nano
   ];
 
-  # Needed for VS Code Remote and many random prebuilt binaries.
-  programs.nix-ld.enable = true;
-
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
+  home-manager.backupFileExtension = "before-home-manager";
 
   home-manager.extraSpecialArgs = {
     inherit inputs username homeDirectory;
   };
 
-  home-manager.users.${username} = import ../../home/${username};
+  home-manager.users.${username} = import ../../home/kacper;
 
-  system.stateVersion = "26.05";
+  system.configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
+  system.stateVersion = 6;
 }

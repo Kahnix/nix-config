@@ -1,8 +1,10 @@
 {
   config,
+  lib,
   pkgs,
   inputs,
   username,
+  homeDirectory,
   ...
 }:
 
@@ -11,7 +13,7 @@ let
 in
 {
   home.username = username;
-  home.homeDirectory = "/home/${username}";
+  home.homeDirectory = homeDirectory;
 
   home.stateVersion = "26.05";
 
@@ -27,12 +29,28 @@ in
     jq
     bat
     eza
-
+    fastfetch
     unzip
     tree
     nodejs
     pnpm
+    bun
+    deno
     rustup
+    nixd
+    lua-language-server
+    redis
+    sqlite
+    tailwindcss-language-server
+    typescript
+    typescript-language-server
+    vscode-langservers-extracted
+    yaml-language-server
+    just
+    httpie
+    xh
+    yq
+    unstable.devenv
     nixfmt
   ];
 
@@ -51,11 +69,17 @@ in
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-    shellAliases = {
-      ll = "eza -la";
-      gs = "git status";
-      rebuild = "sudo nixos-rebuild switch --flake ~/nix-config#wsl";
-    };
+    shellAliases =
+      {
+        ll = "eza -la";
+        gs = "git status";
+      }
+      // lib.optionalAttrs pkgs.stdenv.isLinux {
+        rebuild = "sudo nixos-rebuild switch --flake ~/nix-config#wsl";
+      }
+      // lib.optionalAttrs pkgs.stdenv.isDarwin {
+        rebuild = "sudo darwin-rebuild switch --flake ~/nix-config#macbook-pro-m4";
+      };
   };
 
   programs.starship.enable = true;

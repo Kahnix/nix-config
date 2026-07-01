@@ -17,23 +17,36 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Add this later when you actually set up the Mac.
-    # darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
-    # darwin.inputs.nixpkgs.follows = "nixpkgs";
+    # macOS system configuration.
+    darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+    darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { nixpkgs, ... }@inputs:
+
+  # Change these to your own username and home directory.
   let
-    username = "kacper";
+    wslUsername = "kacper";
+    darwinUsername = "kacperdaniel";
 
     mkSystem = import ./lib/mksystem.nix {
-      inherit inputs username;
+      inherit inputs;
     };
   in {
     nixosConfigurations.wsl = mkSystem {
       name = "wsl";
       system = "x86_64-linux";
+      username = wslUsername;
+      homeDirectory = "/home/${wslUsername}";
       wsl = true;
+    };
+
+    darwinConfigurations."macbook-pro-m4" = mkSystem {
+      name = "darwin";
+      system = "aarch64-darwin";
+      username = darwinUsername;
+      homeDirectory = "/Users/${darwinUsername}";
+      darwin = true;
     };
   };
 }
