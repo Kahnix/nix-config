@@ -7,6 +7,7 @@
   home.stateVersion = "26.05";
 
   programs.home-manager.enable = true;
+  home.enableNixpkgsReleaseCheck = false;
 
   home.packages = with pkgs; [
     neovim
@@ -20,14 +21,29 @@
     eza
     zoxide
 
+    solana-cli
     unzip
     tree
+    foundry
+    nodejs
+    pnpm
+    rustup
+    pkg-config
+    openssl
+    protobuf
+    clang
+    llvm
+    cmake
   ];
 
   programs.git = {
     enable = true;
-    userName = "Kacper";
-    userEmail = "kacperdev@gmail.com";
+    settings = {
+      user = {
+      name =   "kahnix";
+      email = "kacperdev@gmail.com";
+      };
+    };
   };
 
   programs.zsh = {
