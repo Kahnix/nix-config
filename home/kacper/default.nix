@@ -21,7 +21,6 @@
     eza
     zoxide
 
-    solana-cli
     unzip
     tree
     foundry
