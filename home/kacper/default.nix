@@ -69,20 +69,30 @@ in
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-    shellAliases =
-      {
-        ll = "eza -la";
-        gs = "git status";
-      }
-      // lib.optionalAttrs pkgs.stdenv.isLinux {
-        rebuild = "sudo nixos-rebuild switch --flake ~/nix-config#wsl";
-      }
-      // lib.optionalAttrs pkgs.stdenv.isDarwin {
-        rebuild = "sudo darwin-rebuild switch --flake ~/nix-config#macbook-pro-m4";
-      };
+    shellAliases = {
+      ll = "eza -la";
+      gs = "git status";
+    }
+    // lib.optionalAttrs pkgs.stdenv.isLinux {
+      rebuild = "sudo nixos-rebuild switch --flake ~/nix-config#wsl";
+    }
+    // lib.optionalAttrs pkgs.stdenv.isDarwin {
+      rebuild = "sudo darwin-rebuild switch --flake ~/nix-config#macbook-pro-m4";
+    };
   };
 
-  programs.starship.enable = true;
+  programs.starship = {
+    enable = true;
+    settings = {
+      command_timeout = 3000;
+      scan_timeout = 50;
+      format = "$all\n$username$hostname$directory";
+      character = {
+        success_symbol = "[](bold green) ";
+        error_symbol = "[✗](bold red) ";
+      };
+    };
+  };
 
   programs.fzf = {
     enable = true;

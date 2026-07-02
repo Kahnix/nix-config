@@ -33,6 +33,11 @@ systemFunc {
 
   modules =
     [
+      {
+        nixpkgs.overlays = [
+          (import ../overlays/nodejs-24-darwin-fd-tracking.nix)
+        ];
+      }
       ../hosts/${name}
       homeManagerModule
     ]
