@@ -38,6 +38,7 @@ in
       pnpm
       bun
       deno
+      go
       rustup
       nixd
       lua-language-server
@@ -52,6 +53,7 @@ in
       httpie
       xh
       yq
+      lazygit
       unstable.devenv
       nixfmt
       codex
@@ -120,6 +122,15 @@ in
     enable = true;
     mouse = true;
     prefix = "C-s";
+    plugins = with pkgs.tmuxPlugins; [
+      {
+        plugin = resurrect;
+        extraConfig = ''
+          set -g @resurrect-save 'S'
+          set -g @resurrect-restore 'R'
+        '';
+      }
+    ];
     extraConfig = ''
       set -g mouse on
       set -g history-limit 10000
@@ -127,6 +138,11 @@ in
       set -g status-left-length 40
       set -g status-right-length 90
       set -g status-right "#[fg=black]%Y-%m-%d %H:%M #[fg=black]#(whoami)"
+
+      # Keep new panes and windows in the active pane's working directory.
+      bind '"' split-window -v -c "#{pane_current_path}"
+      bind % split-window -h -c "#{pane_current_path}"
+      bind c new-window -c "#{pane_current_path}"
     '';
   };
 
