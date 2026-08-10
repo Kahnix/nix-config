@@ -57,7 +57,7 @@ in
       unstable.devenv
       nixfmt
       codex
-      opencode
+      unstable.opencode
     ])
     ++ lib.optionals pkgs.stdenv.isDarwin (
       with pkgs;
@@ -190,6 +190,7 @@ in
 
   programs.direnv = {
     enable = true;
+    silent = true;
     nix-direnv.enable = true;
   };
 }
