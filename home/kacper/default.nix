@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   inputs,
@@ -121,7 +120,7 @@ in
   programs.tmux = {
     enable = true;
     mouse = true;
-    prefix = "C-s";
+    prefix = "C-b";
     plugins = with pkgs.tmuxPlugins; [
       {
         plugin = resurrect;
@@ -151,7 +150,7 @@ in
     settings = {
       command_timeout = 3000;
       scan_timeout = 50;
-      format = "$all\n$username$hostname$directory";
+      format = "$all$username$hostname$directory";
       character = {
         success_symbol = "[](bold green) ";
         error_symbol = "[✗](bold red) ";
