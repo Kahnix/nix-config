@@ -20,38 +20,61 @@ in
   programs.home-manager.enable = true;
   home.enableNixpkgsReleaseCheck = false;
 
-  home.packages = with pkgs; [
-    neovim
-    tmux
+  home.packages =
+    (with pkgs; [
+      neovim
+      tmux
+      gh
+      git-lfs
+      ripgrep
+      fd
+      jq
+      bat
+      eza
+      fastfetch
+      unzip
+      tree
+      nodejs
+      pnpm
+      bun
+      deno
+      rustup
+      nixd
+      lua-language-server
+      redis
+      sqlite
+      tailwindcss-language-server
+      typescript
+      typescript-language-server
+      vscode-langservers-extracted
+      yaml-language-server
+      just
+      httpie
+      xh
+      yq
+      unstable.devenv
+      nixfmt
+      codex
+      opencode
+    ])
+    ++ lib.optionals pkgs.stdenv.isDarwin (
+      with pkgs;
+      [
+        jdk17
+        watchman
+      ]
+    );
 
-    ripgrep
-    fd
-    jq
-    bat
-    eza
-    fastfetch
-    unzip
-    tree
-    nodejs
-    pnpm
-    bun
-    deno
-    rustup
-    nixd
-    lua-language-server
-    redis
-    sqlite
-    tailwindcss-language-server
-    typescript
-    typescript-language-server
-    vscode-langservers-extracted
-    yaml-language-server
-    just
-    httpie
-    xh
-    yq
-    unstable.devenv
-    nixfmt
+  home.sessionVariables = lib.mkIf pkgs.stdenv.isDarwin {
+    ANDROID_HOME = "${homeDirectory}/Library/Android/sdk";
+    ANDROID_SDK_ROOT = "${homeDirectory}/Library/Android/sdk";
+    JAVA_HOME = pkgs.jdk17.home;
+  };
+
+  home.sessionPath = lib.optionals pkgs.stdenv.isDarwin [
+    "${homeDirectory}/Library/Android/sdk/emulator"
+    "${homeDirectory}/Library/Android/sdk/platform-tools"
+    "${homeDirectory}/Library/Android/sdk/cmdline-tools/latest/bin"
   ];
 
   programs.git = {
@@ -69,6 +92,18 @@ in
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ "git" ];
+      theme = "";
+    };
+
+    initContent = ''
+      if [[ -z "$TMUX" && -n "$PS1" ]]; then
+        exec tmux new-session -A -s main
+      fi
+    '';
+
     shellAliases = {
       ll = "eza -la";
       gs = "git status";
@@ -79,6 +114,20 @@ in
     // lib.optionalAttrs pkgs.stdenv.isDarwin {
       rebuild = "sudo darwin-rebuild switch --flake ~/nix-config#macbook-pro-m4";
     };
+  };
+
+  programs.tmux = {
+    enable = true;
+    mouse = true;
+    prefix = "C-s";
+    extraConfig = ''
+      set -g mouse on
+      set -g history-limit 10000
+      set -g status-interval 5
+      set -g status-left-length 40
+      set -g status-right-length 90
+      set -g status-right "#[fg=black]%Y-%m-%d %H:%M #[fg=black]#(whoami)"
+    '';
   };
 
   programs.starship = {
