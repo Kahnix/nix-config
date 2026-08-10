@@ -58,6 +58,12 @@ in
       codex
       unstable.opencode
     ])
+    ++ lib.optionals pkgs.stdenv.isLinux (
+      with pkgs;
+      [
+        gcc
+      ]
+    )
     ++ lib.optionals pkgs.stdenv.isDarwin (
       with pkgs;
       [
