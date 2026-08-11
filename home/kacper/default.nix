@@ -11,6 +11,8 @@ let
   unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
+  imports = [ ./darwin-desktop.nix ];
+
   home.username = username;
   home.homeDirectory = homeDirectory;
 
@@ -104,12 +106,6 @@ in
       plugins = [ "git" ];
       theme = "";
     };
-
-    initContent = ''
-      if [[ -z "$TMUX" && -n "$PS1" ]]; then
-        exec tmux new-session -A -s main
-      fi
-    '';
 
     shellAliases = {
       ll = "eza -la";

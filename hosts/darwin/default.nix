@@ -24,6 +24,11 @@
 
   programs.zsh.enable = true;
 
+  # Keep the native macOS menu bar visible.
+  system.defaults.NSGlobalDomain._HIHideMenuBar = false;
+  system.defaults.spaces.spans-displays = false;
+  system.defaults.CustomUserPreferences."com.apple.controlcenter".AutoHideMenuBarOption = 3;
+
   environment.systemPackages = with pkgs; [
     wget
     curl
