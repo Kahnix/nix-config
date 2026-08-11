@@ -96,16 +96,8 @@ in
     };
   };
 
-  programs.zsh = {
+  programs.fish = {
     enable = true;
-    enableCompletion = true;
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-    oh-my-zsh = {
-      enable = true;
-      plugins = [ "git" ];
-      theme = "";
-    };
 
     shellAliases = {
       ll = "eza -la";
@@ -119,10 +111,28 @@ in
     };
   };
 
+  programs.starship = {
+    enable = true;
+    enableFishIntegration = true;
+    enableZshIntegration = false;
+
+    settings = {
+      command_timeout = 3000;
+      scan_timeout = 50;
+      format = "$all$username$hostname$directory";
+      character = {
+        success_symbol = "[](bold green) ";
+        error_symbol = "[✗](bold red) ";
+      };
+    };
+  };
+
   programs.tmux = {
     enable = true;
     mouse = true;
     prefix = "C-b";
+    shell = "${pkgs.fish}/bin/fish";
+
     plugins = with pkgs.tmuxPlugins; [
       {
         plugin = resurrect;
@@ -147,24 +157,12 @@ in
     '';
   };
 
-  programs.starship = {
-    enable = true;
-    settings = {
-      command_timeout = 3000;
-      scan_timeout = 50;
-      format = "$all$username$hostname$directory";
-      character = {
-        success_symbol = "[](bold green) ";
-        error_symbol = "[✗](bold red) ";
-      };
-    };
-  };
-
   programs.fzf = {
     enable = true;
     package = unstable.fzf;
-    enableZshIntegration = true;
+    enableFishIntegration = true;
     enableNushellIntegration = false;
+    enableZshIntegration = false;
 
     defaultCommand = "fd --type f --hidden --follow --exclude .git";
     fileWidgetCommand = "fd --type f --hidden --follow --exclude .git";
@@ -185,12 +183,15 @@ in
 
   programs.zoxide = {
     enable = true;
-    enableZshIntegration = true;
+    enableFishIntegration = true;
     enableNushellIntegration = false;
+    enableZshIntegration = false;
   };
 
   programs.direnv = {
     enable = true;
+    enableFishIntegration = true;
+    enableZshIntegration = false;
     silent = true;
     nix-direnv.enable = true;
   };

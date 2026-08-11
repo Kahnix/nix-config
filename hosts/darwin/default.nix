@@ -19,10 +19,14 @@
 
   users.users.${username} = {
     home = homeDirectory;
-    shell = pkgs.zsh;
   };
 
-  programs.zsh.enable = true;
+  programs.fish.enable = true;
+
+  # The existing macOS admin account is owned by macOS rather than nix-darwin.
+  # Register Fish here, then select it once with:
+  #   chsh -s /run/current-system/sw/bin/fish
+  environment.shells = [ pkgs.fish ];
 
   # Keep the native macOS menu bar visible.
   system.defaults.NSGlobalDomain._HIHideMenuBar = false;

@@ -26,14 +26,11 @@ lib.mkIf pkgs.stdenv.isDarwin {
   programs.ghostty = {
     enable = true;
     package = pkgs.ghostty-bin;
-    enableZshIntegration = true;
+    enableFishIntegration = true;
 
     settings = {
       theme = "Kanagawa Dragon";
       "macos-titlebar-style" = "hidden";
-      "window-padding-x" = 10;
-      "window-padding-y" = 10;
-      "window-padding-balance" = true;
 
       # Preserve the existing Shift+Enter escape-sequence binding.
       keybind = [ "shift+enter=text:\\x1b\\r" ];
