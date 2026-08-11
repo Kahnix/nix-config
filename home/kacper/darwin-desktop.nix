@@ -23,6 +23,10 @@ lib.mkIf pkgs.stdenv.isDarwin {
   targets.darwin.copyApps.enable = true;
   targets.darwin.linkApps.enable = false;
 
+  # Home Manager uses macOS's native man implementation, so there is no
+  # Home Manager man package from which to generate caches.
+  programs.man.generateCaches = false;
+
   programs.ghostty = {
     enable = true;
     package = pkgs.ghostty-bin;
@@ -47,7 +51,6 @@ lib.mkIf pkgs.stdenv.isDarwin {
     settings = {
       "config-version" = 2;
       "start-at-login" = true;
-      "auto-reload-config" = true;
 
       "enable-normalization-flatten-containers" = true;
       "enable-normalization-opposite-orientation-for-nested-containers" = true;
