@@ -24,7 +24,6 @@ in
   home.packages =
     (with pkgs; [
       neovim
-      tmux
       gh
       git-lfs
       ripgrep
@@ -58,6 +57,7 @@ in
       nixfmt
       codex
       unstable.opencode
+      inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
     ])
     ++ lib.optionals pkgs.stdenv.isLinux (
       with pkgs;
@@ -277,48 +277,6 @@ in
         error_symbol = "[✗](bold red) ";
       };
     };
-  };
-
-  programs.tmux = {
-    enable = true;
-    mouse = true;
-    prefix = "C-Space";
-    shell = "${pkgs.fish}/bin/fish";
-
-    plugins = with pkgs.tmuxPlugins; [
-      vim-tmux-navigator
-      {
-        plugin = resurrect;
-        extraConfig = ''
-          set -g @resurrect-save 'S'
-          set -g @resurrect-restore 'R'
-        '';
-      }
-    ];
-    extraConfig = ''
-      set -g mouse on
-      set -g history-limit 10000
-      set -g repeat-time 800
-      set -g status-interval 5
-      set -g status-left-length 40
-      set -g status-right-length 90
-      set -g status-right "#[fg=black]%Y-%m-%d %H:%M #[fg=black]#(whoami)"
-
-      # Keep new panes and windows in the active pane's working directory.
-      bind '"' split-window -v -c "#{pane_current_path}"
-      bind % split-window -h -c "#{pane_current_path}"
-      bind c new-window -c "#{pane_current_path}"
-
-      # Vim-style pane navigation and resizing.
-      bind -r h select-pane -L
-      bind -r j select-pane -D
-      bind -r k select-pane -U
-      bind -r l select-pane -R
-      bind -r H resize-pane -L 5
-      bind -r J resize-pane -D 5
-      bind -r K resize-pane -U 5
-      bind -r L resize-pane -R 5
-    '';
   };
 
   programs.fzf = {
