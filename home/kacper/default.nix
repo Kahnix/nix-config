@@ -254,6 +254,7 @@ in
     shellAliases = {
       ll = "eza -la";
       gs = "git status";
+      lg = "lazygit";
     }
     // lib.optionalAttrs pkgs.stdenv.isLinux {
       rebuild = "sudo nixos-rebuild switch --flake ~/nix-config#wsl";
