@@ -32,7 +32,6 @@ in
       jq
       bat
       eza
-      fastfetch
       unzip
       tree
       nodejs
@@ -96,8 +95,161 @@ in
     };
   };
 
+  programs.fastfetch = {
+    enable = true;
+    settings = {
+      "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json";
+
+      logo = {
+        source = if pkgs.stdenv.isDarwin then "macOS" else "NixOS";
+        color = {
+          "1" = "#7E9CD8";
+          "2" = "#98BB6C";
+        };
+        padding = {
+          top = 1;
+          right = 4;
+        };
+      };
+
+      display = {
+        separator = "    ";
+        color = {
+          keys = "#98BB6C";
+          output = "#C8C093";
+          separator = "#7E9CD8";
+        };
+        key = {
+          width = 2;
+          type = "string";
+        };
+        percent.color = {
+          green = "#98BB6C";
+          yellow = "#E6C384";
+          red = "#E46876";
+        };
+      };
+
+      modules = [
+        {
+          type = "custom";
+          format = "╭────────────── hardware ──────────────╮";
+          outputColor = "#7E9CD8";
+        }
+        {
+          type = "host";
+          key = "󰌢";
+          format = "{name}";
+        }
+        {
+          type = "cpu";
+          key = "";
+          format = "{name} ({cores-logical} cores)";
+        }
+        {
+          type = "gpu";
+          key = "󰢮";
+          format = "{name}";
+        }
+        {
+          type = "memory";
+          key = "";
+          format = "{used} / {total} ({percentage})";
+        }
+        {
+          type = "disk";
+          key = "";
+          format = "{size-used} / {size-total} ({size-percentage})";
+        }
+        {
+          type = "display";
+          key = "󰍹";
+          format = "{width}x{height} @ {refresh-rate} Hz";
+        }
+        {
+          type = "custom";
+          format = "╰─────────────────────────────────────╯";
+          outputColor = "#7E9CD8";
+        }
+        "break"
+        {
+          type = "custom";
+          format = "╭────────────── software ──────────────╮";
+          outputColor = "#7E9CD8";
+        }
+        {
+          type = "os";
+          key = "";
+          format = "{pretty-name} {arch}";
+        }
+        {
+          type = "kernel";
+          key = "";
+          format = "{sysname} {release}";
+        }
+        {
+          type = "shell";
+          key = "";
+        }
+        {
+          type = "wm";
+          key = "";
+        }
+        {
+          type = "uptime";
+          key = "󰥔";
+        }
+        {
+          type = "custom";
+          format = "╰─────────────────────────────────────╯";
+          outputColor = "#7E9CD8";
+        }
+      ];
+    };
+  };
+
+  programs.btop = {
+    enable = true;
+    settings = {
+      color_theme = "kanagawa-wave";
+      theme_background = false;
+      truecolor = true;
+      vim_keys = true;
+      rounded_corners = true;
+
+      shown_boxes = "cpu mem proc";
+      update_ms = 2000;
+      graph_symbol = "braille";
+
+      cpu_single_graph = true;
+      show_gpu_info = "Off";
+      show_uptime = false;
+      show_cpu_watts = false;
+      show_coretemp = false;
+      show_cpu_freq = false;
+      clock_format = "";
+
+      mem_graphs = false;
+      show_swap = false;
+      swap_disk = false;
+      show_disks = false;
+
+      proc_sorting = "cpu lazy";
+      proc_colors = true;
+      proc_gradient = false;
+      proc_mem_bytes = true;
+      proc_cpu_graphs = false;
+
+      show_battery = false;
+    };
+  };
+  xdg.configFile."btop/btop.conf".force = true;
+
   programs.fish = {
     enable = true;
+    interactiveShellInit = ''
+      set -g fish_greeting
+    '';
 
     shellAliases = {
       ll = "eza -la";
@@ -130,10 +282,11 @@ in
   programs.tmux = {
     enable = true;
     mouse = true;
-    prefix = "C-b";
+    prefix = "C-Space";
     shell = "${pkgs.fish}/bin/fish";
 
     plugins = with pkgs.tmuxPlugins; [
+      vim-tmux-navigator
       {
         plugin = resurrect;
         extraConfig = ''
@@ -145,6 +298,7 @@ in
     extraConfig = ''
       set -g mouse on
       set -g history-limit 10000
+      set -g repeat-time 800
       set -g status-interval 5
       set -g status-left-length 40
       set -g status-right-length 90
@@ -154,6 +308,16 @@ in
       bind '"' split-window -v -c "#{pane_current_path}"
       bind % split-window -h -c "#{pane_current_path}"
       bind c new-window -c "#{pane_current_path}"
+
+      # Vim-style pane navigation and resizing.
+      bind -r h select-pane -L
+      bind -r j select-pane -D
+      bind -r k select-pane -U
+      bind -r l select-pane -R
+      bind -r H resize-pane -L 5
+      bind -r J resize-pane -D 5
+      bind -r K resize-pane -U 5
+      bind -r L resize-pane -R 5
     '';
   };
 
