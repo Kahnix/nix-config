@@ -20,33 +20,38 @@
     # macOS system configuration.
     darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
+
+    # herdr
+    herdr.url = "github:herdrdev/herdr/v0.8.0";
   };
 
-  outputs = { nixpkgs, ... }@inputs:
+  outputs =
+    { nixpkgs, ... }@inputs:
 
-  # Change these to your own username and home directory.
-  let
-    wslUsername = "kacper";
-    darwinUsername = "kacperdaniel";
+    # Change these to your own username and home directory.
+    let
+      wslUsername = "kacper";
+      darwinUsername = "kacperdaniel";
 
-    mkSystem = import ./lib/mksystem.nix {
-      inherit inputs;
-    };
-  in {
-    nixosConfigurations.wsl = mkSystem {
-      name = "wsl";
-      system = "x86_64-linux";
-      username = wslUsername;
-      homeDirectory = "/home/${wslUsername}";
-      wsl = true;
-    };
+      mkSystem = import ./lib/mksystem.nix {
+        inherit inputs;
+      };
+    in
+    {
+      nixosConfigurations.wsl = mkSystem {
+        name = "wsl";
+        system = "x86_64-linux";
+        username = wslUsername;
+        homeDirectory = "/home/${wslUsername}";
+        wsl = true;
+      };
 
-    darwinConfigurations."macbook-pro-m4" = mkSystem {
-      name = "darwin";
-      system = "aarch64-darwin";
-      username = darwinUsername;
-      homeDirectory = "/Users/${darwinUsername}";
-      darwin = true;
+      darwinConfigurations."macbook-pro-m4" = mkSystem {
+        name = "darwin";
+        system = "aarch64-darwin";
+        username = darwinUsername;
+        homeDirectory = "/Users/${darwinUsername}";
+        darwin = true;
+      };
     };
-  };
 }
