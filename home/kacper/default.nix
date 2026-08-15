@@ -24,6 +24,7 @@ in
   home.packages =
     (with pkgs; [
       neovim
+      tree-sitter
       gh
       git-lfs
       ripgrep
