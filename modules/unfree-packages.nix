@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  nixpkgs.config.allowUnFreePackages = [
+  nixpkgs.config.allowUnfreePackages = [
     "claude-code"
   ];
 }
