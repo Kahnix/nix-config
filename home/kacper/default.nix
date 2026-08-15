@@ -57,6 +57,7 @@ in
       unstable.devenv
       nixfmt
       codex
+      claude-code
       unstable.opencode
       inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
     ])
