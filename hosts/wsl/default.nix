@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   inputs,
   username,
@@ -34,10 +32,25 @@
     curl
     git
     nano
+    tailscale
   ];
 
+  #ssh setup
+  services.openssh = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+      AllowUsers = [ "kacper" ];
+      MaxAuthTries = 3;
+    };
+  };
   # Needed for VS Code Remote and many random prebuilt binaries.
   programs.nix-ld.enable = true;
+
+  services.tailscale.enable = true;
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
