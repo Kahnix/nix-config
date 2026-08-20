@@ -26,6 +26,7 @@ in
       neovim
       tree-sitter
       gh
+      departure-mono
       git-lfs
       ripgrep
       fd
@@ -257,6 +258,7 @@ in
       ll = "eza -la";
       gs = "git status";
       lg = "lazygit";
+      bt = "btop";
     }
     // lib.optionalAttrs pkgs.stdenv.isLinux {
       rebuild = "sudo nixos-rebuild switch --flake ~/nix-config#wsl";

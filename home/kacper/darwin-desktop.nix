@@ -35,7 +35,7 @@ lib.mkIf pkgs.stdenv.isDarwin {
     settings = {
       theme = "Kanagawa Dragon";
       "macos-titlebar-style" = "hidden";
-
+      "font-family" = "Departure Mono";
       # Preserve the existing Shift+Enter escape-sequence binding.
       keybind = [ "shift+enter=text:\\x1b\\r" ];
     };
