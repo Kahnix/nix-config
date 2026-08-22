@@ -290,22 +290,23 @@ in
     enableFishIntegration = true;
     enableNushellIntegration = false;
     enableZshIntegration = false;
-
     defaultCommand = "fd --type f --hidden --follow --exclude .git";
-    fileWidgetCommand = "fd --type f --hidden --follow --exclude .git";
-    changeDirWidgetCommand = "fd --type d --hidden --follow --exclude .git";
 
     defaultOptions = [
       "--height 40%"
       "--layout=reverse"
       "--border"
     ];
-    fileWidgetOptions = [
-      "--preview 'bat --style=numbers --color=always --line-range :200 {}'"
-    ];
-    changeDirWidgetOptions = [
-      "--preview 'eza --tree --level=2 --color=always {}'"
-    ];
+
+    fileWidget = {
+      options = [ "--preview 'bat --style=numbers --color=always --line-range :200 {}'" ];
+      command = "fd --type f --hidden --follow --exclude .git";
+    };
+
+    changeDirWidget = {
+      options = [ "--preview 'eza --tree --level=2 --color=always {}'" ];
+      command = "fd --type d --hidden --follow --exclude .git";
+    };
   };
 
   programs.zoxide = {
