@@ -3,6 +3,7 @@
   inputs,
   username,
   homeDirectory,
+  isWSL,
   ...
 }:
 
@@ -56,7 +57,14 @@
   home-manager.useUserPackages = true;
 
   home-manager.extraSpecialArgs = {
-    inherit inputs username homeDirectory;
+    inherit
+      inputs
+      username
+      homeDirectory
+      isWSL
+      ;
+    isDarwin = false;
+    isNixOS = false;
   };
 
   home-manager.users.${username} = import ../../home/${username};

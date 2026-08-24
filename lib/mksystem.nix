@@ -30,6 +30,7 @@ systemFunc {
       ;
     isDarwin = darwin;
     isWSL = wsl;
+    isNixOS = !darwin && !wsl;
   };
 
   modules = [
