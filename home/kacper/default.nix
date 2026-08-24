@@ -11,7 +11,10 @@ let
   unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
-  imports = [ ./darwin-desktop.nix ];
+  imports = [
+    ./darwin-desktop.nix
+    inputs.omp.homeManagerModules.default
+  ];
 
   home.username = username;
   home.homeDirectory = homeDirectory;
@@ -19,6 +22,7 @@ in
   home.stateVersion = "26.05";
 
   programs.home-manager.enable = true;
+  programs.omp.enable = true;
   home.enableNixpkgsReleaseCheck = false;
 
   home.packages =
@@ -57,9 +61,7 @@ in
       lazygit
       unstable.devenv
       nixfmt
-      codex
       claude-code
-      unstable.opencode
       inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
     ])
     ++ lib.optionals pkgs.stdenv.isLinux (

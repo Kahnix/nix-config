@@ -23,6 +23,9 @@
 
     # herdr
     herdr.url = "github:herdrdev/herdr/v0.8.0";
+
+    # OMP coding agent.
+    omp.url = "github:can1357/oh-my-pi";
   };
 
   outputs =
