@@ -14,6 +14,7 @@
     ./hardware-configuration.nix
     ../../modules/gaming.nix
     ../../modules/virtualisation.nix
+    inputs.noctalia-greeter.nixosModules.default
   ];
 
   nixpkgs = {
@@ -54,6 +55,7 @@
   };
   console.keyMap = "us";
   services.xserver.xkb.layout = "us";
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   nix.settings = {
     experimental-features = [
@@ -84,27 +86,67 @@
   programs = {
     dconf.enable = true;
     fish.enable = true;
-    hyprland = {
+    droidcam.enable = true;
+    niri.enable = true;
+    noctalia-greeter = {
       enable = true;
-      xwayland.enable = true;
+      settings = {
+        session.default = "Niri";
+        user.default = username;
+
+        appearance = {
+          scheme = "Synced";
+          password_style = "default";
+          hide_logo = false;
+          theme_mode = "dark";
+          corner_radius_scale = 0.85;
+          font_family = "Departure Mono";
+
+          palette = {
+            primary = "#7e9cd8";
+            on_primary = "#111116";
+            secondary = "#7fb4ca";
+            on_secondary = "#111116";
+            tertiary = "#98bb6c";
+            on_tertiary = "#111116";
+            error = "#e46876";
+            on_error = "#111116";
+            surface = "#111116";
+            on_surface = "#dcd7ba";
+            surface_variant = "#1f1f28";
+            on_surface_variant = "#a6a69c";
+            outline = "#363646";
+            shadow = "#090910";
+            hover = "#e6c384";
+            on_hover = "#111116";
+          };
+
+          wallpaper = {
+            path = "${../../assets/wallpapers/blue-hour.png}";
+            fill_mode = "crop";
+          };
+        };
+
+        idle.timeout = 300;
+
+        cursor = {
+          theme = "Bibata-Modern-Ice";
+          size = 24;
+          path = "${pkgs.bibata-cursors}/share/icons";
+        };
+
+        keyboard = {
+          layout = "us";
+          numlock = true;
+        };
+
+        auth.allow_empty_password = false;
+      };
     };
     nix-ld.enable = true;
   };
 
   services = {
-    greetd = {
-      enable = true;
-      settings.default_session = {
-        user = "greeter";
-        command = builtins.concatStringsSep " " [
-          "${pkgs.coreutils}/bin/env"
-          "KACPER_WALLPAPER=${../../assets/wallpapers/blue-hour.png}"
-          "KACPER_SESSION=${config.programs.hyprland.package}/bin/Hyprland"
-          "${pkgs.cage}/bin/cage -s --"
-          "${pkgs.quickshell}/bin/qs -p ${../../home/kacper/quickshell-greeter}"
-        ];
-      };
-    };
 
     pipewire = {
       enable = true;
@@ -121,12 +163,12 @@
       openFirewall = true;
       settings = {
         KbdInteractiveAuthentication = false;
-        PasswordAuthentication = false;
         PermitRootLogin = "no";
       };
     };
 
     tailscale.enable = true;
+    usbmuxd.enable = true;
     udisks2.enable = true;
     upower.enable = true;
     gvfs.enable = true;
@@ -188,7 +230,6 @@
       git
       pciutils
       tailscale
-      tuigreet
       wget
     ];
   };

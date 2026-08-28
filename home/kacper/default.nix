@@ -5,6 +5,7 @@
   username,
   homeDirectory,
   isWSL ? false,
+  isNixOS ? false,
   ...
 }:
 
@@ -16,7 +17,8 @@ in
     ./darwin-desktop.nix
     ./linux-desktop.nix
     inputs.omp.homeManagerModules.default
-  ];
+  ]
+  ++ lib.optionals isNixOS [ inputs.noctalia.homeModules.default ];
 
   home.username = username;
   home.homeDirectory = homeDirectory;
