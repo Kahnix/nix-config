@@ -4,6 +4,7 @@
   system,
   username,
   homeDirectory,
+  isDarwin,
   ...
 }:
 
@@ -49,7 +50,14 @@
   home-manager.backupFileExtension = "before-home-manager";
 
   home-manager.extraSpecialArgs = {
-    inherit inputs username homeDirectory;
+    inherit
+      inputs
+      username
+      homeDirectory
+      isDarwin
+      ;
+    isNixOS = false;
+    isWSL = false;
   };
 
   home-manager.users.${username} = import ../../home/kacper;

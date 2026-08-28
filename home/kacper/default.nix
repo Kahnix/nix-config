@@ -4,6 +4,8 @@
   inputs,
   username,
   homeDirectory,
+  isWSL ? false,
+  isNixOS ? false,
   ...
 }:
 
@@ -13,8 +15,10 @@ in
 {
   imports = [
     ./darwin-desktop.nix
+    ./linux-desktop.nix
     inputs.omp.homeManagerModules.default
-  ];
+  ]
+  ++ lib.optionals isNixOS [ inputs.noctalia.homeModules.default ];
 
   home.username = username;
   home.homeDirectory = homeDirectory;
@@ -24,6 +28,11 @@ in
   programs.home-manager.enable = true;
   programs.omp.enable = true;
   home.enableNixpkgsReleaseCheck = false;
+
+  xdg.configFile."nvim" = {
+    source = inputs.nvim-config;
+    recursive = true;
+  };
 
   home.packages =
     (with pkgs; [
@@ -263,7 +272,11 @@ in
       bt = "btop";
     }
     // lib.optionalAttrs pkgs.stdenv.isLinux {
-      rebuild = "sudo nixos-rebuild switch --flake ~/nix-config#wsl";
+      rebuild =
+        if isWSL then
+          "sudo nixos-rebuild switch --flake ~/nix-config#wsl"
+        else
+          "sudo nixos-rebuild switch --flake ~/nix-config#nixos";
     }
     // lib.optionalAttrs pkgs.stdenv.isDarwin {
       rebuild = "sudo darwin-rebuild switch --flake ~/nix-config#macbook-pro-m4";
