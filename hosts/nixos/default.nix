@@ -20,16 +20,6 @@ let
     "$niri" msg output HDMI-A-2 on
     trap - EXIT
   '';
-  berkeleyMono = pkgs.stdenvNoCC.mkDerivation {
-    pname = "berkeley-mono";
-    version = "2.004";
-    src = inputs.berkeley-mono;
-
-    installPhase = ''
-      install -Dm444 -t "$out/share/fonts/opentype/berkeley-mono" "$src"/*.otf
-    '';
-  };
-
 in
 {
   imports = [
@@ -137,7 +127,7 @@ in
           hide_logo = false;
           theme_mode = "dark";
           corner_radius_scale = 0.85;
-          font_family = "Departure Mono";
+          font_family = "Berkeley Mono";
 
           palette = {
             primary = "#7e9cd8";
@@ -224,7 +214,6 @@ in
       };
     };
 
-
     pipewire = {
       enable = true;
       alsa = {
@@ -271,7 +260,6 @@ in
       "gtk"
     ];
   };
-
 
   systemd.sleep.settings.Sleep = {
     AllowSuspend = false;
@@ -324,13 +312,19 @@ in
     ];
   };
 
-  fonts.packages = with pkgs; [
-    berkeleyMono
-    departure-mono
-    nerd-fonts.jetbrains-mono
-    noto-fonts
-    noto-fonts-color-emoji
-  ];
+  fonts = {
+    packages = with pkgs; [
+      inter
+      nerd-fonts.jetbrains-mono
+      noto-fonts
+      noto-fonts-color-emoji
+    ];
+    # Berkeley Mono is installed natively per machine, not by Nix.
+    fontconfig.defaultFonts = {
+      monospace = [ "Berkeley Mono" ];
+      sansSerif = [ "Inter" ];
+    };
+  };
 
   home-manager = {
     useGlobalPkgs = true;

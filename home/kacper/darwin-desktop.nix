@@ -27,20 +27,6 @@ lib.mkIf pkgs.stdenv.isDarwin {
   # Home Manager man package from which to generate caches.
   programs.man.generateCaches = false;
 
-  programs.ghostty = {
-    enable = true;
-    package = pkgs.ghostty-bin;
-    enableFishIntegration = true;
-
-    settings = {
-      theme = "Kanagawa Dragon";
-      "macos-titlebar-style" = "hidden";
-      "font-family" = "Departure Mono";
-      # Preserve the existing Shift+Enter escape-sequence binding.
-      keybind = [ "shift+enter=text:\\x1b\\r" ];
-    };
-  };
-
   programs.aerospace = {
     enable = true;
     package = pkgs.aerospace;

@@ -15,6 +15,7 @@ in
 {
   imports = [
     ./darwin-desktop.nix
+    ./ghostty.nix
     ./linux-desktop.nix
     inputs.omp.homeManagerModules.default
   ]
@@ -39,7 +40,6 @@ in
       neovim
       tree-sitter
       gh
-      departure-mono
       git-lfs
       ripgrep
       fd
@@ -222,10 +222,26 @@ in
     };
   };
 
+  # Home Manager symlinks this into the Nix store (read-only), but Noctalia's
+  # fastfetch template rewrites it in place at runtime to inject its
+  # generated logo/display colors. Replace the symlink with a real copy after
+  # each activation so Noctalia can keep mutating it; `home-manager switch`
+  # resets it back to this declared baseline.
+  home.activation.fastfetchMutableConfig = lib.mkIf isNixOS (
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      target="$HOME/.config/fastfetch/config.jsonc"
+      if [ -L "$target" ]; then
+        src="$(readlink -f "$target")"
+        run rm -f "$target"
+        run install -m644 "$src" "$target"
+      fi
+    ''
+  );
+
   programs.btop = {
     enable = true;
     settings = {
-      color_theme = "kanagawa-wave";
+      color_theme = if isNixOS then "noctalia" else "kanagawa-wave";
       theme_background = false;
       truecolor = true;
       vim_keys = true;
@@ -298,6 +314,21 @@ in
       };
     };
   };
+
+  # Same problem as fastfetch above: Home Manager symlinks starship.toml into
+  # the Nix store, but Noctalia's starship template injects a palette block
+  # into that same file at runtime. Replace the symlink with a real copy so
+  # Noctalia can keep mutating it between rebuilds.
+  home.activation.starshipMutableConfig = lib.mkIf isNixOS (
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      target="$HOME/.config/starship.toml"
+      if [ -L "$target" ]; then
+        src="$(readlink -f "$target")"
+        run rm -f "$target"
+        run install -m644 "$src" "$target"
+      fi
+    ''
+  );
 
   programs.fzf = {
     enable = true;

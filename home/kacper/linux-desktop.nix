@@ -17,9 +17,9 @@ lib.mkIf isNixOS {
     file-roller
     google-chrome
     kanagawa-gtk-theme
+    kanagawa-icon-theme
     nautilus
     obsidian
-    papirus-icon-theme
     pavucontrol
     playerctl
     proton-pass
@@ -47,11 +47,11 @@ lib.mkIf isNixOS {
       name = "Kanagawa-BL";
     };
     iconTheme = {
-      package = pkgs.papirus-icon-theme;
-      name = "Papirus-Dark";
+      package = pkgs.kanagawa-icon-theme;
+      name = "Kanagawa";
     };
     font = {
-      name = "Departure Mono";
+      name = "Inter";
       size = 11;
     };
   };
@@ -59,34 +59,20 @@ lib.mkIf isNixOS {
   qt = {
     enable = true;
     platformTheme.name = "gtk3";
-    style.name = "adwaita-dark";
+    style = {
+      name = "gtk2";
+      package = pkgs.libsForQt5.qtstyleplugins;
+    };
   };
 
   programs = {
-    ghostty = {
-      enable = true;
-      enableFishIntegration = true;
-      settings = {
-        theme = "Kanagawa Wave";
-        "font-family" = "Departure Mono";
-        "font-size" = 12;
-        "background-opacity" = 0.92;
-        "background-blur-radius" = 16;
-        "window-decoration" = false;
-        "window-padding-x" = 14;
-        "window-padding-y" = 12;
-        "confirm-close-surface" = false;
-        keybind = [ "shift+enter=text:\\x1b\\r" ];
-      };
-    };
-
     noctalia = {
       enable = true;
       systemd.enable = true;
       settings = {
         shell = {
           corner_radius_scale = 0.85;
-          font_family = "Departure Mono";
+          font_family = "Berkeley Mono";
           time_format = "{:%H:%M}";
           date_format = "%A, %d %B";
           telemetry_enabled = false;
@@ -162,7 +148,7 @@ lib.mkIf isNixOS {
           show_app_name = true;
           show_actions = true;
           layer = "top";
-          background_opacity = 0.94;
+          background_opacity = 0.95;
           offset_x = 14;
           offset_y = 8;
         };
@@ -170,7 +156,7 @@ lib.mkIf isNixOS {
         osd = {
           position = "top_right";
           orientation = "horizontal";
-          background_opacity = 0.94;
+          background_opacity = 0.95;
           offset_x = 14;
           offset_y = 8;
         };
@@ -199,7 +185,7 @@ lib.mkIf isNixOS {
         bar.main = {
           position = "top";
           thickness = 36;
-          background_opacity = 0.84;
+          background_opacity = 0.88;
           radius = 12;
           margin_ends = 12;
           margin_edge = 8;
@@ -211,7 +197,7 @@ lib.mkIf isNixOS {
           capsule = true;
           capsule_fill = "surface_variant";
           capsule_radius = 8.0;
-          capsule_opacity = 0.72;
+          capsule_opacity = 0.85;
           start = [
             "launcher"
             "workspaces"
@@ -242,7 +228,7 @@ lib.mkIf isNixOS {
             type = "custom_button";
             glyph = "lock";
             tooltip = "Lock screen";
-            command = "noctalia msg session lock";
+            actions.left = "exec noctalia msg session lock";
           };
         };
 
@@ -290,7 +276,7 @@ lib.mkIf isNixOS {
         actions-on-escape = ["exit"]
         actions-on-right-click = ["save-to-clipboard", "exit"]
         corner-roundness = 8
-        font-family = "Departure Mono"
+        font-family = "Berkeley Mono"
       '';
     };
 

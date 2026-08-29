@@ -1,18 +1,5 @@
 {
   "nodes": {
-    "berkeley-mono": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1788000012,
-        "narHash": "sha256-9OLwnnzvnuY+0eR6cNw6+vx4EGE7pEaOBgTv83ANY+g=",
-        "path": "/home/kacper/.local/share/fonts/BerkeleyMono",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/kacper/.local/share/fonts/BerkeleyMono",
-        "type": "path"
-      }
-    },
     "bun2nix": {
       "inputs": {
         "flake-parts": "flake-parts_2",
@@ -244,11 +231,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1787881163,
-        "narHash": "sha256-6MMlOsBhfWn+KJOlZyyRNR0G/PVMjEfNyQoW0KnKBYI=",
+        "lastModified": 1787965830,
+        "narHash": "sha256-bA1wGQ8pQCPsSMW81MuyBNZDe2LQRI5FMZnMTSYnhUY=",
         "owner": "xddxdd",
         "repo": "nix-cachyos-kernel",
-        "rev": "290b62ec266d15827ab79852483e434eeba912e0",
+        "rev": "20ad7b0f65b60eef3dbe6efefff462989032842b",
         "type": "github"
       },
       "original": {
@@ -345,11 +332,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1787848627,
-        "narHash": "sha256-t3XgpB1iCGH5mR6cXVbwC9II2JdajaPqnlIHvh/unlI=",
+        "lastModified": 1787960808,
+        "narHash": "sha256-RakhMc5yg3VtTkK1Zn/G0wU921ZEwy3J9vJH25dbSeU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "7e0fb958bbf98c835549713f15243aabcf9ce741",
+        "rev": "b0aa699cd56b87a41d3e66d89f827c7fbc35ed8d",
         "type": "github"
       },
       "original": {
@@ -398,11 +385,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787918586,
-        "narHash": "sha256-8tG/6g8W2hBg8Gtqd1j1sPr7IjXTHIDCZqeaod6f3aA=",
+        "lastModified": 1787962868,
+        "narHash": "sha256-kST4FTVCH5qsMU9FWalSqMxt6JeBnnAT83cMWSeN5Dc=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "e5941571aab9b0cdd75d29855e93164ab995ca46",
+        "rev": "4b03775fac344d87c078431f49e52c1e5b2be528",
         "type": "github"
       },
       "original": {
@@ -434,11 +421,11 @@
     "nvim-config": {
       "flake": false,
       "locked": {
-        "lastModified": 1786959517,
-        "narHash": "sha256-ASfM6vZVN0teinB6SL2awyuZE9zRs7/XvDV681x/M90=",
+        "lastModified": 1788005709,
+        "narHash": "sha256-3zBdTq3LloFomTfkASqMuq9ZvkevCNmsyisVPjbbuAI=",
         "owner": "Kahnix",
         "repo": "nvim-config",
-        "rev": "991bf6c2ab3941d0ebf4502b6abe96b8dfff385c",
+        "rev": "005819237df00fa2c98c04128a393cb3112a54bf",
         "type": "github"
       },
       "original": {
@@ -457,11 +444,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1787941036,
-        "narHash": "sha256-e4mWVno0vgsjYKqOfD3Kf+E4pyC7gqKgY9QtBWQQy7M=",
+        "lastModified": 1787942691,
+        "narHash": "sha256-jkfb+ObXbhX/FOBRqIWeh9j81Svi7s1sJVjQhIZkkKk=",
         "owner": "can1357",
         "repo": "oh-my-pi",
-        "rev": "b16f4f10a98cb18922c5bf66eb1b0e10478461bd",
+        "rev": "33cc6b9a043a74e00a157e72ca909272796d8461",
         "type": "github"
       },
       "original": {
@@ -472,7 +459,6 @@
     },
     "root": {
       "inputs": {
-        "berkeley-mono": "berkeley-mono",
         "darwin": "darwin",
         "herdr": "herdr",
         "home-manager": "home-manager",
