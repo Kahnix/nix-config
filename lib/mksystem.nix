@@ -35,6 +35,17 @@ systemFunc {
 
   modules = [
     ../modules/unfree-packages.nix
+    # OMP publishes builds here for every configured platform.  Configure the
+    # cache at the daemon level because a nested flake's nixConfig is not
+    # inherited by this configuration.
+    {
+      nix.settings = {
+        extra-substituters = [ "https://nix-community.cachix.org" ];
+        extra-trusted-public-keys = [
+          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        ];
+      };
+    }
     {
       nixpkgs.overlays = [
         (import ../overlays/nodejs-24-darwin-fd-tracking.nix)
