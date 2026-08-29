@@ -328,7 +328,7 @@ in
       scan_timeout = 50;
       format = "$all$username$hostname$directory";
       character = {
-        success_symbol = "[►](bold green) ";
+        success_symbol = "[➜](bold green) ";
         error_symbol = "[×](bold red) ";
       };
     };
