@@ -8,7 +8,19 @@
   isNixOS,
   ...
 }:
+let
+  streamDisplayMode = pkgs.writeShellScript "stream-display-mode" ''
+    set -eu
+    mode="$1"
+    niri="${pkgs.niri}/bin/niri"
 
+    "$niri" msg output HDMI-A-2 mode "$mode"
+    "$niri" msg output HDMI-A-2 off
+    trap '"$niri" msg output HDMI-A-2 on' EXIT
+    "$niri" msg output HDMI-A-2 on
+    trap - EXIT
+  '';
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -36,6 +48,21 @@
   networking = {
     hostName = "nixos";
     networkmanager.enable = true;
+    firewall.interfaces.tailscale0 = {
+      allowedTCPPorts = [
+        47984
+        47989
+        47990
+        48010
+      ];
+      allowedUDPPorts = [
+        47998
+        47999
+        48000
+        48002
+        48010
+      ];
+    };
   };
 
   time.timeZone = "Europe/Warsaw";
@@ -147,6 +174,46 @@
   };
 
   services = {
+    displayManager.sddm.enable = false;
+    desktopManager.plasma6.enable = false;
+
+    sunshine = {
+      enable = true;
+      autoStart = true;
+      openFirewall = false;
+
+      applications = {
+        env.PATH = "$(PATH):$(HOME)/.local/bin";
+        apps = [
+          {
+            name = "Desktop";
+            "image-path" = "desktop.png";
+            "prep-cmd" = [
+              {
+                do = "${streamDisplayMode} 1680x1050@59.954";
+                undo = "${streamDisplayMode} 3440x1440@59.973";
+              }
+            ];
+          }
+          {
+            name = "Ultrawide Desktop";
+            "image-path" = "desktop.png";
+          }
+          {
+            name = "Steam Big Picture";
+            detached = [ "setsid steam steam://open/bigpicture" ];
+            "prep-cmd" = [
+              {
+                do = "";
+                undo = "setsid steam steam://close/bigpicture";
+              }
+            ];
+            "image-path" = "steam.png";
+          }
+        ];
+      };
+    };
+
 
     pipewire = {
       enable = true;
@@ -182,6 +249,19 @@
       IdleAction = "ignore";
     };
   };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gnome
+      xdg-desktop-portal-gtk
+    ];
+    config.common.default = [
+      "gnome"
+      "gtk"
+    ];
+  };
+
 
   systemd.sleep.settings.Sleep = {
     AllowSuspend = false;
