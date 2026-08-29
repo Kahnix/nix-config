@@ -54,6 +54,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    # Proprietary, locally installed font; its contents stay outside this repository.
+    berkeley-mono = {
+      url = "path:/home/kacper/.local/share/fonts/BerkeleyMono";
+      flake = false;
+    };
   };
 
   outputs =

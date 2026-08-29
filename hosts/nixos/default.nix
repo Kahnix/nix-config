@@ -20,6 +20,16 @@ let
     "$niri" msg output HDMI-A-2 on
     trap - EXIT
   '';
+  berkeleyMono = pkgs.stdenvNoCC.mkDerivation {
+    pname = "berkeley-mono";
+    version = "2.004";
+    src = inputs.berkeley-mono;
+
+    installPhase = ''
+      install -Dm444 -t "$out/share/fonts/opentype/berkeley-mono" "$src"/*.otf
+    '';
+  };
+
 in
 {
   imports = [
@@ -315,6 +325,7 @@ in
   };
 
   fonts.packages = with pkgs; [
+    berkeleyMono
     departure-mono
     nerd-fonts.jetbrains-mono
     noto-fonts

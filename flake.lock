@@ -1,5 +1,18 @@
 {
   "nodes": {
+    "berkeley-mono": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788000012,
+        "narHash": "sha256-9OLwnnzvnuY+0eR6cNw6+vx4EGE7pEaOBgTv83ANY+g=",
+        "path": "/home/kacper/.local/share/fonts/BerkeleyMono",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/kacper/.local/share/fonts/BerkeleyMono",
+        "type": "path"
+      }
+    },
     "bun2nix": {
       "inputs": {
         "flake-parts": "flake-parts_2",
@@ -459,6 +472,7 @@
     },
     "root": {
       "inputs": {
+        "berkeley-mono": "berkeley-mono",
         "darwin": "darwin",
         "herdr": "herdr",
         "home-manager": "home-manager",
