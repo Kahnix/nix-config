@@ -8,7 +8,7 @@
 
 let
   wallpaper = ../../assets/wallpapers/blue-hour.png;
-  zenBrowser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  zenBrowser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.twilight;
 in
 lib.mkIf isNixOS {
   home.packages = with pkgs; [
@@ -141,6 +141,12 @@ lib.mkIf isNixOS {
           source = "builtin";
           builtin = "Kanagawa";
           pure_black_dark = false;
+          templates = {
+            enable_builtin_templates = false;
+            enable_community_templates = false;
+            builtin_ids = [ ];
+            community_ids = [ ];
+          };
         };
 
         notification = {
@@ -287,7 +293,7 @@ lib.mkIf isNixOS {
   };
 
   home.sessionVariables = {
-    BROWSER = "zen-beta";
+    BROWSER = "zen-twilight";
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
     MOZ_ENABLE_WAYLAND = "1";
     NIXOS_OZONE_WL = "1";

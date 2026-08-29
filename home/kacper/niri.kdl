@@ -94,7 +94,7 @@ binds {
     Mod+Ctrl+D repeat=false hotkey-overlay-title="Desktop settings" { spawn "noctalia" "msg" "settings-toggle"; }
     Alt+Tab repeat=false hotkey-overlay-title="Window switcher" { spawn "noctalia" "msg" "window-switcher"; }
 
-    Mod+B repeat=false hotkey-overlay-title="Browser" { spawn "zen-beta"; }
+    Mod+B repeat=false hotkey-overlay-title="Browser" { spawn "zen-twilight"; }
     Mod+E repeat=false hotkey-overlay-title="Files" { spawn "nautilus" "--new-window"; }
     Mod+Shift+G repeat=false hotkey-overlay-title="Steam" { spawn "steam"; }
     Mod+Shift+V repeat=false hotkey-overlay-title="Virtual machines" { spawn "virt-manager"; }
