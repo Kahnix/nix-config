@@ -27,7 +27,6 @@ lib.mkIf isNixOS {
     protonmail-desktop
     satty
     telegram-desktop
-    vesktop
     wl-clipboard
     xwayland-satellite
     zenBrowser
