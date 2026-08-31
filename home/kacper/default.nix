@@ -11,38 +11,6 @@
 
 let
   unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-  ompRelease = {
-    version = "18.0.10";
-    assets = {
-      aarch64-darwin = {
-        name = "omp-darwin-arm64";
-        hash = "sha256-vwJrY6o7CssK++2Ag/drzsE0v1b/276A+3On4Hn+J4o=";
-      };
-      x86_64-linux = {
-        name = "omp-linux-x64";
-        hash = "sha256-sT5rKnSlxx5XufcX4PxINLz+BgnzDcF4KpGXayMDYaA=";
-      };
-    };
-  };
-  ompBinary =
-    let
-      asset =
-        ompRelease.assets.${pkgs.stdenv.hostPlatform.system}
-          or (throw "OMP has no release binary for ${pkgs.stdenv.hostPlatform.system}");
-    in
-    pkgs.stdenvNoCC.mkDerivation {
-      pname = "omp";
-      inherit (ompRelease) version;
-      src = pkgs.fetchurl {
-        url = "https://github.com/can1357/oh-my-pi/releases/download/v${ompRelease.version}/${asset.name}";
-        hash = asset.hash;
-      };
-      dontUnpack = true;
-      installPhase = ''
-        install -Dm755 "$src" "$out/bin/omp"
-      '';
-      meta.mainProgram = "omp";
-    };
 in
 {
   imports = [
@@ -61,7 +29,7 @@ in
   programs.home-manager.enable = true;
   programs.omp = {
     enable = true;
-    package = ompBinary;
+    package = inputs.omp.packages.${pkgs.stdenv.hostPlatform.system}.default;
   };
   home.enableNixpkgsReleaseCheck = false;
 
