@@ -255,7 +255,6 @@ in
       HandleHibernateKey = "ignore";
       HandleLidSwitch = "ignore";
       HandlePowerKey = "ignore";
-      HandleSuspendKey = "ignore";
       IdleAction = "ignore";
     };
   };
@@ -273,10 +272,10 @@ in
   };
 
   systemd.sleep.settings.Sleep = {
-    AllowSuspend = false;
-    AllowHibernation = false;
-    AllowHybridSleep = false;
-    AllowSuspendThenHibernate = false;
+    AllowSuspend = true;
+    AllowHibernation = true;
+    AllowHybridSleep = true;
+    AllowSuspendThenHibernate = true;
   };
 
   security = {
