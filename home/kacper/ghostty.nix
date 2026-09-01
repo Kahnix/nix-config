@@ -6,9 +6,9 @@
 }:
 
 # Single Ghostty config shared by the NixOS desktop and macOS.
-# Kanagawa Dragon + Berkeley Mono on both; only the window chrome differs.
+# Stylix owns its palette, font, size, and opacity.
 let
-  isDarwin = pkgs.stdenv.isDarwin;
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 in
 lib.mkIf (isNixOS || isDarwin) {
   programs.ghostty = {
@@ -17,15 +17,6 @@ lib.mkIf (isNixOS || isDarwin) {
     enableFishIntegration = true;
 
     settings = {
-      theme = "Kanagawa Dragon";
-      # Berkeley Mono is installed natively per machine, not by Nix.
-      # JetBrainsMono NFM supplies the Nerd Font glyphs it lacks.
-      "font-family" = [
-        "Berkeley Mono"
-        "JetBrainsMono NFM"
-      ];
-      "font-size" = 12;
-      "background-opacity" = 0.92;
       "background-blur" = 16;
       "window-padding-x" = 14;
       "window-padding-y" = 12;

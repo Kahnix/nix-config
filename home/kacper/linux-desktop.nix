@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   lib,
   pkgs,
@@ -11,12 +12,9 @@ let
 in
 lib.mkIf isNixOS {
   home.packages = with pkgs; [
-    bibata-cursors
     blueman
     file-roller
     google-chrome
-    kanagawa-gtk-theme
-    kanagawa-icon-theme
     nautilus
     obsidian
     pavucontrol
@@ -31,46 +29,13 @@ lib.mkIf isNixOS {
     zenBrowser
   ];
 
-  home.pointerCursor = {
-    enable = true;
-    gtk.enable = true;
-    package = pkgs.bibata-cursors;
-    name = "Bibata-Modern-Ice";
-    size = 24;
-  };
-
-  gtk = {
-    enable = true;
-    theme = {
-      package = pkgs.kanagawa-gtk-theme;
-      name = "Kanagawa-BL";
-    };
-    iconTheme = {
-      package = pkgs.kanagawa-icon-theme;
-      name = "Kanagawa";
-    };
-    font = {
-      name = "Inter";
-      size = 11;
-    };
-  };
-
-  qt = {
-    enable = true;
-    platformTheme.name = "gtk3";
-    style = {
-      name = "gtk2";
-      package = pkgs.libsForQt5.qtstyleplugins;
-    };
-  };
-
   programs = {
     noctalia = {
       enable = true;
       systemd.enable = true;
       # Frozen snapshot of the live settings menu state; refresh with
       # scripts/snapshot-noctalia-settings.sh after tuning things in-app.
-      settings = ./noctalia-settings.toml;
+      settings = builtins.fromTOML (builtins.readFile ./noctalia-settings.toml);
     };
   };
 
@@ -99,7 +64,7 @@ lib.mkIf isNixOS {
         actions-on-escape = ["exit"]
         actions-on-right-click = ["save-to-clipboard", "exit"]
         corner-roundness = 8
-        font-family = "Berkeley Mono"
+        font-family = "${config.stylix.fonts.monospace.name}"
       '';
     };
 

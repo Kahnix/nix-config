@@ -17,7 +17,7 @@ let
     ) workspaces
   );
 in
-lib.mkIf pkgs.stdenv.isDarwin {
+lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
   # Copy GUI apps out of the Nix store so Spotlight and macOS permissions work
   # reliably while keeping their package definitions in Home Manager.
   targets.darwin.copyApps.enable = true;

@@ -3,11 +3,8 @@
 
   inputs = {
     # Main package set for the whole system.
-    # Stable is calmer than unstable for system config.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-
-    # Optional: later use this for newer tools only.
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # Track the rolling upstream package set across all hosts.
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     # NixOS on WSL.
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
@@ -38,8 +35,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # macOS system configuration.
-    darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+    # macOS system configuration tracks the same unstable package set.
+    darwin.url = "github:nix-darwin/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     # herdr
@@ -49,9 +46,14 @@
     omp.url = "github:can1357/oh-my-pi";
 
     # Bun2nix
-
     bunnix.url = "github:aster-void/bunnix";
     bunnix.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Stylix
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Zen is not in nixpkgs; use the maintained community packaging.
     zen-browser = {
@@ -89,6 +91,7 @@
         system = "x86_64-linux";
         username = nixosUsername;
         homeDirectory = "/home/${nixosUsername}";
+        theming = true;
       };
 
       darwinConfigurations."macbook-pro-m4" = mkSystem {
@@ -97,6 +100,7 @@
         username = darwinUsername;
         homeDirectory = "/Users/${darwinUsername}";
         darwin = true;
+        theming = true;
       };
     };
 }

@@ -105,7 +105,6 @@ widget_order = [ "lockscreen-login-box@HDMI-A-2" ]
         show_weather = true
 
 [notification]
-background_opacity = 0.94999999999999996
 enable_daemon = true
 layer = "top"
 offset_x = 14
@@ -114,7 +113,6 @@ show_actions = true
 show_app_name = true
 
 [osd]
-background_opacity = 0.94999999999999996
 offset_x = 14
 offset_y = 8
 orientation = "horizontal"
@@ -131,7 +129,6 @@ clipboard_image_action_command = "satty -f -"
 clipboard_keep_from_closed_apps = false
 corner_radius_scale = 0.84999999999999998
 date_format = "%A, %d %B"
-font_family = "Berkeley Mono"
 niri_overview_type_to_launch_enabled = true
 panel_anchor_bar = "main"
 polkit_agent = true
@@ -169,28 +166,10 @@ time_format = "{:%H:%M}"
     alpha = 0.47999999999999998
     direction = "down"
 
-[theme]
-builtin = "Kanagawa"
-community_palette = "Kanagawa Dragon"
-mode = "dark"
-pure_black_dark = false
-source = "community"
-wallpaper_scheme = "m3-content"
 
     [theme.templates]
-    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "niri", "qt", "starship" ]
-    community_ids = [
-        "pi-agent",
-        "zen-browser",
-        "telegram",
-        "neovim",
-        "obsidian",
-        "steam",
-        "fastfetch",
-        "papirus-icons",
-        "herdr",
-        "lazygit"
-    ]
+    builtin_ids = []
+    community_ids = []
     enable_builtin_templates = false
     enable_community_templates = false
 

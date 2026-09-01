@@ -138,25 +138,25 @@ in
           hide_logo = false;
           theme_mode = "dark";
           corner_radius_scale = 0.85;
-          font_family = "Berkeley Mono";
+          font_family = config.stylix.fonts.monospace.name;
 
-          palette = {
-            primary = "#7e9cd8";
-            on_primary = "#111116";
-            secondary = "#7fb4ca";
-            on_secondary = "#111116";
-            tertiary = "#98bb6c";
-            on_tertiary = "#111116";
-            error = "#e46876";
-            on_error = "#111116";
-            surface = "#111116";
-            on_surface = "#dcd7ba";
-            surface_variant = "#1f1f28";
-            on_surface_variant = "#a6a69c";
-            outline = "#363646";
-            shadow = "#090910";
-            hover = "#e6c384";
-            on_hover = "#111116";
+          palette = with config.lib.stylix.colors.withHashtag; {
+            primary = base0D;
+            on_primary = base00;
+            secondary = base0C;
+            on_secondary = base00;
+            tertiary = base0B;
+            on_tertiary = base00;
+            error = base08;
+            on_error = base00;
+            surface = base00;
+            on_surface = base05;
+            surface_variant = base01;
+            on_surface_variant = base04;
+            outline = base02;
+            shadow = base00;
+            hover = base0A;
+            on_hover = base00;
           };
 
           wallpaper = {
@@ -168,9 +168,9 @@ in
         idle.timeout = 300;
 
         cursor = {
-          theme = "Bibata-Modern-Ice";
-          size = 24;
-          path = "${pkgs.bibata-cursors}/share/icons";
+          theme = config.stylix.cursor.name;
+          size = config.stylix.cursor.size;
+          path = "${config.stylix.cursor.package}/share/icons";
         };
 
         keyboard = {
@@ -320,20 +320,6 @@ in
       tailscale
       wget
     ];
-  };
-
-  fonts = {
-    packages = with pkgs; [
-      inter
-      nerd-fonts.jetbrains-mono
-      noto-fonts
-      noto-fonts-color-emoji
-    ];
-    # Berkeley Mono is installed natively per machine, not by Nix.
-    fontconfig.defaultFonts = {
-      monospace = [ "Berkeley Mono" ];
-      sansSerif = [ "Inter" ];
-    };
   };
 
   home-manager = {

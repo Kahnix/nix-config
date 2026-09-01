@@ -9,9 +9,6 @@
   ...
 }:
 
-let
-  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-in
 {
   imports = [
     ./darwin-desktop.nix
@@ -24,9 +21,10 @@ in
   home.username = username;
   home.homeDirectory = homeDirectory;
 
-  home.stateVersion = "26.05";
+  home.stateVersion = "26.11";
 
   programs.home-manager.enable = true;
+
   # omp: disabled via Nix — upstream oh-my-pi's bun2nix lockfile is missing a
   # pinned hash for @bgotink/kdl@0.4.0, so the sandboxed build always tries to
   # hit registry.npmjs.org and fails. Installed instead via the official
@@ -49,7 +47,7 @@ in
       tree
       nodejs
       pnpm
-      inputs.bunnix.packages.${pkgs.system}.v1_3_14
+      inputs.bunnix.packages.${pkgs.stdenv.hostPlatform.system}.v1_3_14
       deno
       go
       rustup
@@ -67,18 +65,28 @@ in
       xh
       yq
       lazygit
-      unstable.devenv
+      devenv
       nixfmt
+      hydra-check
+      nh
+      nix-index
+      nix-init
+      nix-inspect
+      nix-melt
+      nix-output-monitor
+      nix-search-tv
+      nix-tree
+      nvd
       claude-code
       inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
     ])
-    ++ lib.optionals pkgs.stdenv.isLinux (
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
       with pkgs;
       [
         gcc
       ]
     )
-    ++ lib.optionals pkgs.stdenv.isDarwin (
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin (
       with pkgs;
       [
         jdk17
@@ -86,7 +94,7 @@ in
       ]
     );
 
-  home.sessionVariables = lib.mkIf pkgs.stdenv.isDarwin {
+  home.sessionVariables = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     ANDROID_HOME = "${homeDirectory}/Library/Android/sdk";
     ANDROID_SDK_ROOT = "${homeDirectory}/Library/Android/sdk";
     JAVA_HOME = pkgs.jdk17.home;
@@ -95,7 +103,7 @@ in
   home.sessionPath = [
     "${homeDirectory}/.local/bin"
   ]
-  ++ lib.optionals pkgs.stdenv.isDarwin [
+  ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
     "${homeDirectory}/Library/Android/sdk/emulator"
     "${homeDirectory}/Library/Android/sdk/platform-tools"
     "${homeDirectory}/Library/Android/sdk/cmdline-tools/latest/bin"
@@ -117,11 +125,7 @@ in
       "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json";
 
       logo = {
-        source = if pkgs.stdenv.isDarwin then "macOS" else "NixOS";
-        color = {
-          "1" = "#7E9CD8";
-          "2" = "#98BB6C";
-        };
+        source = if pkgs.stdenv.hostPlatform.isDarwin then "macOS" else "NixOS";
         padding = {
           top = 1;
           right = 4;
@@ -218,7 +222,6 @@ in
         {
           type = "custom";
           format = "╰─────────────────────────────────────╯";
-          outputColor = "#7E9CD8";
         }
       ];
     };
@@ -227,7 +230,6 @@ in
   programs.btop = {
     enable = true;
     settings = {
-      color_theme = if isNixOS then "noctalia" else "kanagawa-wave";
       theme_background = false;
       truecolor = true;
       vim_keys = true;
@@ -273,14 +275,14 @@ in
       lg = "lazygit";
       bt = "btop";
     }
-    // lib.optionalAttrs pkgs.stdenv.isLinux {
+    // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
       rebuild =
         if isWSL then
           "sudo nixos-rebuild switch --flake ~/nix-config#wsl"
         else
           "sudo nixos-rebuild switch --flake ~/nix-config#nixos";
     }
-    // lib.optionalAttrs pkgs.stdenv.isDarwin {
+    // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       rebuild = "sudo darwin-rebuild switch --flake ~/nix-config#macbook-pro-m4";
     };
   };
@@ -303,7 +305,7 @@ in
 
   programs.fzf = {
     enable = true;
-    package = unstable.fzf;
+    package = pkgs.fzf;
     enableFishIntegration = true;
     enableNushellIntegration = false;
     enableZshIntegration = false;

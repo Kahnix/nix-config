@@ -1,4 +1,4 @@
-// Niri desktop tuned around the Kanagawa Noctalia shell.
+// Niri desktop with the shared Stylix theme and Noctalia shell.
 input {
     keyboard {
         xkb {
