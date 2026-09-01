@@ -20,6 +20,14 @@ let
     "$niri" msg output HDMI-A-2 on
     trap - EXIT
   '';
+
+  # Portable wrapper derivation: bakes niri.kdl into the package (validated
+  # via `niri validate` at build time) and points niri at it via NIRI_CONFIG,
+  # instead of relying on home-manager to place ~/.config/niri/config.kdl.
+  wrappedNiri = inputs.wrapper-modules.wrappers.niri.wrap {
+    inherit pkgs;
+    "config.kdl".content = builtins.readFile ../../home/kacper/niri.kdl;
+  };
 in
 {
   imports = [
@@ -114,7 +122,10 @@ in
     dconf.enable = true;
     fish.enable = true;
     droidcam.enable = true;
-    niri.enable = true;
+    niri = {
+      enable = true;
+      package = wrappedNiri;
+    };
     noctalia-greeter = {
       enable = true;
       settings = {
@@ -149,7 +160,7 @@ in
           };
 
           wallpaper = {
-            path = "${../../assets/wallpapers/blue-hour.png}";
+            path = "/home/kacper/Documents/wallpapers/lunar-tides-3440x1440-26444.jpg";
             fill_mode = "crop";
           };
         };

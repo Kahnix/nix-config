@@ -27,16 +27,12 @@ in
   home.stateVersion = "26.05";
 
   programs.home-manager.enable = true;
-  programs.omp = {
-    enable = true;
-    package = inputs.omp.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  };
-  home.enableNixpkgsReleaseCheck = false;
-
-  xdg.configFile."nvim" = {
-    source = inputs.nvim-config;
-    recursive = true;
-  };
+  # omp: disabled via Nix — upstream oh-my-pi's bun2nix lockfile is missing a
+  # pinned hash for @bgotink/kdl@0.4.0, so the sandboxed build always tries to
+  # hit registry.npmjs.org and fails. Installed instead via the official
+  # installer (curl -fsSL https://omp.sh/install | sh). Re-enable once
+  # upstream's lockfile is fixed.
+  programs.omp.enable = false;
 
   home.packages =
     (with pkgs; [
@@ -53,7 +49,7 @@ in
       tree
       nodejs
       pnpm
-      bun
+      inputs.bunnix.packages.${pkgs.system}.v1_3_14
       deno
       go
       rustup
@@ -96,7 +92,10 @@ in
     JAVA_HOME = pkgs.jdk17.home;
   };
 
-  home.sessionPath = lib.optionals pkgs.stdenv.isDarwin [
+  home.sessionPath = [
+    "${homeDirectory}/.local/bin"
+  ]
+  ++ lib.optionals pkgs.stdenv.isDarwin [
     "${homeDirectory}/Library/Android/sdk/emulator"
     "${homeDirectory}/Library/Android/sdk/platform-tools"
     "${homeDirectory}/Library/Android/sdk/cmdline-tools/latest/bin"

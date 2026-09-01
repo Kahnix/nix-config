@@ -32,6 +32,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Portable wrapper derivations (typed Nix config instead of raw dotfiles).
+    wrapper-modules = {
+      url = "github:BirdeeHub/nix-wrapper-modules";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # macOS system configuration.
     darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
@@ -42,11 +48,10 @@
     # OMP coding agent.
     omp.url = "github:can1357/oh-my-pi";
 
-    # Kacper's Neovim config is linked into ~/.config/nvim by Home Manager.
-    nvim-config = {
-      url = "github:Kahnix/nvim-config";
-      flake = false;
-    };
+    # Bun2nix
+
+    bunnix.url = "github:aster-void/bunnix";
+    bunnix.inputs.nixpkgs.follows = "nixpkgs";
 
     # Zen is not in nixpkgs; use the maintained community packaging.
     zen-browser = {

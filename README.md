@@ -20,7 +20,6 @@ The `nixos` host uses:
 - Zen Browser, Proton Pass, Proton Mail, Proton VPN, Telegram, Obsidian, and Vesktop for Discord.
 - Niri's native screenshots, copied and saved to `~/Pictures/Screenshots`.
 - DroidCam with iPhone USB support for using the phone as a microphone or webcam.
-- The Neovim configuration pinned from `Kahnix/nvim-config`.
 - NVIDIA's proprietary 580 driver and a CachyOS kernel.
 - Steam, Gamescope, GameMode, Proton-GE, Heroic, Lutris, MangoHud, and Wine.
 - libvirt/KVM, virt-manager, swtpm, Quickemu, SPICE, and VirtioFS for Windows VM work.

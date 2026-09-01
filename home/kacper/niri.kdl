@@ -1,10 +1,4 @@
 // Niri desktop tuned around the Kanagawa Noctalia shell.
-
-// Noctalia writes its generated palette to ~/.config/niri/noctalia.kdl at
-// runtime; this include is static so it works even though this file is a
-// read-only Home Manager symlink Noctalia's own template hook cannot edit.
-include "noctalia.kdl"
-
 input {
     keyboard {
         xkb {
@@ -37,7 +31,7 @@ layout {
         proportion 0.66667
     }
 
-    default-column-width { proportion 1.0; }
+    default-column-width { proportion 0.5; }
 
     focus-ring {
         width 2
