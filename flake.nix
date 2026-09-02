@@ -40,7 +40,7 @@
     darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     # herdr
-    herdr.url = "github:herdrdev/herdr/v0.8.0";
+    herdr.url = "github:herdrdev/herdr/master";
 
     # OMP coding agent.
     omp.url = "github:can1357/oh-my-pi";
