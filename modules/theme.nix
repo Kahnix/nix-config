@@ -44,7 +44,7 @@ in
       applications = 1.0;
       desktop = 0.92;
       popups = 0.92;
-      terminal = 0.92;
+      terminal = 1.0;
     };
   }
   // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {

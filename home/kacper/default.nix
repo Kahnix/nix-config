@@ -24,6 +24,49 @@
   home.stateVersion = "26.11";
 
   programs.home-manager.enable = true;
+  # Herdr has no Stylix target. Keep its token overrides aligned with the
+  # Kanagawa Dragon Base16 palette selected in modules/theme.nix.
+  xdg.configFile."herdr/config.toml".text = ''
+    onboarding = false
+
+    [theme]
+    # Herdr's closest built-in foundation; Dragon is applied through its tokens.
+    name = "kanagawa"
+    auto_switch = false
+
+    [theme.custom]
+    accent = "#8ba4b0"
+    panel_bg = "#181616"
+    sidebar_bg = "#181616"
+    active_row_bg = "#282727"
+    selection_bg = "#393836"
+    surface0 = "#282727"
+    surface1 = "#393836"
+    surface_dim = "#181616"
+    overlay0 = "#625e5a"
+    overlay1 = "#737c73"
+    text = "#c5c9c5"
+    subtext0 = "#737c73"
+    mauve = "#a292a3"
+    green = "#8a9a7b"
+    yellow = "#c4b28a"
+    red = "#c4746e"
+    blue = "#8ba4b0"
+    teal = "#8ea4a2"
+    peach = "#b6927b"
+
+    [ui]
+    agent_panel_sort = "priority"
+    status_indicators = "symbols"
+
+    [ui.sidebar.agents]
+    rows = [
+      ["state_icon", "agent", "state_text"],
+      ["terminal_title_stripped"],
+      ["workspace", "tab"],
+    ]
+
+  '';
 
   # omp: disabled via Nix — upstream oh-my-pi's bun2nix lockfile is missing a
   # pinned hash for @bgotink/kdl@0.4.0, so the sandboxed build always tries to
