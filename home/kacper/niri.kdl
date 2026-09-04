@@ -21,6 +21,10 @@ input {
     warp-mouse-to-focus
 }
 
+output "HDMI-A-2" {
+    mode "3440x1440@99.982"
+}
+
 layout {
     gaps 12
     center-focused-column "on-overflow"
