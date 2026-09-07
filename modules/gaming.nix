@@ -1,5 +1,16 @@
 { pkgs, ... }:
-
+let
+  boltLauncher = pkgs.symlinkJoin {
+    name = "bolt-launcher-with-audio";
+    paths = [ pkgs.bolt-launcher ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram "$out/bin/bolt-launcher" \
+        --set JAVA_TOOL_OPTIONS \
+          "-Djavax.sound.sampled.Clip='com.sun.media.sound.DirectAudioDeviceProvider#alsa_playback.java [default]' -Djavax.sound.sampled.SourceDataLine='com.sun.media.sound.DirectAudioDeviceProvider#alsa_playback.java [default]'"
+    '';
+  };
+in
 {
   programs.steam = {
     enable = true;
@@ -16,7 +27,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    bolt-launcher
+    boltLauncher
     lutris
     mangohud
     prismlauncher

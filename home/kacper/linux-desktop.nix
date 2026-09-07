@@ -9,6 +9,14 @@
 
 let
   zenBrowser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.twilight;
+  gpartedWithDisplay = pkgs.gparted.overrideAttrs (oldAttrs: {
+    postPatch = (oldAttrs.postPatch or "") + ''
+      substituteInPlace gparted.in \
+        --replace-fail \
+          "@gksuprog@ '@bindir@/gparted' \"\$@\"" \
+          "@gksuprog@ env DISPLAY=\"\$DISPLAY\" '@bindir@/gparted' \"\$@\""
+    '';
+  });
 in
 lib.mkIf isNixOS {
   home.packages = with pkgs; [
@@ -27,6 +35,7 @@ lib.mkIf isNixOS {
     wl-clipboard
     xwayland-satellite
     zenBrowser
+    gpartedWithDisplay
   ];
 
   programs = {

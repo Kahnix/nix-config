@@ -14,7 +14,6 @@
     ./darwin-desktop.nix
     ./ghostty.nix
     ./linux-desktop.nix
-    inputs.omp.homeManagerModules.default
   ]
   ++ lib.optionals isNixOS [ inputs.noctalia.homeModules.default ];
 
@@ -67,13 +66,6 @@
     ]
 
   '';
-
-  # omp: disabled via Nix — upstream oh-my-pi's bun2nix lockfile is missing a
-  # pinned hash for @bgotink/kdl@0.4.0, so the sandboxed build always tries to
-  # hit registry.npmjs.org and fails. Installed instead via the official
-  # installer (curl -fsSL https://omp.sh/install | sh). Re-enable once
-  # upstream's lockfile is fixed.
-  programs.omp.enable = false;
 
   home.packages =
     (with pkgs; [

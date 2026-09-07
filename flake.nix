@@ -42,9 +42,6 @@
     # herdr
     herdr.url = "github:herdrdev/herdr/master";
 
-    # OMP coding agent.
-    omp.url = "github:can1357/oh-my-pi";
-
     # Bun2nix
     bunnix.url = "github:aster-void/bunnix";
     bunnix.inputs.nixpkgs.follows = "nixpkgs";
