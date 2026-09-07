@@ -37,6 +37,27 @@
     ];
   };
 
+  fileSystems."/mnt/storage" = {
+    device = "/dev/disk/by-uuid/12697a4f-2fed-42cb-b801-a2a4ad7afd59";
+    fsType = "ext4";
+    options = [
+      "nofail"
+      "x-gvfs-show"
+    ];
+  };
+
+  fileSystems."/mnt/big" = {
+    device = "/dev/disk/by-uuid/1EC068C9C068A92B";
+    fsType = "ntfs3";
+    options = [
+      "nofail"
+      "uid=1000"
+      "gid=100"
+      "umask=0022"
+      "x-gvfs-show"
+    ];
+  };
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

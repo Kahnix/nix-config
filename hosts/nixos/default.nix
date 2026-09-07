@@ -39,7 +39,30 @@ in
 
   nixpkgs = {
     hostPlatform = system;
-    overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ];
+    overlays = [
+      inputs.nix-cachyos-kernel.overlays.pinned
+      (_final: prev: {
+        # 0.8.2 immediately dismisses Steam popup menus under Niri.
+        # Remove after https://github.com/Supreeeme/xwayland-satellite/issues/435 is fixed in a release.
+        xwayland-satellite =
+          let
+            src = prev.fetchFromGitHub {
+              owner = "Supreeeme";
+              repo = "xwayland-satellite";
+              tag = "v0.8.1";
+              hash = "sha256-BUE41HjLIGPjq3U8VXPjf8asH8GaMI7FYdgrIHKFMXA=";
+            };
+          in
+          prev.xwayland-satellite.overrideAttrs {
+            version = "0.8.1";
+            inherit src;
+            cargoDeps = prev.rustPlatform.fetchCargoVendor {
+              inherit src;
+              hash = "sha256-16L6gsvze+m7XCJlOA1lsPNELE3D364ef2FTdkh0rVY=";
+            };
+          };
+      })
+    ];
   };
 
   boot = {
