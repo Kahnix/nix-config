@@ -112,7 +112,7 @@
       nix-search-tv
       nix-tree
       nvd
-      claude-code
+      opencode
       inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
     ])
     ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (

@@ -2,7 +2,6 @@
 
 {
   nixpkgs.config.allowUnfreePackages = [
-    "claude-code"
     "google-chrome"
     "nvidia-settings"
     "nvidia-x11"
