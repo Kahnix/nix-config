@@ -10,8 +10,8 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Cache-friendly performance kernel used by the desktop host.
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+    # Track CachyOS upstream's newest kernel; it may require a local build before CI caches it.
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel";
 
     # User-level config: shell, git, nvim, tmux, packages.
     home-manager.url = "github:nix-community/home-manager";
