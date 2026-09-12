@@ -1,0 +1,15 @@
+modelRoles:
+  default: opencode-go/deepseek-v4.1-flash
+  smol: opencode-go/deepseek-v4.1-flash
+  slow: opencode-go/kimi-k3
+  plan: opencode-go/kimi-k3
+  task: opencode-go/kimi-k2.7-code
+  advisor: opencode-go/deepseek-v4.1-flash
+  commit: opencode-go/glm-5.3-flash
+  tiny: opencode-go/mimo-v2.5
+  vision: opencode-go/deepseek-v4.1-flash
+
+cycleOrder:
+  - smol
+  - default
+  - slow
