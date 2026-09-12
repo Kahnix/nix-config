@@ -14,5 +14,6 @@
     "discord"
     "discord-unwrapped"
     "steam-unwrapped"
+    "wo-mic"
   ];
 }

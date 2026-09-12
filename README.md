@@ -19,7 +19,7 @@ The `nixos` host uses:
 - Ghostty, Fish, Starship, and the shared Home Manager development profile.
 - Zen Browser, Proton Pass, Proton Mail, Proton VPN, Telegram, Obsidian, and Vesktop for Discord.
 - Niri's native screenshots, copied and saved to `~/Pictures/Screenshots`.
-- DroidCam with iPhone USB support for using the phone as a microphone or webcam.
+- WO Mic at its native 48 kHz/16-bit mono format for using a phone as a microphone.
 - NVIDIA's proprietary 580 driver and a CachyOS kernel.
 - Steam, Gamescope, GameMode, Proton-GE, Heroic, Lutris, MangoHud, and Wine.
 - libvirt/KVM, virt-manager, swtpm, Quickemu, SPICE, and VirtioFS for Windows VM work.
@@ -92,11 +92,11 @@ Noctalia's declarative defaults live in `home/kacper/linux-desktop.nix`. Changes
 made in its settings UI are saved to
 `~/.local/state/noctalia/settings.toml` and override those defaults.
 
-To use an iPhone as a microphone, install DroidCam on the phone and open the
-`DroidCam` desktop app. Connect over Wi-Fi, or plug the phone in over USB and
-accept its Trust prompt, then enable audio in DroidCam. In `pavucontrol`, set
-the ALSA Loopback device to `Pro Audio` and select its active input in Vesktop,
-a VM, or another app. The same setup can expose the iPhone camera when needed.
+To use a phone as a microphone, install WO Mic on the phone, start its Wi-Fi
+server, and run `wo-mic PHONE_IP` on the desktop with the IP shown in
+the app. Select `WO-Mic` as the input in Vesktop, a VM, or another application.
+The client and PipeWire source both use WO Mic's native 48 kHz, 16-bit mono
+format, avoiding the 16 kHz quality limit and unnecessary resampling.
 
 ## Development Shell
 

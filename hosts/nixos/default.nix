@@ -21,6 +21,19 @@ let
     trap - EXIT
   '';
 
+  woMic = pkgs.appimageTools.wrapType2 {
+    pname = "wo-mic";
+    version = "4.6";
+    src = pkgs.fetchurl {
+      url = "https://wolicheng.com/womic/softwares/micclient-x86_64.AppImage";
+      hash = "sha256-6g7IhgHWncuqImuUwfmDefkMEWqp5+3y/RJHviV+Hbs=";
+    };
+    extraPkgs = appimagePkgs: [
+      appimagePkgs.alsa-lib
+      appimagePkgs.bluez
+    ];
+  };
+
   # Portable wrapper derivation: bakes niri.kdl into the package (validated
   # via `niri validate` at build time) and points niri at it via NIRI_CONFIG,
   # instead of relying on home-manager to place ~/.config/niri/config.kdl.
@@ -69,6 +82,7 @@ in
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
     blacklistedKernelModules = [ "nouveau" ];
     kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
+    kernelModules = [ "snd-aloop" ];
 
     loader = {
       systemd-boot.enable = true;
@@ -79,6 +93,7 @@ in
   networking = {
     hostName = "nixos";
     networkmanager.enable = true;
+    firewall.interfaces.enp7s0.allowedUDPPorts = [ 49152 ];
     firewall.interfaces.tailscale0 = {
       allowedTCPPorts = [
         47984
@@ -144,7 +159,6 @@ in
   programs = {
     dconf.enable = true;
     fish.enable = true;
-    droidcam.enable = true;
     niri = {
       enable = true;
       package = wrappedNiri;
@@ -248,6 +262,8 @@ in
       };
     };
 
+    # WO Mic outputs 48 kHz, 16-bit mono PCM to the ALSA loopback device.
+    # Keeping PipeWire at 48 kHz avoids an unnecessary resampling step.
     pipewire = {
       enable = true;
       alsa = {
@@ -256,6 +272,29 @@ in
       };
       jack.enable = true;
       pulse.enable = true;
+      wireplumber.extraConfig."51-wo-mic-loopback" = {
+        "monitor.alsa.rules" = [
+          {
+            matches = [
+              { "device.name" = "alsa_card.platform-snd_aloop.0"; }
+            ];
+            actions."update-props"."device.disabled" = true;
+          }
+        ];
+      };
+      extraConfig = {
+        pipewire."10-clock-rate"."context.properties" = {
+          "default.clock.rate" = 48000;
+          "default.clock.allowed-rates" = [ 48000 ];
+        };
+        pipewire-pulse."50-wo-mic-audio"."pulse.cmd" = [
+          {
+            cmd = "load-module";
+            args = "module-alsa-source source_name=wo_mic source_properties=device.description=WO-Mic channels=1 rate=48000 format=s16le device=hw:Loopback,1,0";
+            flags = [ "nofail" ];
+          }
+        ];
+      };
     };
 
     openssh = {
@@ -268,7 +307,6 @@ in
     };
 
     tailscale.enable = true;
-    usbmuxd.enable = true;
     udisks2.enable = true;
     upower.enable = true;
     gvfs.enable = true;
@@ -346,6 +384,7 @@ in
     };
 
     systemPackages = with pkgs; [
+      woMic
       curl
       git
       pciutils

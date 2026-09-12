@@ -33,6 +33,7 @@ lib.mkIf isNixOS {
     satty
     telegram-desktop
     wl-clipboard
+    discord
     xwayland-satellite
     zenBrowser
     gpartedWithDisplay
