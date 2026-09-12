@@ -23,6 +23,11 @@ input {
 
 output "HDMI-A-2" {
     mode "3440x1440@99.982"
+
+    // Inert on HDMI: this panel advertises adaptive sync on DisplayPort only, and
+    // Pascal cannot do VRR over HDMI anyway. Takes effect once the monitor is on
+    // a DP cable, where niri reports variable refresh rate as supported.
+    variable-refresh-rate
 }
 
 layout {

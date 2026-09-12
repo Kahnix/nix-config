@@ -327,6 +327,15 @@ in
     };
   };
 
+  # 16 GiB RAM and no disk swap: give the kernel a compressed eviction target, so
+  # a large working set (game plus its Proton prefix) cannot only end in an OOM
+  # kill. lz4 decompresses ~3x faster than the default zstd, which is the trade
+  # that matters when swapped pages are faulted back in mid-frame.
+  zramSwap = {
+    enable = true;
+    algorithm = "lz4";
+  };
+
   environment = {
     sessionVariables = {
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
