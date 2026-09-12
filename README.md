@@ -21,7 +21,7 @@ The `nixos` host uses:
 - Niri's native screenshots, copied and saved to `~/Pictures/Screenshots`.
 - WO Mic at its native 48 kHz/16-bit mono format for using a phone as a microphone.
 - NVIDIA's proprietary 580 driver and a CachyOS kernel.
-- Steam, Gamescope, GameMode, Proton-GE, Heroic, Lutris, MangoHud, and Wine.
+- Steam, DZGUI, Gamescope, GameMode, Proton-GE, Heroic, Lutris, MangoHud, and Wine.
 - libvirt/KVM, virt-manager, swtpm, Quickemu, SPICE, and VirtioFS for Windows VM work.
 
 Suspend, hibernation, hybrid sleep, and suspend-then-hibernate are disabled at

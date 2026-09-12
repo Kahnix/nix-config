@@ -290,7 +290,7 @@ in
         pipewire-pulse."50-wo-mic-audio"."pulse.cmd" = [
           {
             cmd = "load-module";
-            args = "module-alsa-source source_name=wo_mic source_properties=device.description=WO-Mic channels=1 rate=48000 format=s16le device=hw:Loopback,1,0";
+            args = "module-alsa-source source_name=wo_mic source_properties=device.description=WO-Mic channels=1 rate=48000 format=s16le device=hw:Loopback,1,0 fragments=8 fragment_size=1920";
             flags = [ "nofail" ];
           }
         ];
