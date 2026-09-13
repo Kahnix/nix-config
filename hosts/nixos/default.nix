@@ -21,6 +21,20 @@ let
     trap - EXIT
   '';
 
+  woMicBuffer =
+    pkgs.runCommandCC "wo-mic-buffer"
+      {
+        nativeBuildInputs = [ pkgs.pkg-config ];
+        buildInputs = [ pkgs.alsa-lib ];
+      }
+      ''
+        mkdir -p "$out/lib"
+        $CC -shared -fPIC -O2 -Wall -Wextra -Werror \
+          $(pkg-config --cflags alsa) ${./wo-mic-buffer.c} \
+          -o "$out/lib/libwo-mic-buffer.so" \
+          $(pkg-config --libs alsa) -ldl -pthread
+      '';
+
   woMic = pkgs.appimageTools.wrapType2 {
     pname = "wo-mic";
     version = "4.6";
@@ -32,6 +46,9 @@ let
       appimagePkgs.alsa-lib
       appimagePkgs.bluez
     ];
+    profile = ''
+      export LD_PRELOAD="${woMicBuffer}/lib/libwo-mic-buffer.so''${LD_PRELOAD:+:$LD_PRELOAD}"
+    '';
   };
 
   # Portable wrapper derivation: bakes niri.kdl into the package (validated
@@ -159,6 +176,9 @@ in
   programs = {
     dconf.enable = true;
     fish.enable = true;
+    # GPU Screen Recorder: the module installs the CLI plus a setcap'd
+    # gsr-kms-server wrapper, which direct monitor (KMS) capture requires.
+    gpu-screen-recorder.enable = true;
     niri = {
       enable = true;
       package = wrappedNiri;
@@ -375,6 +395,14 @@ in
   };
 
   environment = {
+    # nixpkgs defaults EDITOR to `nano` with lib.mkDefault; a plain assignment
+    # wins. This is what yazi's built-in `edit` opener runs ("${EDITOR:-vi} %s",
+    # blocking), and what git, ssh and everything else picks up.
+    variables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+    };
+
     sessionVariables = {
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
       LIBVA_DRIVER_NAME = "nvidia";

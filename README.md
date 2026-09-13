@@ -19,6 +19,8 @@ The `nixos` host uses:
 - Ghostty, Fish, Starship, and the shared Home Manager development profile.
 - Zen Browser, Proton Pass, Proton Mail, Proton VPN, Telegram, Obsidian, and Vesktop for Discord.
 - Niri's native screenshots, copied and saved to `~/Pictures/Screenshots`.
+- GPU Screen Recorder for a ShadowPlay-style 60 s replay buffer, plus
+  `wf-recorder` for one-shot clips.
 - WO Mic at its native 48 kHz/16-bit mono format for using a phone as a microphone.
 - NVIDIA's proprietary 580 driver and a CachyOS kernel.
 - Steam, DZGUI, Gamescope, GameMode, Proton-GE, Heroic, Lutris, MangoHud, and Wine.
@@ -79,10 +81,22 @@ sudo darwin-rebuild switch --flake ~/nix-config#macbook-pro-m4
 | `Super + Shift + S` | Interactive screenshot |
 | `Super + Alt + S` | Window screenshot |
 | `Super + Ctrl + S` | Screen screenshot |
+| `Super + Alt + R` | Save the last 60 s of the replay buffer |
+| `Super + Alt + Shift + R` | Start/stop the replay buffer |
 | `Super + Shift + /` | Hotkey reference |
 
 The Print Screen variants provide the same screenshot actions. Niri saves
 captures to `~/Pictures/Screenshots` and also puts them on the clipboard.
+
+Replay capture runs as the user service `gsr-replay.service`, started with the
+graphical session and writing to `~/Videos/Replays`. NVENC is unusable with
+NVIDIA 580 here: GPU Screen Recorder reports NVENC API 13.0 while the FFmpeg it
+links against requires 13.1, so the service encodes with Vulkan Video
+(`-k h264_vulkan`); `-k h264_software` is the fallback. `gsr-replay save 30` and
+`gsr-replay toggle` drive the same code paths as the binds. For a one-shot clip
+with the hardware encoder, bypass the buffer:
+`wf-recorder -c h264_nvenc -f ~/Videos/clip.mp4`, stopped with
+`pkill -INT wf-recorder`.
 
 Outputs use their preferred modes and automatic positions by default. Run
 `niri msg outputs` to get connector names, then add explicit `output` blocks to
@@ -97,6 +111,11 @@ server, and run `wo-mic PHONE_IP` on the desktop with the IP shown in
 the app. Select `WO-Mic` as the input in Vesktop, a VM, or another application.
 The client and PipeWire source both use WO Mic's native 48 kHz, 16-bit mono
 format, avoiding the 16 kHz quality limit and unnecessary resampling.
+The launcher loads a WO Mic-only ALSA buffering fix from
+`hosts/nixos/wo-mic-buffer.c`: playback waits for three 20 ms packets before
+starting. This adds about 40 ms of headroom and prevents the client's
+single-packet startup / dropped-underrun-packet cycle from chopping audio.
+It does not change other applications' ALSA settings or require running as root.
 
 ## Development Shell
 

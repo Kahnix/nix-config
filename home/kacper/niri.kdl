@@ -104,7 +104,8 @@ binds {
     Alt+Tab repeat=false hotkey-overlay-title="Window switcher" { spawn "noctalia" "msg" "window-switcher"; }
 
     Mod+B repeat=false hotkey-overlay-title="Browser" { spawn "zen-twilight"; }
-    Mod+E repeat=false hotkey-overlay-title="Files" { spawn "nautilus" "--new-window"; }
+    Mod+E repeat=false hotkey-overlay-title="Files (yazi)" { spawn "ghostty" "-e" "yazi"; }
+    Mod+Ctrl+E repeat=false hotkey-overlay-title="Files (Thunar)" { spawn "thunar"; }
     Mod+Shift+G repeat=false hotkey-overlay-title="Steam" { spawn "steam"; }
     Mod+Shift+V repeat=false hotkey-overlay-title="Virtual machines" { spawn "virt-manager"; }
     Mod+Ctrl+T repeat=false hotkey-overlay-title="System monitor" { spawn "ghostty" "--class=system-monitor" "-e" "btop"; }
@@ -194,6 +195,9 @@ binds {
     Mod+Shift+S { screenshot; }
     Mod+Alt+S { screenshot-window; }
     Mod+Ctrl+S { screenshot-screen; }
+
+    Mod+Alt+R repeat=false hotkey-overlay-title="Save replay (last 60 s)" { spawn "gsr-replay" "save" "60"; }
+    Mod+Alt+Shift+R repeat=false hotkey-overlay-title="Toggle replay buffer" { spawn "gsr-replay" "toggle"; }
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+" "-l" "1.0"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
