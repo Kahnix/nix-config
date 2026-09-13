@@ -85,6 +85,12 @@ window-rule {
 }
 
 window-rule {
+    match app-id=r#"(?i)^\.?dzgui"#
+    open-floating true
+    open-focused true
+}
+
+window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
     open-floating true
 }

@@ -48,6 +48,8 @@ let
     comment = "DayZ server browser and mod manager";
     exec = "dzgui";
     icon = "dzgui";
+    startupNotify = true;
+    startupWMClass = "DZGUI";
     categories = [ "Game" ];
   };
 
