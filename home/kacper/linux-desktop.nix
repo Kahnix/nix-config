@@ -194,9 +194,25 @@ lib.mkIf isNixOS {
         imagemagick
         poppler-utils
       ];
-      settings.mgr = {
-        show_hidden = true;
-        sort_dir_first = true;
+      settings = {
+        mgr = {
+          show_hidden = true;
+          sort_dir_first = true;
+        };
+
+        # Enter/o on text and code files runs this (yazi's `open` rules send
+        # text/* and code types to the `edit` opener). Spelled out rather than
+        # relying on $EDITOR: niri inherits its environment at login, so a
+        # session started before EDITOR changed keeps the old value for every
+        # spawn. `block = true` hands the terminal to nvim and returns to yazi
+        # on quit.
+        opener.edit = [
+          {
+            run = "nvim %s";
+            block = true;
+            desc = "Neovim";
+          }
+        ];
       };
     };
 
