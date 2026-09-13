@@ -74,49 +74,52 @@ let
   };
 in
 lib.mkIf isNixOS {
-  home.packages = with pkgs; [
-    blueman
-    cava
-    celluloid
-    file-roller
-    foliate
-    gallery-dl
-    gdu
-    gedit
-    google-chrome
-    mission-center
-    mpv
-    nautilus
-    obsidian
-    ouch
-    pavucontrol
-    playerctl
-    proton-pass
-    proton-vpn
-    protonmail-desktop
-    qalculate-gtk
-    qbittorrent
-    satty
-    strawberry
-    swayimg
-    telegram-desktop
-    # GUI file manager fallback; yazi (programs.yazi below) is the primary one.
-    # tumbler/volman/archive-plugin give Thunar thumbnails, mounts and archives.
-    thunar
-    thunar-archive-plugin
-    thunar-volman
-    tumbler
-    tesseract
-    wl-clipboard
-    yt-dlp
-    # Quick one-shot capture, no KMS privilege needed:
-    #   wf-recorder -c h264_nvenc -f ~/Videos/clip.mp4   (pkill -INT wf-recorder)
-    wf-recorder
-    discord
-    xwayland-satellite
-    zenBrowser
-    gpartedWithDisplay
-  ] ++ [ gsrReplay ];
+  home.packages =
+    with pkgs;
+    [
+      blueman
+      cava
+      celluloid
+      file-roller
+      foliate
+      gallery-dl
+      gdu
+      gedit
+      google-chrome
+      mission-center
+      mpv
+      nautilus
+      obsidian
+      ouch
+      pavucontrol
+      playerctl
+      proton-pass
+      proton-vpn
+      protonmail-desktop
+      qalculate-gtk
+      qbittorrent
+      satty
+      strawberry
+      swayimg
+      telegram-desktop
+      # GUI file manager fallback; yazi (programs.yazi below) is the primary one.
+      # tumbler/volman/archive-plugin give Thunar thumbnails, mounts and archives.
+      thunar
+      thunar-archive-plugin
+      thunar-volman
+      tumbler
+      tesseract
+      wl-clipboard
+      yt-dlp
+      # Quick one-shot capture, no KMS privilege needed:
+      #   wf-recorder -c h264_nvenc -f ~/Videos/clip.mp4   (pkill -INT wf-recorder)
+      wf-recorder
+      discord
+      xwayland-satellite
+      zenBrowser
+      gpartedWithDisplay
+    ]
+    ++ [ gsrReplay ];
 
   # ShadowPlay-style replay buffer. Capture goes through KMS (gsr-kms-server),
   # so it never waits on a portal dialog; SIGINT is GSR's "exit cleanly" signal.
@@ -190,6 +193,7 @@ lib.mkIf isNixOS {
       extraPackages = with pkgs; [
         _7zz
         ffmpeg
+        exiftool
         file
         imagemagick
         poppler-utils
