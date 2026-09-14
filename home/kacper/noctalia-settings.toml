@@ -58,7 +58,8 @@ enabled = true
 timeout = 960
 
 [location]
-auto_locate = true
+auto_locate = false
+address = "Lublin, PL"
 
 [lockscreen]
 blur_intensity = 0.55000000000000004
