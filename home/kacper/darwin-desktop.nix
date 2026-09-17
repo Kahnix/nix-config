@@ -62,16 +62,6 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         // {
           alt-enter = "exec-and-forget open -na Ghostty";
 
-          alt-h = "focus left";
-          alt-j = "focus down";
-          alt-k = "focus up";
-          alt-l = "focus right";
-
-          alt-shift-h = "move left";
-          alt-shift-j = "move down";
-          alt-shift-k = "move up";
-          alt-shift-l = "move right";
-
           alt-slash = "layout tiles horizontal vertical";
           alt-comma = "layout accordion horizontal vertical";
           alt-shift-space = "layout floating tiling";
