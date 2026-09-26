@@ -17,18 +17,6 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Desktop shell: bar, launcher, notifications, lock screen, and wallpaper.
-    noctalia = {
-      url = "github:noctalia-dev/noctalia";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Login screen matching the Noctalia desktop.
-    noctalia-greeter = {
-      url = "github:noctalia-dev/noctalia-greeter";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Portable wrapper derivations (typed Nix config instead of raw dotfiles).
     wrapper-modules = {
       url = "github:BirdeeHub/nix-wrapper-modules";
@@ -38,9 +26,6 @@
     # macOS system configuration tracks the same unstable package set.
     darwin.url = "github:nix-darwin/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
-
-    # herdr
-    herdr.url = "github:herdrdev/herdr/master";
 
     # Bun2nix
     bunnix.url = "github:aster-void/bunnix";

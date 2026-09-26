@@ -172,6 +172,8 @@ lib.mkIf isNixOS {
   '';
 
   programs = {
+    # The shell is packaged in nixpkgs (Hydra-cached), so the module's default
+    # pkgs.noctalia is used instead of the upstream flake's from-source build.
     noctalia = {
       enable = true;
       systemd.enable = true;

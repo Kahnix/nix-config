@@ -64,7 +64,6 @@ in
     ./hardware-configuration.nix
     ../../modules/gaming.nix
     ../../modules/virtualisation.nix
-    inputs.noctalia-greeter.nixosModules.default
   ];
 
   nixpkgs = {
@@ -183,7 +182,15 @@ in
       enable = true;
       package = wrappedNiri;
     };
-    noctalia-greeter = {
+    nix-ld.enable = true;
+  };
+
+  services = {
+    displayManager.sddm.enable = false;
+    # Login screen matching the Noctalia shell. Come from nixpkgs (Hydra-cached);
+    # the module writes /var/lib/noctalia-greeter/greeter.toml and points
+    # greetd's default session at noctalia-greeter-session.
+    displayManager.noctalia-greeter = {
       enable = true;
       settings = {
         session.default = "Niri";
@@ -238,11 +245,6 @@ in
         auth.allow_empty_password = false;
       };
     };
-    nix-ld.enable = true;
-  };
-
-  services = {
-    displayManager.sddm.enable = false;
     desktopManager.plasma6.enable = false;
 
     sunshine = {

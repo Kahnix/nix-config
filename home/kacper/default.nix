@@ -5,7 +5,6 @@
   username,
   homeDirectory,
   isWSL ? false,
-  isNixOS ? false,
   ...
 }:
 
@@ -14,8 +13,7 @@
     ./darwin-desktop.nix
     ./ghostty.nix
     ./linux-desktop.nix
-  ]
-  ++ lib.optionals isNixOS [ inputs.noctalia.homeModules.default ];
+  ];
 
   home.username = username;
   home.homeDirectory = homeDirectory;
@@ -113,7 +111,9 @@
       nix-tree
       nvd
       opencode
-      inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
+      # Packaged in nixpkgs (and cached by Hydra) since 0.9.1; the upstream
+      # flake would rebuild it and vendored libghostty-vt from source.
+      herdr
     ])
     ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
       with pkgs;
