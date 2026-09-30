@@ -179,10 +179,47 @@ let
       sourceProvenance = [ pkgs.lib.sourceTypes.binaryNativeCode ];
     };
   });
+
+  # Steam's 32-bit client dies when a non-Steam player speaks in CS 1.6's voice
+  # chat: the client's SILK/Speex decoder clobbers EBX (which i386 PIC code must
+  # keep pointing at the GOT) and then calls memmove through its EBX-relative PLT
+  # stub, so the indirect jump reads a decoded-voice buffer and lands on garbage
+  # (ValveSoftware/halflife#3895 / #3898, open and unfixed upstream).
+  #
+  # This preload rewrites that one stub into a direct jump to memmove, inside the
+  # Steam client process only -- it no-ops unless /proc/self/exe is `steam`, so
+  # game processes stay untouched. Upstream ships no license file, so the source
+  # is fetched pinned instead of vendored here.
+  steamVoiceFixSrc = pkgs.fetchFromGitHub {
+    owner = "hilorioze";
+    repo = "steam-voicechat-fix";
+    rev = "41cfcd5513934611cf678d0ad5933c38deba01b7";
+    hash = "sha256-yeogyBMX6ZzCH5YL2J+PNe7jRZfKEpfV9oIK2Juki8Y=";
+  };
+
+  steamVoiceFix = pkgs.pkgsi686Linux.runCommandCC "steam-voicechat-fix" { } ''
+    mkdir -p $out/lib
+    $CC -shared -fPIC -O2 -Wall -Wextra -Werror \
+      ${steamVoiceFixSrc}/src/voicechat_fix.c \
+      -o $out/lib/libsteam_voicechat_fix.so \
+      -lpthread
+  '';
 in
 {
   programs.steam = {
     enable = true;
+
+    # The 32-bit client's SILK/Speex voice decoder clobbers EBX (the i386 GOT
+    # base) before calling memmove through its PLT stub, so the indirect jump
+    # reads a decoded-voice buffer and segfaults the client the moment a
+    # non-Steam player speaks in CS 1.6 (halflife#3895 / #3898, unfixed
+    # upstream since 2025). The preload rewrites that stub to a direct jump --
+    # in the client process only, never in a game process. Drop the override if
+    # Valve ever fixes it, or to trade the crash risk for ABI-patch risk.
+    package = pkgs.steam.override {
+      extraEnv.LD_PRELOAD = "${steamVoiceFix}/lib/libsteam_voicechat_fix.so";
+    };
+
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
     remotePlay.openFirewall = true;

@@ -72,6 +72,103 @@ let
       esac
     '';
   };
+
+  # GoldSrc has no mute-when-unfocused setting: once niri hides the
+  # Counter-Strike window, the engine stalls while its SDL audio callback keeps
+  # replaying the last mixed buffer, so tabbing away loops that buffer and the
+  # game hitches when focus comes back. Watch niri's focused window instead and
+  # mute the game's PipeWire streams while its window is not the focused one.
+  cs16MuteOnFocus = pkgs.writeShellApplication {
+    name = "cs16-mute-on-focus";
+    runtimeInputs = with pkgs; [
+      jq
+      niri
+      pipewire
+      wireplumber
+    ];
+    text = ''
+      app_id="''${CS16_APP_ID:-hl_linux}"        # niri app-id of the game window
+      binary="''${CS16_AUDIO_BINARY:-hl_linux}"  # application.process.binary of its streams
+      poll_seconds="''${CS16_POLL_SECONDS:-5}"
+      rescan_ticks="''${CS16_RESCAN_TICKS:-4}"   # stream re-scan every N polls without events
+
+      # niri exports NIRI_SOCKET to everything it spawns; fall back to the
+      # runtime dir so this also runs from a plain shell.
+      if [[ -z ''${NIRI_SOCKET:-} || ! -S ''${NIRI_SOCKET:-} ]]; then
+        for sock in "''${XDG_RUNTIME_DIR:?}"/niri.wayland-*.sock; do
+          [[ -S $sock ]] || continue
+          export NIRI_SOCKET=$sock
+          break
+        done
+      fi
+
+      streams=()
+      muted=
+
+      resolve_streams() {
+        mapfile -t streams < <(
+          pw-dump | jq -r --arg binary "$binary" '
+            .[] | select(.type == "PipeWire:Interface:Node")
+                | select(.info.props["media.class"] == "Stream/Output/Audio")
+                | select(.info.props["application.process.binary"] == $binary)
+                | .id'
+        )
+      }
+
+      set_mute() {
+        local target=$1 id
+        for id in "''${streams[@]}"; do
+          wpctl set-mute "$id" "$target" >/dev/null 2>&1 || true
+        done
+        muted=$target
+      }
+
+      # Never leave the game muted because this watcher went away.
+      cleanup() {
+        resolve_streams
+        set_mute 0
+      }
+      trap cleanup EXIT
+      trap 'exit 0' HUP INT TERM
+
+      since_rescan=0
+      while :; do
+        event=0
+        status=0
+        IFS= read -r -t "$poll_seconds" _ || status=$?
+        if ((status == 0)); then
+          event=1
+        elif ((status <= 128)); then
+          exit 0  # event stream closed: niri is gone, nothing left to watch
+        fi
+
+        # is_focused only flips for the window niri routed keys to, and a failed
+        # query means niri is unavailable -- keep the current state then.
+        focused=$(niri msg --json windows | jq -r --arg app "$app_id" 'any(.[]; .is_focused and .app_id == $app)') || continue
+
+        desired=1
+        if [[ $focused == true ]]; then
+          desired=0
+        fi
+
+        if [[ $desired != "''${muted:-}" || $event == 1 || $since_rescan -ge $rescan_ticks ]]; then
+          resolve_streams
+          set_mute "$desired"
+          since_rescan=0
+        else
+          since_rescan=$((since_rescan + 1))
+        fi
+      done < <(
+        niri msg --json event-stream 2>/dev/null |
+          jq --unbuffered -c '
+            select(.WindowFocusChanged != null
+              or .WorkspaceActivated != null
+              or .WindowOpenedOrChanged != null
+              or .WindowClosed != null
+              or .WindowsChanged != null)'
+      )
+    '';
+  };
 in
 lib.mkIf isNixOS {
   home.packages =
@@ -119,7 +216,10 @@ lib.mkIf isNixOS {
       zenBrowser
       gpartedWithDisplay
     ]
-    ++ [ gsrReplay ];
+    ++ [
+      gsrReplay
+      cs16MuteOnFocus
+    ];
 
   # ShadowPlay-style replay buffer. Capture goes through KMS (gsr-kms-server),
   # so it never waits on a portal dialog; SIGINT is GSR's "exit cleanly" signal.
