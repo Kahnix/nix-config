@@ -4,6 +4,10 @@
   programs.virt-manager.enable = true;
 
   virtualisation = {
+    # Container runtime for local Compose stacks (SilentLeads Postgres/MinIO/Keycloak).
+    # pkgs.docker bundles the buildx and compose CLI plugins, so `docker compose` works.
+    docker.enable = true;
+
     libvirtd = {
       enable = true;
       qemu = {

@@ -37,6 +37,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # oh-my-pi (omp). Built from source so the native addon links libpipewire
+    # and Wayland screen capture works; the default upstream package omits it.
+    # Pinned to the release the local bun install runs.
+    oh-my-pi = {
+      url = "github:can1357/oh-my-pi";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Zen is not in nixpkgs; use the maintained community packaging.
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";

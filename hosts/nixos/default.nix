@@ -21,6 +21,45 @@ let
     trap - EXIT
   '';
 
+  # Moonlight app list. Sunshine reads it from its appdata path
+  # (~/.config/sunshine/apps.json) unless the config pins file_apps, and that
+  # default path is what a launcher-started `sunshine` (not the systemd unit)
+  # also loads. Feed the same definition to both.
+  sunshineApplications = {
+    env.PATH = "$(PATH):$(HOME)/.local/bin";
+    apps = [
+      {
+        name = "Desktop";
+        "image-path" = "desktop.png";
+        "prep-cmd" = [
+          {
+            do = "${streamDisplayMode} 1680x1050@59.954";
+            # 99.982 Hz is the mode niri.kdl pins for this panel; the old undo
+            # value (59.973) dropped the desktop back to 60 Hz after streaming.
+            undo = "${streamDisplayMode} 3440x1440@99.982";
+          }
+        ];
+      }
+      {
+        name = "Ultrawide Desktop";
+        "image-path" = "desktop.png";
+      }
+      {
+        name = "Steam Big Picture";
+        detached = [ "setsid steam steam://open/bigpicture" ];
+        "prep-cmd" = [
+          {
+            do = "";
+            undo = "setsid steam steam://close/bigpicture";
+          }
+        ];
+        "image-path" = "steam.png";
+      }
+    ];
+  };
+
+  sunshineAppsJson = (pkgs.formats.json { }).generate "sunshine-apps.json" sunshineApplications;
+
   woMicBuffer =
     pkgs.runCommandCC "wo-mic-buffer"
       {
@@ -145,6 +184,10 @@ in
   console.keyMap = "us";
   services.xserver.xkb.layout = "us";
   services.xserver.videoDrivers = [ "nvidia" ];
+  # AT-SPI bus. omp's computer use enumerates windows and reads accessibility
+  # trees over it; without the bus those calls fail with the nixpkgs-documented
+  # "org.a11y.Bus was not provided by any .service files".
+  services.gnome.at-spi2-core.enable = true;
 
   nix.settings = {
     experimental-features = [
@@ -162,6 +205,7 @@ in
     shell = pkgs.fish;
     extraGroups = [
       "audio"
+      "docker"
       "gamemode"
       "input"
       "kvm"
@@ -252,36 +296,7 @@ in
       autoStart = true;
       openFirewall = false;
 
-      applications = {
-        env.PATH = "$(PATH):$(HOME)/.local/bin";
-        apps = [
-          {
-            name = "Desktop";
-            "image-path" = "desktop.png";
-            "prep-cmd" = [
-              {
-                do = "${streamDisplayMode} 1680x1050@59.954";
-                undo = "${streamDisplayMode} 3440x1440@59.973";
-              }
-            ];
-          }
-          {
-            name = "Ultrawide Desktop";
-            "image-path" = "desktop.png";
-          }
-          {
-            name = "Steam Big Picture";
-            detached = [ "setsid steam steam://open/bigpicture" ];
-            "prep-cmd" = [
-              {
-                do = "";
-                undo = "setsid steam steam://close/bigpicture";
-              }
-            ];
-            "image-path" = "steam.png";
-          }
-        ];
-      };
+      applications = sunshineApplications;
     };
 
     # WO Mic outputs 48 kHz, 16-bit mono PCM to the ALSA loopback device.
@@ -437,7 +452,14 @@ in
       isDarwin = false;
       isWSL = false;
     };
-    users.${username} = import ../../home/kacper;
+    users.${username} = {
+      imports = [ (import ../../home/kacper) ];
+
+      # Sunshine falls back to <appdata>/apps.json when file_apps is unset, which
+      # is also the file a launcher-started `sunshine` loads. Same content as the
+      # unit's file_apps, so both start modes get the prep-cmd.
+      xdg.configFile."sunshine/apps.json".source = sunshineAppsJson;
+    };
   };
 
   system = {

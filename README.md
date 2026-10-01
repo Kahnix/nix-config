@@ -78,6 +78,8 @@ sudo darwin-rebuild switch --flake ~/nix-config#macbook-pro-m4
 | `Super + Shift + H/J/K/L` | Move a column/window |
 | `Super + 1..9` | Switch workspace |
 | `Super + Shift + 1..9` | Move window to workspace |
+| `Super + T` | Toggle floating / tiled |
+| `Super + Shift + C` | Center window (including floating) |
 | `Super + Shift + S` | Interactive screenshot |
 | `Super + Alt + S` | Window screenshot |
 | `Super + Ctrl + S` | Screen screenshot |
