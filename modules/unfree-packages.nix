@@ -8,6 +8,7 @@
     "obsidian"
     "proton-cachyos-bin"
     "firefox-bin"
+    "firefox-bin-unwrapped"
     "proton-ge-bin"
     "steam"
     "steam-original"
