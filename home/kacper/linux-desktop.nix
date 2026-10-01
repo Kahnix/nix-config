@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   isNixOS ? false,
@@ -8,15 +7,6 @@
 }:
 
 let
-  zenBrowser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.twilight;
-
-  # omp (oh-my-pi) built from source with the Wayland screencast addon. The
-  # shipped binaries compile pi-natives without `wayland-pipewire`, so computer
-  # use's capture fails on Wayland with "requires the wayland-pipewire feature".
-  ompWithScreencast = inputs.oh-my-pi.packages.${pkgs.stdenv.hostPlatform.system}.omp.override {
-    withWaylandScreencast = true;
-  };
-
   # Desktop entries used as default MIME handlers in xdg.mimeApps below. Celluloid
   # is a GTK4/libmpv frontend, so video inherits mpv's Wayland and NVDEC paths.
   videoPlayer = "io.github.celluloid_player.Celluloid.desktop";
@@ -36,7 +26,7 @@ let
     '';
   });
 
-  # Replay-buffer control for the gsr-replay service below: niri binds call this
+  # Replay-buffer control for the gsr-replay service below: Hyprland binds call this
   # instead of raw pkill, so save/toggle are idempotent and failures are reported.
   gsrReplay = pkgs.writeShellApplication {
     name = "gsr-replay";
@@ -80,68 +70,59 @@ let
     '';
   };
 in
-lib.mkIf isNixOS {
-  home.packages =
-    with pkgs;
-    [
-      blueman
-      cava
-      celluloid
-      file-roller
-      foliate
-      gallery-dl
-      gdu
-      gedit
-      google-chrome
-      mission-center
-      mpv
-      nautilus
-      obsidian
-      ouch
-      pavucontrol
-      playerctl
-      proton-pass
-      proton-vpn
-      protonmail-desktop
-      qalculate-gtk
-      qbittorrent
-      satty
-      strawberry
-      swayimg
-      telegram-desktop
-      # GUI file manager fallback; yazi (programs.yazi below) is the primary one.
-      # tumbler/volman/archive-plugin give Thunar thumbnails, mounts and archives.
-      thunar
-      thunar-archive-plugin
-      thunar-volman
-      tumbler
-      tesseract
-      wl-clipboard
-      yt-dlp
-      # Quick one-shot capture, no KMS privilege needed:
-      #   wf-recorder -c h264_nvenc -f ~/Videos/clip.mp4   (pkill -INT wf-recorder)
-      wf-recorder
-      discord
-      # Terminal coding agent; source build so computer-use capture can use the
-      # xdg-desktop-portal ScreenCast + PipeWire path on niri.
-      ompWithScreencast
-      xwayland-satellite
-      zenBrowser
-      firefox-bin
-      gpartedWithDisplay
-    ]
-    ++ [
-      gsrReplay
-    ];
+lib.optionalAttrs isNixOS {
+  home.packages = with pkgs; [
+    blueman
+    cava
+    celluloid
+    file-roller
+    foliate
+    gallery-dl
+    gdu
+    gedit
+    google-chrome
+    mission-center
+    mpv
+    nautilus
+    obsidian
+    ouch
+    pavucontrol
+    playerctl
+    proton-pass
+    proton-vpn
+    protonmail-desktop
+    qalculate-gtk
+    qbittorrent
+    satty
+    strawberry
+    swayimg
+    telegram-desktop
+    # GUI file manager fallback; yazi (programs.yazi below) is the primary one.
+    # tumbler/volman/archive-plugin give Thunar thumbnails, mounts and archives.
+    thunar
+    thunar-archive-plugin
+    thunar-volman
+    tumbler
+    tesseract
+    wl-clipboard
+    yt-dlp
+    # Quick one-shot capture, no KMS privilege needed:
+    #   wf-recorder -c h264_nvenc -f ~/Videos/clip.mp4   (pkill -INT wf-recorder)
+    wf-recorder
+    discord
+    firefox-bin
+    gpartedWithDisplay
+    gsrReplay
+  ];
 
   # ShadowPlay-style replay buffer. Capture goes through KMS (gsr-kms-server),
   # so it never waits on a portal dialog; SIGINT is GSR's "exit cleanly" signal.
   systemd.user.services.gsr-replay = {
     Unit = {
       Description = "GPU Screen Recorder replay buffer";
-      PartOf = [ "graphical-session.target" ];
-      # niri owns the outputs; KMS capture needs the session up but not a dialog.
-      After = [ "niri.service" ];
+      PartOf = [ config.wayland.systemd.target ];
+      # KMS capture needs the graphical session and its outputs to be available.
+      After = [ config.wayland.systemd.target ];
     };
 
     Service = {
@@ -158,7 +139,7 @@ lib.mkIf isNixOS {
       KillSignal = "SIGINT";
     };
 
-    Install.WantedBy = [ "graphical-session.target" ];
+    Install.WantedBy = [ config.wayland.systemd.target ];
   };
 
   # Stylix does not cover icon themes in this revision, so set it by hand: GTK3
@@ -174,10 +155,8 @@ lib.mkIf isNixOS {
   # gtk-dark.css, which matches the dark desktop.
   gtk.colorScheme = "dark";
 
-  # Appended to both gtk-3.0/gtk.css and gtk-4.0/gtk.css. libadwaita's chrome is
-  # sized for a GNOME session, which reads oversized next to niri's 8px window
-  # radius; trim it here. Selectors a toolkit does not know are ignored, so the
-  # same block is safe for GTK3 and GTK4 -- @shade_color is defined by Stylix.
+  # Trim oversized GTK headerbars to match the compact Hyprland desktop.
+  # Unknown selectors are ignored by GTK3/GTK4; Stylix defines @shade_color.
   stylix.targets.gtk.extraCss = ''
     headerbar { min-height: 38px; }
     windowcontrols button { min-height: 24px; min-width: 24px; padding: 0; margin: 0 2px; }
@@ -185,16 +164,6 @@ lib.mkIf isNixOS {
   '';
 
   programs = {
-    # The shell is packaged in nixpkgs (Hydra-cached), so the module's default
-    # pkgs.noctalia is used instead of the upstream flake's from-source build.
-    noctalia = {
-      enable = true;
-      systemd.enable = true;
-      # Frozen snapshot of the live settings menu state; refresh with
-      # scripts/snapshot-noctalia-settings.sh after tuning things in-app.
-      settings = builtins.fromTOML (builtins.readFile ./noctalia-settings.toml);
-    };
-
     # Keyboard-first file manager. Stylix writes the base16 theme into
     # theme.toml; the extra packages give yazi previews for video, PDF and
     # archives. Its default `open` opener is xdg-open, so the handlers below
@@ -221,7 +190,7 @@ lib.mkIf isNixOS {
 
         # Enter/o on text and code files runs this (yazi's `open` rules send
         # text/* and code types to the `edit` opener). Spelled out rather than
-        # relying on $EDITOR: niri inherits its environment at login, so a
+        # relying on $EDITOR: the compositor inherits its environment at login, so a
         # session started before EDITOR changed keeps the old value for every
         # spawn. `block = true` hands the terminal to nvim and returns to yazi
         # on quit.
@@ -325,7 +294,7 @@ lib.mkIf isNixOS {
         "text/plain" = textEditor;
         "text/markdown" = textEditor;
 
-        # GUI double-click stays in a GUI file manager; yazi is bound in niri.
+        # GUI double-click stays in a GUI file manager; yazi has a desktop keybind.
         "inode/directory" = fileManager;
 
         "x-scheme-handler/http" = "firefox.desktop";

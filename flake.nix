@@ -2,8 +2,7 @@
   description = "Kacper's NixOS, WSL, and dev configs";
 
   inputs = {
-    # Main package set for the whole system.
-    # Track the rolling upstream package set across all hosts.
+    # Shared rolling package set for all hosts.
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     # NixOS on WSL.
@@ -16,12 +15,6 @@
     # User-level config: shell, git, nvim, tmux, packages.
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Portable wrapper derivations (typed Nix config instead of raw dotfiles).
-    wrapper-modules = {
-      url = "github:BirdeeHub/nix-wrapper-modules";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     # macOS system configuration tracks the same unstable package set.
     darwin.url = "github:nix-darwin/nix-darwin";
@@ -37,9 +30,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # oh-my-pi (omp). Built from source so the native addon links libpipewire
-    # and Wayland screen capture works; the default upstream package omits it.
-    # Pinned to the release the local bun install runs.
+    # Shared coding agent; the desktop enables Wayland capture in Home Manager.
     oh-my-pi = {
       url = "github:can1357/oh-my-pi";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -51,13 +42,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
-
   };
 
   outputs =
     { nixpkgs, ... }@inputs:
 
-    # Change these to your own username and home directory.
     let
       wslUsername = "kacper";
       darwinUsername = "kacperdaniel";

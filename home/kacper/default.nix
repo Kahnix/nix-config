@@ -5,6 +5,7 @@
   username,
   homeDirectory,
   isWSL ? false,
+  isNixOS ? false,
   ...
 }:
 
@@ -12,7 +13,9 @@
   imports = [
     ./darwin-desktop.nix
     ./ghostty.nix
+    ./hyprland.nix
     ./linux-desktop.nix
+    ./quickshell.nix
   ];
 
   home.username = username;
@@ -111,6 +114,10 @@
       nix-tree
       nvd
       opencode
+      # Only the Linux desktop needs the PipeWire-backed Wayland capture addon.
+      (inputs.oh-my-pi.packages.${pkgs.stdenv.hostPlatform.system}.omp.override {
+        withWaylandScreencast = isNixOS;
+      })
       # Packaged in nixpkgs (and cached by Hydra) since 0.9.1; the upstream
       # flake would rebuild it and vendored libghostty-vt from source.
       herdr

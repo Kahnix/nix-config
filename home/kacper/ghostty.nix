@@ -27,8 +27,8 @@ lib.mkIf (isNixOS || isDarwin) {
     // lib.optionalAttrs isDarwin {
       "macos-titlebar-style" = "hidden";
     }
-    # Niri draws no client-side decorations; on macOS this would break
-    # native fullscreen, so it stays Linux-only.
+    # Let Hyprland draw the window frame; macOS needs native decorations
+    # for fullscreen support.
     // lib.optionalAttrs (!isDarwin) {
       "window-decoration" = false;
     };

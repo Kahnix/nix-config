@@ -12,13 +12,11 @@ let
   streamDisplayMode = pkgs.writeShellScript "stream-display-mode" ''
     set -eu
     mode="$1"
-    niri="${pkgs.niri}/bin/niri"
+    output="HDMI-A-2"
 
-    "$niri" msg output HDMI-A-2 mode "$mode"
-    "$niri" msg output HDMI-A-2 off
-    trap '"$niri" msg output HDMI-A-2 on' EXIT
-    "$niri" msg output HDMI-A-2 on
-    trap - EXIT
+    # Lua-configured Hyprland uses eval for runtime monitor changes.
+    "${config.programs.hyprland.package}/bin/hyprctl" eval \
+      "hl.monitor({ output = '$output', mode = '$mode' })"
   '';
 
   # Moonlight app list. Sunshine reads it from its appdata path
@@ -34,8 +32,7 @@ let
         "prep-cmd" = [
           {
             do = "${streamDisplayMode} 1680x1050@59.954";
-            # 99.982 Hz is the mode niri.kdl pins for this panel; the old undo
-            # value (59.973) dropped the desktop back to 60 Hz after streaming.
+            # Restore the desktop's configured ultrawide refresh rate.
             undo = "${streamDisplayMode} 3440x1440@99.982";
           }
         ];
@@ -89,14 +86,6 @@ let
       export LD_PRELOAD="${woMicBuffer}/lib/libwo-mic-buffer.so''${LD_PRELOAD:+:$LD_PRELOAD}"
     '';
   };
-
-  # Portable wrapper derivation: bakes niri.kdl into the package (validated
-  # via `niri validate` at build time) and points niri at it via NIRI_CONFIG,
-  # instead of relying on home-manager to place ~/.config/niri/config.kdl.
-  wrappedNiri = inputs.wrapper-modules.wrappers.niri.wrap {
-    inherit pkgs;
-    "config.kdl".content = builtins.readFile ../../home/kacper/niri.kdl;
-  };
 in
 {
   imports = [
@@ -109,27 +98,6 @@ in
     hostPlatform = system;
     overlays = [
       inputs.nix-cachyos-kernel.overlays.pinned
-      (_final: prev: {
-        # 0.8.2 immediately dismisses Steam popup menus under Niri.
-        # Remove after https://github.com/Supreeeme/xwayland-satellite/issues/435 is fixed in a release.
-        xwayland-satellite =
-          let
-            src = prev.fetchFromGitHub {
-              owner = "Supreeeme";
-              repo = "xwayland-satellite";
-              tag = "v0.8.1";
-              hash = "sha256-BUE41HjLIGPjq3U8VXPjf8asH8GaMI7FYdgrIHKFMXA=";
-            };
-          in
-          prev.xwayland-satellite.overrideAttrs {
-            version = "0.8.1";
-            inherit src;
-            cargoDeps = prev.rustPlatform.fetchCargoVendor {
-              inherit src;
-              hash = "sha256-16L6gsvze+m7XCJlOA1lsPNELE3D364ef2FTdkh0rVY=";
-            };
-          };
-      })
     ];
   };
 
@@ -222,72 +190,44 @@ in
     # GPU Screen Recorder: the module installs the CLI plus a setcap'd
     # gsr-kms-server wrapper, which direct monitor (KMS) capture requires.
     gpu-screen-recorder.enable = true;
-    niri = {
+    # UWSM owns the graphical session lifecycle; Home Manager only configures it.
+    hyprland = {
       enable = true;
-      package = wrappedNiri;
+      withUWSM = true;
+    };
+    # Ensure UWSM registers a session whose instance id is derived from the
+    # Hyprland binary itself (not start-hyprland), producing
+    # wayland-session@Hyprland.target and wayland-wm@Hyprland.service.
+    uwsm.waylandCompositors.hyprland = {
+      # NixOS appends " (UWSM)" to prettyName, so the greeter label becomes
+      # "Hyprland + Quickshell (UWSM)".
+      prettyName = "Hyprland + Quickshell";
+      comment = "Hyprland compositor managed by UWSM";
+      binPath = "/run/current-system/sw/bin/Hyprland";
     };
     nix-ld.enable = true;
   };
 
   services = {
     displayManager.sddm.enable = false;
-    # Login screen matching the Noctalia shell. Come from nixpkgs (Hydra-cached);
-    # the module writes /var/lib/noctalia-greeter/greeter.toml and points
-    # greetd's default session at noctalia-greeter-session.
-    displayManager.noctalia-greeter = {
+    displayManager.defaultSession = "hyprland-uwsm";
+    displayManager.dms-greeter = {
       enable = true;
-      settings = {
-        session.default = "Niri";
-        user.default = username;
-
-        appearance = {
-          scheme = "Synced";
-          password_style = "default";
-          hide_logo = false;
-          theme_mode = "dark";
-          corner_radius_scale = 0.85;
-          font_family = config.stylix.fonts.monospace.name;
-
-          palette = with config.lib.stylix.colors.withHashtag; {
-            primary = base0D;
-            on_primary = base00;
-            secondary = base0C;
-            on_secondary = base00;
-            tertiary = base0B;
-            on_tertiary = base00;
-            error = base08;
-            on_error = base00;
-            surface = base00;
-            on_surface = base05;
-            surface_variant = base01;
-            on_surface_variant = base04;
-            outline = base02;
-            shadow = base00;
-            hover = base0A;
-            on_hover = base00;
-          };
-
-          wallpaper = {
-            path = "/home/kacper/Documents/wallpapers/lunar-tides-3440x1440-26444.jpg";
-            fill_mode = "crop";
-          };
-        };
-
-        idle.timeout = 300;
-
-        cursor = {
-          theme = config.stylix.cursor.name;
-          size = config.stylix.cursor.size;
-          path = "${config.stylix.cursor.package}/share/icons";
-        };
-
-        keyboard = {
-          layout = "us";
-          numlock = true;
-        };
-
-        auth.allow_empty_password = false;
+      compositor = {
+        name = "hyprland";
+        # Separate login compositor: no desktop services or application bindings.
+        customConfig = ''
+          hl.env("XCURSOR_THEME", "${config.stylix.cursor.name}")
+          hl.env("XCURSOR_SIZE", "${toString config.stylix.cursor.size}")
+          hl.config({
+            misc = { disable_hyprland_logo = true, disable_splash_rendering = true },
+            input = { kb_layout = "us", numlock_by_default = true },
+          })
+        '';
       };
+      # The module copies settings, wallpaper and custom theme into the
+      # greeter's own directory; login never depends on home-directory access.
+      configHome = "/home/${username}";
     };
     desktopManager.plasma6.enable = false;
 
@@ -359,14 +299,15 @@ in
 
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gnome
-      xdg-desktop-portal-gtk
-    ];
-    config.common.default = [
-      "gnome"
-      "gtk"
-    ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.hyprland = {
+      default = [
+        "hyprland"
+        "gtk"
+      ];
+      "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+      "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+    };
   };
 
   systemd.sleep.settings.Sleep = {
@@ -379,6 +320,9 @@ in
   security = {
     polkit.enable = true;
     rtkit.enable = true;
+    # DMS lock authenticates against the "dankshell" PAM service. Providing it
+    # here lets the shell use system auth instead of its bundled fallback.
+    pam.services.dankshell = { };
   };
 
   hardware = {
@@ -399,6 +343,28 @@ in
       open = false;
       package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
       powerManagement.enable = true;
+    };
+  };
+
+  # Seed the first login selection only; subsequent choices remain writable.
+  systemd.tmpfiles.settings."10-dms-greeter" = {
+    "/var/lib/dms-greeter/.local/state".d = {
+      user = "dms-greeter";
+      group = "dms-greeter";
+      mode = "0700";
+    };
+    "/var/lib/dms-greeter/.local/state/memory.json".C = {
+      user = "dms-greeter";
+      group = "dms-greeter";
+      mode = "0600";
+      argument = toString (
+        pkgs.writeText "dms-greeter-memory.json" (
+          builtins.toJSON {
+            lastSessionDesktopId = "hyprland-uwsm.desktop";
+            lastSuccessfulUser = username;
+          }
+        )
+      );
     };
   };
 

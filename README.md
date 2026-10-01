@@ -8,17 +8,21 @@ Personal NixOS, WSL, macOS, Home Manager, devenv, and direnv configuration.
 - `wsl`: NixOS-WSL for user `kacper` on `x86_64-linux`.
 - `macbook-pro-m4`: nix-darwin for user `kacperdaniel` on `aarch64-darwin`.
 
+The shared Home Manager development profile installs oh-my-pi (`omp`) on all
+three hosts. The NixOS desktop enables its PipeWire-backed Wayland capture
+addon; WSL and macOS use the default build.
+
 ## Desktop
 
 The `nixos` host uses:
 
-- Niri's scrollable tiling layout with Xwayland Satellite for legacy applications.
-- Noctalia for the bar, launcher, control center, notifications, clipboard, wallpaper, and lock screen.
-- A Kanagawa palette across Noctalia, GTK, Ghostty, and btop.
-- A Kanagawa-themed Noctalia greeter that starts the selected greetd session.
+- Hyprland with DankMaterialShell, built on Quickshell, as the default UWSM-managed session.
+- DMS for the bar, launcher, control center, notifications, clipboard, wallpaper, and lock screen.
+- A Kanagawa Dragon palette across DMS, GTK, Ghostty, and btop.
+- DankGreeter for login, matching the current DMS appearance and initially selecting **Hyprland + Quickshell (UWSM)**.
 - Ghostty, Fish, Starship, and the shared Home Manager development profile.
 - Zen Browser, Proton Pass, Proton Mail, Proton VPN, Telegram, Obsidian, and Vesktop for Discord.
-- Niri's native screenshots, copied and saved to `~/Pictures/Screenshots`.
+- Hyprshot screenshots, copied and saved to `~/Pictures/Screenshots`.
 - GPU Screen Recorder for a ShadowPlay-style 60 s replay buffer, plus
   `wf-recorder` for one-shot clips.
 - WO Mic at its native 48 kHz/16-bit mono format for using a phone as a microphone.
@@ -26,11 +30,9 @@ The `nixos` host uses:
 - Steam, DZGUI, Gamescope, GameMode, Proton-GE, Heroic, Lutris, MangoHud, and Wine.
 - libvirt/KVM, virt-manager, swtpm, Quickemu, SPICE, and VirtioFS for Windows VM work.
 
-Suspend, hibernation, hybrid sleep, and suspend-then-hibernate are disabled at
-the systemd sleep and logind layers. The bar and control-center shortcuts
-intentionally have no suspend action.
-
-The active wallpaper is `assets/wallpapers/blue-hour.png`.
+Hyprland integrates Xwayland for X11 applications, including Steam and legacy
+games. Xwayland Satellite is not needed. Niri and Noctalia have been removed;
+DankGreeter provides the login screen.
 
 ## Apply
 
@@ -59,36 +61,76 @@ Rebuild macOS after bootstrap:
 sudo darwin-rebuild switch --flake ~/nix-config#macbook-pro-m4
 ```
 
-## Niri Keys
+## Hyprland Desktop
 
-| Key | Action |
+After rebuilding the desktop, **Hyprland + Quickshell (UWSM)** is the default
+login session. Choose this entry rather than the plain **Hyprland** entry:
+UWSM starts and stops the session services.
+
+The rice uses [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell),
+inspired by its [r/unixporn showcase](https://www.reddit.com/r/unixporn/comments/1mxj44y/hyprland_dankmaterialshell_meets_hyprland/):
+a compact floating top bar, workspace pills, Inter/JetBrains Mono typography,
+muted blue/teal accents, and opaque application windows. Hyprland uses the native
+dwindle layout, modest gaps and animations, and no compositor plugins.
+
+| Key | Hyprland action |
 | --- | --- |
-| `Super + Return` | Terminal |
-| `Super + Space` | Application launcher |
+| `Super + Return` / `Super + B` / `Super + E` | Terminal / browser / yazi |
+| `Super + Space` | Spotlight application launcher |
 | `Super + Ctrl + Space` | Control center |
-| `Super + Ctrl + V` | Clipboard history |
-| `Super + Ctrl + D` | Noctalia settings |
-| `Alt + Tab` | Window switcher |
-| `Super + O` | Niri overview |
-| `Super + B` / `Super + E` | Browser / files |
-| `Super + Shift + G` | Steam |
-| `Super + Shift + V` | virt-manager |
+| `Super + Ctrl + V` / `Super + Ctrl + D` | Clipboard / shell settings |
+| `Super + O` / `Super + Shift + /` | Window overview / hotkey reference |
 | `Super + Ctrl + L` | Lock |
-| `Super + H/J/K/L` | Focus left/down/up/right |
-| `Super + Shift + H/J/K/L` | Move a column/window |
-| `Super + 1..9` | Switch workspace |
-| `Super + Shift + 1..9` | Move window to workspace |
-| `Super + T` | Toggle floating / tiled |
-| `Super + Shift + C` | Center window (including floating) |
-| `Super + Shift + S` | Interactive screenshot |
-| `Super + Alt + S` | Window screenshot |
-| `Super + Ctrl + S` | Screen screenshot |
-| `Super + Alt + R` | Save the last 60 s of the replay buffer |
-| `Super + Alt + Shift + R` | Start/stop the replay buffer |
-| `Super + Shift + /` | Hotkey reference |
+| `Super + H/J/K/L` or arrows | Focus a window |
+| `Super + Shift + H/J/K/L` or arrows | Move a window |
+| `Super + 1..9,0` / `Super + Shift + 1..9,0` | Switch / move to workspace 1–10 |
+| `Super + left/right mouse drag` | Move / resize a window |
+| `Super + T` / `Super + F` / `Super + Shift + F` | Floating / fullscreen / maximize |
+| `Super + R` / `Super + Shift + W` | Change split direction / toggle tabbed group |
+| `Alt + Tab` / `Super + Tab` | Next window / previous workspace |
+| `Super + Shift + S` / `Super + Alt + S` / `Super + Ctrl + S` | Region / window / output screenshot |
+| `Super + Alt + R` / `Super + Alt + Shift + R` | Save / toggle replay buffer |
+| `Super + Shift + E` | Power/session menu |
+| `Super + Ctrl + Shift + E` | Log out through UWSM directly |
 
-The Print Screen variants provide the same screenshot actions. Niri saves
-captures to `~/Pictures/Screenshots` and also puts them on the clipboard.
+Compositor settings and bindings live in `home/kacper/hyprland.nix`; the shell
+palette, first-launch defaults, and service live in `home/kacper/quickshell.nix`.
+The existing HDMI-A-2 mode is retained at 3440×1440, 99.982 Hz, scale 1.
+
+DMS settings are seeded only when absent in
+`~/.config/DankMaterialShell/settings.json`; wallpaper/session state lives in
+`~/.local/state/DankMaterialShell/session.json`. UI changes survive rebuilds.
+First launch prefers `~/Documents/wallpapers/31299713726712.jpg`, with a packaged
+dark gradient if it is absent. The Kanagawa theme is a managed file at
+`~/.config/DankMaterialShell/kanagawa-dragon.json`. DMS application-theme
+generation is disabled so it does not overwrite Stylix.
+
+### Login screen
+
+DankGreeter runs under greetd in a separate Hyprland instance. On greetd startup,
+the NixOS module copies the user's DMS settings, wallpaper, and custom theme into
+`/var/lib/dms-greeter`, so the login UI does not need access to the user's home.
+The initial user and UWSM session are seeded once; later selections are remembered.
+Automatic login is not enabled.
+
+When replacing the greeter, apply at the next boot rather than restarting greetd
+under a running desktop:
+
+```sh
+sudo nixos-rebuild boot --flake ~/nix-config#nixos
+sudo reboot
+```
+
+### Desktop services
+
+`systemctl --user status dms` shows the desktop shell. Portals use Hyprland
+for screen sharing and GTK for file selection. Replay recording follows the
+graphical session, and Sunshine's display-mode helper uses Hyprland's Lua API.
+Driver, Proton, and game settings are unchanged by the desktop cutover.
+
+The Print Screen variants provide the same screenshot actions.
+
+### Recording and peripherals
 
 Replay capture runs as the user service `gsr-replay.service`, started with the
 graphical session and writing to `~/Videos/Replays`. NVENC is unusable with
@@ -100,13 +142,9 @@ with the hardware encoder, bypass the buffer:
 `wf-recorder -c h264_nvenc -f ~/Videos/clip.mp4`, stopped with
 `pkill -INT wf-recorder`.
 
-Outputs use their preferred modes and automatic positions by default. Run
-`niri msg outputs` to get connector names, then add explicit `output` blocks to
-`home/kacper/niri.kdl` when a fixed multi-monitor layout is needed.
-
-Noctalia's declarative defaults live in `home/kacper/linux-desktop.nix`. Changes
-made in its settings UI are saved to
-`~/.local/state/noctalia/settings.toml` and override those defaults.
+Outputs use their preferred modes and automatic positions by default, with an
+explicit mode for HDMI-A-2. Run `hyprctl monitors all` to get connector names,
+then update `settings.monitor` in `home/kacper/hyprland.nix` for a fixed layout.
 
 To use a phone as a microphone, install WO Mic on the phone, start its Wi-Fi
 server, and run `wo-mic PHONE_IP` on the desktop with the IP shown in
