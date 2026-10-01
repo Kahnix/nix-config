@@ -7,6 +7,7 @@
     "nvidia-x11"
     "obsidian"
     "proton-cachyos-bin"
+    "firefox-bin"
     "proton-ge-bin"
     "steam"
     "steam-original"

@@ -70,11 +70,6 @@ animations {
 
 spawn-at-startup "xwayland-satellite"
 
-// Mute Counter-Strike while its window is not focused: niri stops compositing
-// the hidden window, the engine stalls, and its audio callback loops the last
-// mixed buffer (see cs16-mute-on-focus in home/$USER/linux-desktop.nix).
-spawn-at-startup "cs16-mute-on-focus"
-
 hotkey-overlay {
     skip-at-startup
 }

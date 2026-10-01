@@ -132,7 +132,6 @@ lib.mkIf isNixOS {
     ]
     ++ [
       gsrReplay
-      cs16MuteOnFocus
     ];
 
   # ShadowPlay-style replay buffer. Capture goes through KMS (gsr-kms-server),
