@@ -11,6 +11,29 @@
 let
   jsonFormat = pkgs.formats.json { };
 
+  # Pin the installed plugin and expose Vulkan encoding for NVIDIA 580.
+  screenRecorder = pkgs.applyPatches {
+    name = "dms-screen-recorder";
+    src = pkgs.fetchFromGitHub {
+      owner = "arqueon";
+      repo = "dms-screen-recorder";
+      rev = "1e25de9d16e63871d53b21127d31af026fa60cd6";
+      hash = "sha256-Q0NgtSpP74Gpx5LJWslqcBuVZ2jrjpY+2Ae1sBId6Fs=";
+    };
+    patches = [ ./screen-recorder-codec.patch ];
+  };
+
+  dockerManager = pkgs.applyPatches {
+    name = "dms-docker-manager";
+    src = pkgs.fetchFromGitHub {
+      owner = "LuckShiba";
+      repo = "DmsDockerManager";
+      rev = "f6f7d94c84510da098980a2bb733137e90f98fd8";
+      hash = "sha256-KEj0d1K0+ZOxbQ9FLzapWZ82i31hbpEHUAOZfJF8IGs=";
+    };
+    patches = [ ./docker-manager-visibility.patch ];
+  };
+
   # Stylix exposes the active Base16 palette both with and without leading '#'.
   c = config.lib.stylix.colors.withHashtag;
 
@@ -52,8 +75,6 @@ let
 
   fallbackWallpaperPath = "${config.xdg.dataHome}/backgrounds/dms-kanagawa-dragon.png";
   userWallpaperPath = "/home/kacper/Documents/wallpapers/31299713726712.jpg";
-
-  dmsTarget = "wayland-session@Hyprland.target";
 
   # Non-default DMS settings only.  Defaults are omitted so the file stays
   # intentional and DMS can mutate it without HM symlink conflicts.
@@ -146,6 +167,7 @@ let
         rightWidgets = [
           "systemTray"
           "clipboard"
+          "dockerManager"
           "notificationButton"
           "controlCenterButton"
         ];
@@ -176,6 +198,10 @@ lib.optionalAttrs isNixOS {
     dgop
     dsearch
 
+    # Screen Recorder's portal preflight uses gdbus and grep.
+    glib
+    gnugrep
+
     # Icon theme used by DMS and clipboard/launcher integrations.
     papirus-icon-theme
     wl-clipboard
@@ -185,6 +211,9 @@ lib.optionalAttrs isNixOS {
   home.sessionVariables.DMS_DISABLE_MATUGEN = "1";
 
   xdg.configFile."DankMaterialShell/kanagawa-dragon.json".source = dmsTheme;
+
+  xdg.configFile."DankMaterialShell/plugins/screenRecorder".source = screenRecorder;
+  xdg.configFile."DankMaterialShell/plugins/dockerManager".source = dockerManager;
 
   xdg.dataFile."backgrounds/dms-kanagawa-dragon.png".source = dmsWallpaper;
 
@@ -212,8 +241,8 @@ lib.optionalAttrs isNixOS {
   systemd.user.services.dms = {
     Unit = {
       Description = "DankMaterialShell";
-      PartOf = [ dmsTarget ];
-      After = [ dmsTarget ];
+      PartOf = [ config.wayland.systemd.target ];
+      After = [ config.wayland.systemd.target ];
       Requisite = [ "graphical-session.target" ];
     };
     Service = {
@@ -226,6 +255,6 @@ lib.optionalAttrs isNixOS {
       RestartSec = 1;
       Environment = [ "DMS_DISABLE_MATUGEN=1" ];
     };
-    Install.WantedBy = [ dmsTarget ];
+    Install.WantedBy = [ config.wayland.systemd.target ];
   };
 }

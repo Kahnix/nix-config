@@ -65,7 +65,9 @@ sudo darwin-rebuild switch --flake ~/nix-config#macbook-pro-m4
 
 After rebuilding the desktop, **Hyprland + Quickshell (UWSM)** is the default
 login session. Choose this entry rather than the plain **Hyprland** entry:
-UWSM starts and stops the session services.
+UWSM starts Hyprland through `start-hyprland`; the watchdog remains inside the
+managed session. DMS follows `graphical-session.target`, not a target named after
+the compositor executable. Launcher changes take effect on the next login.
 
 The rice uses [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell),
 inspired by its [r/unixporn showcase](https://www.reddit.com/r/unixporn/comments/1mxj44y/hyprland_dankmaterialshell_meets_hyprland/):
@@ -130,7 +132,27 @@ Driver, Proton, and game settings are unchanged by the desktop cutover.
 
 The Print Screen variants provide the same screenshot actions.
 
+Docker Manager is also pinned through Home Manager. Its bar widget uses DMS's
+visibility-command API to check the configured runtime executable with
+`command -v`, initially and every 30 seconds. It is hidden when the executable
+is absent; daemon health and container count do not control visibility.
+Change its pinned source and `docker-manager-visibility.patch` through Nix,
+not `dms plugins update dockerManager`.
+
+The built-in focused-window widget is retained. DMS 1.6.2 has no application-name-only
+mode and no launcher-wide hide-icons setting; neither is patched into DMS.
+
 ### Recording and peripherals
+
+The DMS Screen Recorder plugin is pinned and patched by Home Manager in
+`home/kacper/quickshell.nix`. Its **Video encoder** setting defaults to Vulkan
+H.264 for NVIDIA 580; native-GPU and CPU H.264 remain selectable. The plugin's
+portal check requires `gdbus` from GLib and `grep`, both installed in the user
+profile. The Hyprland ScreenCast portal stays enabled; capture does not fall
+back to All screens. Update the pinned revision and codec patch through Nix,
+not `dms plugins update screenRecorder`. The previous writable Screen Recorder
+and Docker Manager checkouts are retained outside plugin discovery under
+`~/.local/state/nix-config/dms-plugin-backups/`.
 
 Replay capture runs as the user service `gsr-replay.service`, started with the
 graphical session and writing to `~/Videos/Replays`. NVENC is unusable with

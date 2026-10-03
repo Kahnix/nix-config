@@ -195,15 +195,13 @@ in
       enable = true;
       withUWSM = true;
     };
-    # Ensure UWSM registers a session whose instance id is derived from the
-    # Hyprland binary itself (not start-hyprland), producing
-    # wayland-session@Hyprland.target and wayland-wm@Hyprland.service.
+    # Keep Hyprland's watchdog launcher inside the UWSM-managed session.
     uwsm.waylandCompositors.hyprland = {
       # NixOS appends " (UWSM)" to prettyName, so the greeter label becomes
       # "Hyprland + Quickshell (UWSM)".
       prettyName = "Hyprland + Quickshell";
       comment = "Hyprland compositor managed by UWSM";
-      binPath = "/run/current-system/sw/bin/Hyprland";
+      binPath = "/run/current-system/sw/bin/start-hyprland";
     };
     nix-ld.enable = true;
   };
