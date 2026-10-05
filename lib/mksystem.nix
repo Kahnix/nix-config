@@ -38,7 +38,6 @@ systemFunc {
 
   modules = [
     ../modules/unfree-packages.nix
-    ../modules/herdr-fix.nix
     ../hosts/${name}
     homeManagerModule
   ]

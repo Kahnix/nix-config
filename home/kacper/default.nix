@@ -24,49 +24,6 @@
   home.stateVersion = "26.11";
 
   programs.home-manager.enable = true;
-  # Herdr has no Stylix target. Keep its token overrides aligned with the
-  # Kanagawa Dragon Base16 palette selected in modules/theme.nix.
-  xdg.configFile."herdr/config.toml".text = ''
-    onboarding = false
-
-    [theme]
-    # Herdr's closest built-in foundation; Dragon is applied through its tokens.
-    name = "kanagawa"
-    auto_switch = false
-
-    [theme.custom]
-    accent = "#8ba4b0"
-    panel_bg = "#181616"
-    sidebar_bg = "#181616"
-    active_row_bg = "#282727"
-    selection_bg = "#393836"
-    surface0 = "#282727"
-    surface1 = "#393836"
-    surface_dim = "#181616"
-    overlay0 = "#625e5a"
-    overlay1 = "#737c73"
-    text = "#c5c9c5"
-    subtext0 = "#737c73"
-    mauve = "#a292a3"
-    green = "#8a9a7b"
-    yellow = "#c4b28a"
-    red = "#c4746e"
-    blue = "#8ba4b0"
-    teal = "#8ea4a2"
-    peach = "#b6927b"
-
-    [ui]
-    agent_panel_sort = "priority"
-    status_indicators = "symbols"
-
-    [ui.sidebar.agents]
-    rows = [
-      ["state_icon", "agent", "state_text"],
-      ["terminal_title_stripped"],
-      ["workspace", "tab"],
-    ]
-
-  '';
 
   home.packages =
     (with pkgs; [
@@ -115,11 +72,15 @@
       nvd
       opencode
       # Only the Linux desktop needs the PipeWire-backed Wayland capture addon.
-      (inputs.oh-my-pi.packages.${pkgs.stdenv.hostPlatform.system}.omp.override {
-        withWaylandScreencast = isNixOS;
-      })
-      # Packaged in nixpkgs (and cached by Hydra) since 0.9.1; the upstream
-      # flake would rebuild it and vendored libghostty-vt from source.
+      (
+        (inputs.oh-my-pi.packages.${pkgs.stdenv.hostPlatform.system}.omp.override {
+          withWaylandScreencast = isNixOS;
+        }).overrideAttrs
+          (_: {
+            CARGO_PROFILE_RELEASE_LTO = "thin";
+            CARGO_PROFILE_RELEASE_CODEGEN_UNITS = "16";
+          })
+      )
       herdr
     ])
     ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
@@ -160,150 +121,6 @@
       };
     };
   };
-
-  programs.fastfetch = {
-    enable = true;
-    settings = {
-      "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json";
-
-      logo = {
-        source = if pkgs.stdenv.hostPlatform.isDarwin then "macOS" else "NixOS";
-        padding = {
-          top = 1;
-          right = 4;
-        };
-      };
-
-      display = {
-        separator = "    ";
-        color = {
-          keys = "#98BB6C";
-          output = "#C8C093";
-          separator = "#7E9CD8";
-        };
-        key = {
-          width = 2;
-          type = "string";
-        };
-        percent.color = {
-          green = "#98BB6C";
-          yellow = "#E6C384";
-          red = "#E46876";
-        };
-      };
-
-      modules = [
-        {
-          type = "custom";
-          format = "╭────────────── hardware ──────────────╮";
-          outputColor = "#7E9CD8";
-        }
-        {
-          type = "host";
-          key = "󰌢";
-          format = "{name}";
-        }
-        {
-          type = "cpu";
-          key = "";
-          format = "{name} ({cores-logical} cores)";
-        }
-        {
-          type = "gpu";
-          key = "󰢮";
-          format = "{name}";
-        }
-        {
-          type = "memory";
-          key = "";
-          format = "{used} / {total} ({percentage})";
-        }
-        {
-          type = "disk";
-          key = "";
-          format = "{size-used} / {size-total} ({size-percentage})";
-        }
-        {
-          type = "display";
-          key = "󰍹";
-          format = "{width}x{height} @ {refresh-rate} Hz";
-        }
-        {
-          type = "custom";
-          format = "╰─────────────────────────────────────╯";
-          outputColor = "#7E9CD8";
-        }
-        "break"
-        {
-          type = "custom";
-          format = "╭────────────── software ──────────────╮";
-          outputColor = "#7E9CD8";
-        }
-        {
-          type = "os";
-          key = "";
-          format = "{pretty-name} {arch}";
-        }
-        {
-          type = "kernel";
-          key = "";
-          format = "{sysname} {release}";
-        }
-        {
-          type = "shell";
-          key = "";
-        }
-        {
-          type = "wm";
-          key = "";
-        }
-        {
-          type = "uptime";
-          key = "󰥔";
-        }
-        {
-          type = "custom";
-          format = "╰─────────────────────────────────────╯";
-        }
-      ];
-    };
-  };
-
-  programs.btop = {
-    enable = true;
-    settings = {
-      theme_background = false;
-      truecolor = true;
-      vim_keys = true;
-      rounded_corners = true;
-
-      shown_boxes = "cpu mem proc";
-      update_ms = 2000;
-      graph_symbol = "braille";
-
-      cpu_single_graph = true;
-      show_gpu_info = "Off";
-      show_uptime = false;
-      show_cpu_watts = false;
-      show_coretemp = false;
-      show_cpu_freq = false;
-      clock_format = "";
-
-      mem_graphs = false;
-      show_swap = false;
-      swap_disk = false;
-      show_disks = false;
-
-      proc_sorting = "cpu lazy";
-      proc_colors = true;
-      proc_gradient = false;
-      proc_mem_bytes = true;
-      proc_cpu_graphs = false;
-
-      show_battery = false;
-    };
-  };
-  xdg.configFile."btop/btop.conf".force = true;
 
   programs.fish = {
     enable = true;

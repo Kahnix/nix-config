@@ -36,11 +36,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Zen is not in nixpkgs; use the maintained community packaging.
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
+    herdr-nix = {
+      url = "github:herdrdev/herdr-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
     };
   };
 
