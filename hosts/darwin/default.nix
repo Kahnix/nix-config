@@ -20,6 +20,22 @@
 
   users.users.${username} = {
     home = homeDirectory;
+
+    # kacper@nixos: lets the NixOS machine ssh in (herdr machine add from nixos).
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMr2TNbEMNm9eshwXm+0r+pXT4k9JaYXrFcamfOTYU/8 kacpe@Experian"
+    ];
+  };
+
+  # Remote Login (Apple's sshd), key-only. Reachable over Tailscale as
+  # kacpers-macbook-pro.
+  services.openssh = {
+    enable = true;
+    extraConfig = ''
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PermitRootLogin no
+    '';
   };
 
   programs.fish.enable = true;
