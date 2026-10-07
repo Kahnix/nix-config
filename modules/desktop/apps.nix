@@ -134,6 +134,7 @@ in
         obsidian
         ouch
         pavucontrol
+        zed-editor
         playerctl
         proton-pass
         proton-vpn

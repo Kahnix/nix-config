@@ -135,6 +135,10 @@ in
               disable_splash_rendering = true;
               force_default_wallpaper = 0;
             };
+            # 2 = scan out fullscreen windows with content-type "game" straight
+            # to the display, skipping the compositor copy: one frame less of
+            # input latency. Debug with `hyprctl rollinglog | grep -i scanout`.
+            render.direct_scanout = 2;
             # Keep X11 games at native pixel dimensions; the ultrawide uses scale 1.
             xwayland.force_zero_scaling = true;
           };
@@ -244,6 +248,15 @@ in
                 pin = false;
               };
               no_focus = true;
+            }
+            # Proton games run through Xwayland and never announce a content
+            # type, so tag them: render.direct_scanout = 2 only scans out
+            # fullscreen "game" windows. Verify with `hyprctl monitors`
+            # (directScanoutTo / directScanoutBlockedBy).
+            {
+              name = "steam-games";
+              match.class = "^steam_app_[0-9]+$";
+              content = "game";
             }
           ];
         };
