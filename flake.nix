@@ -36,48 +36,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    herdr-nix = {
-      url = "github:herdrdev/herdr-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+    # Outputs are assembled by flake-parts from every module under ./modules.
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
+    import-tree.url = "github:vic/import-tree";
   };
 
-  outputs =
-    { nixpkgs, ... }@inputs:
-
-    let
-      wslUsername = "kacper";
-      darwinUsername = "kacperdaniel";
-      nixosUsername = "kacper";
-
-      mkSystem = import ./lib/mksystem.nix {
-        inherit inputs;
-      };
-    in
-    {
-      nixosConfigurations.wsl = mkSystem {
-        name = "wsl";
-        system = "x86_64-linux";
-        username = wslUsername;
-        homeDirectory = "/home/${wslUsername}";
-        wsl = true;
-      };
-
-      nixosConfigurations.nixos = mkSystem {
-        name = "nixos";
-        system = "x86_64-linux";
-        username = nixosUsername;
-        homeDirectory = "/home/${nixosUsername}";
-        theming = true;
-      };
-
-      darwinConfigurations."macbook-pro-m4" = mkSystem {
-        name = "darwin";
-        system = "aarch64-darwin";
-        username = darwinUsername;
-        homeDirectory = "/Users/${darwinUsername}";
-        darwin = true;
-        theming = true;
-      };
-    };
+  # Dendritic layout: every .nix file under ./modules is a flake-parts module.
+  # Feature files contribute flake.modules.{nixos,darwin,homeManager}.<name>;
+  # files under ./modules/hosts compose those into system configurations.
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }

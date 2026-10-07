@@ -1,0 +1,159 @@
+{
+  # macOS desktop: AeroSpace tiling and app integration.
+  flake.modules.homeManager.darwin-desktop =
+    { lib, pkgs, ... }:
+    let
+      workspaces = map toString (lib.range 1 9);
+
+      workspaceBindings = lib.listToAttrs (
+        map (workspace: lib.nameValuePair "alt-${workspace}" "workspace ${workspace}") workspaces
+      );
+
+      moveToWorkspaceBindings = lib.listToAttrs (
+        map (
+          workspace: lib.nameValuePair "alt-shift-${workspace}" "move-node-to-workspace ${workspace}"
+        ) workspaces
+      );
+    in
+    {
+      # Copy GUI apps out of the Nix store so Spotlight and macOS permissions work
+      # reliably while keeping their package definitions in Home Manager.
+      targets.darwin.copyApps.enable = true;
+      targets.darwin.linkApps.enable = false;
+
+      # Home Manager uses macOS's native man implementation, so there is no
+      # Home Manager man package from which to generate caches.
+      programs.man.generateCaches = false;
+
+      programs.aerospace = {
+        enable = true;
+        package = pkgs.aerospace;
+
+        # Home Manager owns startup and config reloads through launchd.
+        launchd.enable = true;
+
+        settings = {
+          "config-version" = 2;
+          "start-at-login" = true;
+
+          "enable-normalization-flatten-containers" = true;
+          "enable-normalization-opposite-orientation-for-nested-containers" = true;
+          "default-root-container-layout" = "tiles";
+          "default-root-container-orientation" = "auto";
+          "accordion-padding" = 28;
+
+          "on-focused-monitor-changed" = [ "move-mouse monitor-lazy-center" ];
+          "persistent-workspaces" = workspaces;
+          gaps = {
+            inner.horizontal = 8;
+            inner.vertical = 8;
+            outer.left = 10;
+            outer.bottom = 10;
+            # macOS already reserves room for its native menu bar.
+            outer.top = 10;
+            outer.right = 10;
+          };
+
+          mode.main.binding =
+            workspaceBindings
+            // moveToWorkspaceBindings
+            // {
+              alt-enter = "exec-and-forget open -na Ghostty";
+
+              alt-slash = "layout tiles horizontal vertical";
+              alt-comma = "layout accordion horizontal vertical";
+              alt-shift-space = "layout floating tiling";
+              alt-shift-f = "fullscreen";
+              alt-shift-r = [
+                "flatten-workspace-tree"
+                "layout h_tiles"
+                "balance-sizes"
+              ];
+              alt-minus = "resize smart -50";
+              alt-equal = "resize smart +50";
+
+              alt-tab = "workspace-back-and-forth";
+              alt-shift-tab = "move-workspace-to-monitor --wrap-around next";
+              alt-shift-semicolon = "mode service";
+            };
+
+          mode.service.binding = {
+            esc = [
+              "reload-config"
+              "mode main"
+            ];
+            r = [
+              "flatten-workspace-tree"
+              "layout h_tiles"
+              "balance-sizes"
+              "mode main"
+            ];
+            f = [
+              "layout floating tiling"
+              "mode main"
+            ];
+            backspace = [
+              "close-all-windows-but-current"
+              "mode main"
+            ];
+            alt-shift-h = [
+              "join-with left"
+              "mode main"
+            ];
+            alt-shift-j = [
+              "join-with down"
+              "mode main"
+            ];
+            alt-shift-k = [
+              "join-with up"
+              "mode main"
+            ];
+            alt-shift-l = [
+              "join-with right"
+              "mode main"
+            ];
+          };
+
+          # Keep normal app windows in the tiling tree; float only small utilities.
+          "on-window-detected" = [
+            {
+              # Terminals should always join the active tiling tree. In particular,
+              # do not treat Ghostty's compact initial frame as a dialog.
+              "if".app-id = "com.mitchellh.ghostty";
+              run = "layout tiling";
+            }
+            {
+              "if".app-id = "com.apple.systempreferences";
+              run = "layout floating";
+            }
+            {
+              "if".app-id = "com.apple.calculator";
+              run = "layout floating";
+            }
+            {
+              "if".app-id = "com.apple.SecurityAgent";
+              run = "layout floating";
+            }
+          ];
+        };
+      };
+
+      # Ghostty is the macOS terminal (the NixOS desktop uses Tern).
+      # Stylix owns its palette, font, size, and opacity.
+      programs.ghostty = {
+        enable = true;
+        package = pkgs.ghostty-bin;
+        enableFishIntegration = true;
+
+        settings = {
+          "background-blur" = 16;
+          "window-padding-x" = 14;
+          "window-padding-y" = 12;
+          "confirm-close-surface" = false;
+          keybind = [ "shift+enter=text:\\x1b\\r" ];
+          # Hides the titlebar but keeps the frame and rounded corners.
+          "macos-titlebar-style" = "hidden";
+        };
+      };
+    };
+}
