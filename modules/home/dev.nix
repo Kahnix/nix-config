@@ -13,9 +13,12 @@
         (inputs.oh-my-pi.packages.${system}.omp.override {
           withWaylandScreencast = config.my.omp.waylandScreencast;
         }).overrideAttrs
-          (_: {
-            CARGO_PROFILE_RELEASE_LTO = "thin";
+          (old: {
+            CARGO_PROFILE_RELEASE_LTO = "off";
             CARGO_PROFILE_RELEASE_CODEGEN_UNITS = "16";
+            env = old.env // {
+              RUSTFLAGS = "${old.env.RUSTFLAGS or ""} -Zthreads=8";
+            };
           });
     in
     {
@@ -35,7 +38,6 @@
           unzip
           tree
           nodejs
-          burpsuite
           nil
           burpsuite
           pnpm
