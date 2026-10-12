@@ -35,6 +35,7 @@
           unzip
           tree
           nodejs
+          burpsuite
           nil
           burpsuite
           pnpm

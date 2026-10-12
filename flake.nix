@@ -40,7 +40,6 @@
     # Shared coding agent; the desktop enables Wayland capture in Home Manager.
     oh-my-pi = {
       url = "github:can1357/oh-my-pi";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Outputs are assembled by flake-parts from every module under ./modules.
