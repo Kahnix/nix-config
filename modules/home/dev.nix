@@ -36,6 +36,7 @@
           tree
           nodejs
           nil
+          burpsuite
           pnpm
           inputs.bunnix.packages.${system}.v1_3_14
           deno
