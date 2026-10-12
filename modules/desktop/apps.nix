@@ -5,6 +5,7 @@ in
 {
   unfreePackages = [
     "discord"
+    "burpsuite"
     "discord-unwrapped"
     "firefox-bin"
     "firefox-bin-unwrapped"
