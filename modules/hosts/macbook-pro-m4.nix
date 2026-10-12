@@ -29,17 +29,6 @@ in
           cleanup = "uninstall";
           upgrade = true;
         };
-        # Formulae Nix doesn't already install via Home Manager.
-        brews = [
-          "cowsay"
-          "freerdp"
-          "htop"
-          "p7zip"
-          "pipx"
-          "poppler"
-          "tmux"
-          "yt-dlp"
-        ];
         casks = [ "burp-suite" ];
       };
 
