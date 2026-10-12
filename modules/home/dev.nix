@@ -41,6 +41,7 @@
           deno
           go
           rustup
+          python3
           nixd
           lua-language-server
           redis

@@ -134,6 +134,10 @@ in
               disable_hyprland_logo = true;
               disable_splash_rendering = true;
               force_default_wallpaper = 0;
+              # VRR only for fullscreen windows tagged content "game" (see the
+              # steam-games rule). Pascal drives G-Sync Compatible over DisplayPort
+              # only; on HDMI the monitor reports no VRR capability and this is inert.
+              vrr = 3;
             };
             # 2 = scan out fullscreen windows with content-type "game" straight
             # to the display, skipping the compositor copy: one frame less of

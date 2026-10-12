@@ -99,10 +99,20 @@ in
       # decompresses ~3x faster than the default zstd, which is the trade that
       # matters when swapped pages are faulted back in mid-frame. zram alone filled
       # up and OOM-killed AION 2, so a disk swapfile (hardware.nix) backs it as
-      # lower-priority overflow.
+      # lower-priority overflow. Forza Horizon 6 alone holds ~9 GiB resident, so let
+      # zram cover all of RAM (~3:1 with lz4) before anything reaches the NVMe file.
       zramSwap = {
         enable = true;
         algorithm = "lz4";
+        memoryPercent = 100;
+      };
+
+      # Swap is in-memory zram first: prefer swapping cold anon pages over dropping
+      # the page cache that games stream assets from (>100 is valid with zram), and
+      # fault single pages back in, since readahead only pays off on disks.
+      boot.kernel.sysctl = {
+        "vm.swappiness" = 180;
+        "vm.page-cluster" = 0;
       };
 
       environment.systemPackages = [ pkgs.pciutils ];
