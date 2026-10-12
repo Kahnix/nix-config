@@ -21,6 +21,28 @@ in
       nixpkgs.hostPlatform = "aarch64-darwin";
       system.primaryUser = "kacperdaniel";
 
+      # Homebrew packages
+      homebrew = {
+        enable = true;
+        onActivation = {
+          autoUpdate = true;
+          cleanup = "uninstall";
+          upgrade = true;
+        };
+        # Formulae Nix doesn't already install via Home Manager.
+        brews = [
+          "cowsay"
+          "freerdp"
+          "htop"
+          "p7zip"
+          "pipx"
+          "poppler"
+          "tmux"
+          "yt-dlp"
+        ];
+        casks = [ "burp-suite" ];
+      };
+
       # Keep the native macOS menu bar visible.
       system.defaults.NSGlobalDomain._HIHideMenuBar = false;
       system.defaults.spaces.spans-displays = false;

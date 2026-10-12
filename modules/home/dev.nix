@@ -35,6 +35,7 @@
           unzip
           tree
           nodejs
+          nil
           pnpm
           inputs.bunnix.packages.${system}.v1_3_14
           deno

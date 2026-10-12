@@ -123,7 +123,7 @@
               run = "layout tiling";
             }
             {
-              "if".app-id = "com.apple.systempreferences";
+              "if".app-id = "com.apple.systemeferences";
               run = "layout floating";
             }
             {
