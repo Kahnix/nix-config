@@ -20,9 +20,13 @@ let
             package = pkgs.inter;
             name = "Inter";
           };
+          # Berkeley Mono with Nerd Font icons, from the private berkeley-mono-nerd input.
+          # Installs both families; "BerkeleyMono Nerd Font Mono" has one-cell icons.
           monospace = {
-            package = pkgs.nerd-fonts.jetbrains-mono;
-            name = "JetBrainsMono Nerd Font";
+            package = pkgs.runCommandLocal "berkeley-mono-nerd" { } ''
+              install -Dm444 -t $out/share/fonts/truetype ${inputs.berkeley-mono-nerd}/fonts/*.ttf
+            '';
+            name = "BerkeleyMono Nerd Font";
           };
           emoji = {
             package = pkgs.noto-fonts-color-emoji;

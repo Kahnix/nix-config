@@ -30,6 +30,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Nerd Font patched Berkeley Mono. Private: Berkeley Mono is a paid, per-person font.
+    # Fetched over SSH, so evaluating needs a GitHub key with access to the repo.
+    berkeley-mono-nerd = {
+      url = "git+ssh://git@github.com/Kahnix/berkeley-mono-nerd";
+      flake = false;
+    };
+
     # Shared coding agent; the desktop enables Wayland capture in Home Manager.
     oh-my-pi = {
       url = "github:can1357/oh-my-pi";

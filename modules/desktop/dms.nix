@@ -141,7 +141,7 @@ in
 
         # Typography
         fontFamily = "Inter";
-        monoFontFamily = "JetBrainsMono Nerd Font";
+        monoFontFamily = config.stylix.fonts.monospace.name;
         fontScale = 0.95;
 
         # Restrained shape and transparency

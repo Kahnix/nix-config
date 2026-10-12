@@ -68,6 +68,22 @@
         "type": "github"
       }
     },
+    "berkeley-mono-nerd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791810969,
+        "narHash": "sha256-bh7CQthzRE4xbCEVAXXQgUo7mbmF7fpROmuUdCHNaSA=",
+        "ref": "refs/heads/main",
+        "rev": "045f44036e55a0ae18306bf162e31ce44fc65471",
+        "revCount": 1,
+        "type": "git",
+        "url": "ssh://git@github.com/Kahnix/berkeley-mono-nerd"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/Kahnix/berkeley-mono-nerd"
+      }
+    },
     "bun2nix": {
       "inputs": {
         "flake-parts": "flake-parts_3",
@@ -574,6 +590,7 @@
     },
     "root": {
       "inputs": {
+        "berkeley-mono-nerd": "berkeley-mono-nerd",
         "bunnix": "bunnix",
         "darwin": "darwin",
         "flake-parts": "flake-parts",
