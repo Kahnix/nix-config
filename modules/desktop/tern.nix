@@ -1,7 +1,15 @@
+{ config, ... }:
+let
+  homeModules = config.flake.modules.homeManager;
+in
 {
+  flake.modules.homeManager.tern = {
+    home.sessionVariables.TERMINAL = "tern";
+  };
   # Tern (build.stencil.so/tern) is installed outside Nix into ~/.local/bin and
   # configured through ~/.config/tern/settings.json; this provides what its
   # prebuilt glibc binary needs from the system.
+
   flake.modules.nixos.tern =
     { pkgs, ... }:
     {
@@ -25,6 +33,6 @@
       # Tern's embedded WebKitGTK needs glib-networking for https.
       environment.sessionVariables.GIO_EXTRA_MODULES = [ "${pkgs.glib-networking}/lib/gio/modules" ];
 
-      home-manager.sharedModules = [ { home.sessionVariables.TERMINAL = "tern"; } ];
+      home-manager.sharedModules = [ homeModules.tern ];
     };
 }
