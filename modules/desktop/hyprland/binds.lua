@@ -11,7 +11,16 @@ local function shell(key, command)
   hl.bind(key, hl.dsp.exec_cmd("dms ipc call " .. command))
 end
 
-app("SUPER + Return", tern)
+-- Each Tern window owns its own sessions, so a second window opens an empty
+-- "Default" one; raise the window that exists and launch only when there is none.
+hl.bind("SUPER + Return", function()
+  local window = hl.get_windows({ class = "so.stencil.tern" })[1]
+  if window then
+    hl.dispatch(hl.dsp.focus({ window = window }))
+  else
+    hl.exec_cmd("uwsm app -- " .. tern)
+  end
+end)
 app("SUPER + B", "firefox")
 app("SUPER + E", "thunar")
 app("SUPER + SHIFT + G", "steam")

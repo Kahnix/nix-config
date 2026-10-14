@@ -58,7 +58,7 @@
           httpie
           xh
           yq
-          lazygit
+          delta
           devenv
           nixfmt
           hydra-check
@@ -82,5 +82,11 @@
             burpsuite
           ]
         );
+
+      # Stylix supplies gui.theme; lazygit.nvim reads this same config.
+      config.programs.lazygit = {
+        enable = true;
+        settings.git.diffRenderers = [ { command = "delta --{{colorScheme}} --paging=never"; } ];
+      };
     };
 }

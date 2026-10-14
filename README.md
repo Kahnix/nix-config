@@ -97,7 +97,7 @@ dwindle layout, modest gaps and animations, and no compositor plugins.
 
 | Key | Hyprland action |
 | --- | --- |
-| `Super + Return` / `Super + B` / `Super + E` | Terminal / browser / files |
+| `Super + Return` / `Super + B` / `Super + E` | Terminal (raises the open Tern window) / browser / files |
 | `Super + Space` | Spotlight application launcher |
 | `Super + Ctrl + Space` | Control center |
 | `Super + Ctrl + V` / `Super + Ctrl + D` | Clipboard / shell settings |
