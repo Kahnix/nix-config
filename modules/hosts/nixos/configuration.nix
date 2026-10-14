@@ -30,6 +30,7 @@ in
       gaming
       streaming
       virtualisation
+      notes-sync
     ];
   };
 

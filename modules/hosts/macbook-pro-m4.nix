@@ -12,6 +12,8 @@ in
       nix
       user
       theme
+
+      notes-sync
     ];
   };
 

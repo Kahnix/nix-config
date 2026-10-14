@@ -39,7 +39,6 @@
           tree
           nodejs
           nil
-          burpsuite
           pnpm
           inputs.bunnix.packages.${system}.v1_3_14
           deno
@@ -75,6 +74,13 @@
           omp
           herdr
         ])
-        ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.gcc ];
+        ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
+          with pkgs;
+          [
+            gcc
+            # Linux FHS wrapper; macOS installs the burp-suite Homebrew cask.
+            burpsuite
+          ]
+        );
     };
 }
