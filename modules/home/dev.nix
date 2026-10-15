@@ -28,7 +28,6 @@
         (with pkgs; [
           neovim
           tree-sitter
-          gh
           git-lfs
           ripgrep
           fd
@@ -87,6 +86,13 @@
       config.programs.lazygit = {
         enable = true;
         settings.git.diffRenderers = [ { command = "delta --{{colorScheme}} --paging=never"; } ];
+      };
+
+      # Generated git credential helper tracks the current gh store path,
+      # unlike `gh auth setup-git`, which pins one that gets garbage-collected.
+      config.programs.gh = {
+        enable = true;
+        settings.aliases.co = "pr checkout";
       };
     };
 }
