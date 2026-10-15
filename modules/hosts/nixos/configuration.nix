@@ -118,7 +118,9 @@ in
 
       environment.systemPackages = [ pkgs.pciutils ];
 
-      home-manager.users.${config.my.user}.programs.fish.shellAliases.rebuild = "nh os switch -H nixos";
+      # Because the attic cache has recently been unstable, I'm adding it as an extra substituter into the alias, that way i can rebuild the system without it breaking devenv
+      home-manager.users.${config.my.user}.programs.fish.shellAliases.rebuild =
+        "nh os switch -H nixos --option extra-substituters https://attic.xuyh0120.win/lantian";
 
       system.stateVersion = "26.05";
     };
