@@ -24,7 +24,6 @@ in
       hyprland
       dms
       desktop-apps
-      replay-buffer
       tern
 
       gaming
@@ -116,11 +115,19 @@ in
         "vm.page-cluster" = 0;
       };
 
+      # A game that fills RAM can starve zram of the memory it compresses into,
+      # and the kernel then livelocks in reclaim (STALKER GAMMA froze the whole
+      # desktop this way, past the kernel OOM killer). systemd-oomd watches memory
+      # pressure in user sessions and kills the worst cgroup (usually the game's
+      # Steam unit) after 10 s above the limit, instead of the 30 s default.
+      systemd.oomd = {
+        enableUserSlices = true;
+        settings.OOM.DefaultMemoryPressureDurationSec = "10s";
+      };
+
       environment.systemPackages = [ pkgs.pciutils ];
 
-      # Because the attic cache has recently been unstable, I'm adding it as an extra substituter into the alias, that way i can rebuild the system without it breaking devenv
-      home-manager.users.${config.my.user}.programs.fish.shellAliases.rebuild =
-        "nh os switch -H nixos --option extra-substituters https://attic.xuyh0120.win/lantian";
+      home-manager.users.${config.my.user}.programs.fish.shellAliases.rebuild = "nh os switch -H nixos";
 
       system.stateVersion = "26.05";
     };
