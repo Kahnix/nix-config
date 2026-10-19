@@ -77,8 +77,6 @@ for key, mode in pairs({ Print = "region", ["SHIFT + Print"] = "window",
                          ["SUPER + ALT + S"] = "window", ["SUPER + CTRL + S"] = "output" }) do
   hl.bind(key, hl.dsp.exec_cmd("hypr-screenshot " .. mode))
 end
-hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd("gsr-replay save 60"))
-hl.bind("SUPER + ALT + SHIFT + R", hl.dsp.exec_cmd("gsr-replay toggle"))
 
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true })

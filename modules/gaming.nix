@@ -1,11 +1,16 @@
 {
   unfreePackages = [
+    # Lossless Scaling frame generation layer (CC BY-NC-ND).
+    "lsfg-vk"
+    "lsfg-vk-ui"
     "proton-cachyos-bin"
     "proton-ge-bin"
     "steam"
     "steam-original"
     "steam-run"
     "steam-unwrapped"
+    # gamma-launcher extracts GAMMA's .rar mod archives with it.
+    "unrar"
   ];
 
   flake.modules.nixos.gaming =
@@ -39,6 +44,16 @@
           pkgs.proton-ge-bin
           pkgs.proton-cachyos-bin
         ];
+        # Winetricks verbs into a Steam game's Proton prefix (STALKER GAMMA's MO2
+        # shortcut needs d3dx/d3dcompiler/vcrun).
+        protontricks.enable = true;
+        # Lossless Scaling frame generation for Vulkan/DXVK games. The layer loads
+        # the shaders from the Steam copy of Lossless Scaling (its "lsfg-vk" beta
+        # branch) and turns on per game from ~/.config/lsfg-vk/conf.toml, which
+        # lsfg-vk-ui edits. It has to be in Steam's own FHS env: that env builds
+        # its own /run/opengl-driver, so hardware.graphics layers never reach
+        # the game's runtime container.
+        extraPackages = [ pkgs.lsfg-vk ];
       };
 
       programs.gamemode.enable = true;
@@ -46,6 +61,11 @@
         enable = true;
         capSysNice = true;
       };
+
+      # STALKER GAMMA co-op (xrRazom) hosted by IP instead of Steam ID: its
+      # GameNetworkingSockets listener (xrr_host_lan_port, UDP 27015), reachable
+      # by friends over Tailscale only.
+      networking.firewall.interfaces.tailscale0.allowedUDPPorts = [ 27015 ];
 
       # GPU overclock/fan control. `settings` is deliberately left empty: the NixOS
       # module then leaves /etc/lact/config.yaml owned by lactd, so offsets can be
@@ -69,6 +89,12 @@
       environment.systemPackages = with pkgs; [
         bolt-launcher-alsa
         dzgui
+        # STALKER GAMMA: installs/updates Anomaly + the GAMMA modpack natively
+        # (/mnt/storage/Games/STALKER); MO2 then runs as a non-Steam Proton game.
+        gamma-launcher
+        # Launches GAMMA without MO2's slow virtual file system (see the package).
+        gamma-direct
+        lsfg-vk-ui
         lutris
         mangohud
         prismlauncher

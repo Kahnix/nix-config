@@ -19,6 +19,9 @@ in
           dockerManager.src = pkgs.dms-plugin-docker-manager;
         };
       };
+      # The screen recorder plugin drives gpu-screen-recorder; the module adds the
+      # setcap'd gsr-kms-server wrapper that direct monitor (KMS) capture needs.
+      programs.gpu-screen-recorder.enable = true;
       # Stylix owns GTK/Qt/terminal colours; never let DMS's matugen override them.
       systemd.user.services.dms.environment.DMS_DISABLE_MATUGEN = "1";
 
