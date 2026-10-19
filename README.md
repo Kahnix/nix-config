@@ -12,31 +12,6 @@ The shared Home Manager development profile installs oh-my-pi (`omp`) on all
 three hosts. The NixOS desktop enables its PipeWire-backed Wayland capture
 addon; WSL and macOS use the default build.
 
-## Desktop
-
-The `nixos` host uses:
-
-- Hyprland with DankMaterialShell, built on Quickshell, as the default UWSM-managed session.
-- DMS for the bar, launcher, control center, notifications, clipboard, wallpaper, and lock screen.
-- A Kanagawa Dragon palette across DMS, GTK, Ghostty (macOS), and btop.
-- DankGreeter for login, matching the current DMS appearance and initially selecting **Hyprland + Quickshell (UWSM)**.
-- Tern (NixOS) and Ghostty (macOS) terminals, Fish, Starship, and the shared Home Manager development profile.
-- Zen Browser, Proton Pass, Proton Mail, Proton VPN, Telegram, Obsidian, and Vesktop for Discord.
-- Hyprshot screenshots, copied and saved to `~/Pictures/Screenshots`.
-- GPU Screen Recorder through the DMS Screen Recorder plugin, plus
-  `wf-recorder` for one-shot clips.
-- WO Mic at its native 48 kHz/16-bit mono format for using a phone as a microphone.
-- NVIDIA's proprietary 580 driver and a CachyOS kernel.
-- Steam, DZGUI, Gamescope, GameMode, Proton-GE, Heroic, Lutris, MangoHud, Wine,
-  gamma-launcher and protontricks.
-- Bloodborne Seamless Co-op (BBSC) on Linux: the BBSC shadPS4 fork, its mod
-  ported to a native `.so`, and the BBSC launcher (see below).
-- libvirt/KVM, virt-manager, swtpm, Quickemu, SPICE, and VirtioFS for Windows VM work.
-
-Hyprland integrates Xwayland for X11 applications, including Steam and legacy
-games. Xwayland Satellite is not needed. Niri and Noctalia have been removed;
-DankGreeter provides the login screen.
-
 ## Layout
 
 The flake follows the [dendritic pattern](https://discourse.nixos.org/t/the-dendritic-pattern/61271):
