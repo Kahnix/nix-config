@@ -9,8 +9,12 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Track CachyOS upstream's newest kernel; it may require a local build before CI caches it.
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel";
+    # CachyOS kernels. xddxdd's cache went offline after a server compromise
+    # (xddxdd/nix-cachyos-kernel#110), so this tracks chaotic-cx's build of the
+    # same kernels, which publishes substitutes at nyx-cache.chaotic.cx.
+    # Its nixpkgs is deliberately not overridden: the cache key is the
+    # derivation built by this flake's own lock.
+    chaotic.url = "github:chaotic-cx/nyx/main";
 
     # User-level config: shell, git, nvim, tmux, packages.
     home-manager.url = "github:nix-community/home-manager";
@@ -40,6 +44,12 @@
     # Shared coding agent; the desktop enables Wayland capture in Home Manager.
     oh-my-pi = {
       url = "github:can1357/oh-my-pi";
+    };
+
+    # Official Jagex Launcher (Linux beta); own package, Kahnix/jagex-launcher-nix.
+    jagex-launcher = {
+      url = "github:Kahnix/jagex-launcher-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Outputs are assembled by flake-parts from every module under ./modules.

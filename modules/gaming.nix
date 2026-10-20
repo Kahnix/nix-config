@@ -1,5 +1,8 @@
+{ inputs, ... }:
 {
   unfreePackages = [
+    # Official Jagex Launcher; RuneLite on a Jagex Account without Bolt.
+    "jagex-launcher"
     # Lossless Scaling frame generation layer (CC BY-NC-ND).
     "lsfg-vk"
     "lsfg-vk-ui"
@@ -16,6 +19,8 @@
   flake.modules.nixos.gaming =
     { config, pkgs, ... }:
     {
+      nixpkgs.overlays = [ inputs.jagex-launcher.overlays.default ];
+
       # ntsync: kernel-side NT sync primitives. Proton 11's wineserver uses
       # /dev/ntsync automatically when it exists, replacing esync/fsync.
       boot.kernelModules = [ "ntsync" ];
@@ -89,6 +94,7 @@
       environment.systemPackages = with pkgs; [
         bolt-launcher-alsa
         dzgui
+        jagex-launcher
         # STALKER GAMMA: installs/updates Anomaly + the GAMMA modpack natively
         # (/mnt/storage/Games/STALKER); MO2 then runs as a non-Steam Proton game.
         gamma-launcher

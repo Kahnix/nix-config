@@ -2,6 +2,8 @@
   unfreePackages = [
     "nvidia-settings"
     "nvidia-x11"
+    # Split out of nvidia-x11; the kernel module derivation has its own name.
+    "nvidia-kernel-modules"
   ];
 
   flake.modules.nixos.nvidia =
