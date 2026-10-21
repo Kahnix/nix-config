@@ -42,6 +42,9 @@ in
     environment.sessionVariables = {
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
       NIXOS_OZONE_WL = "1";
+      # AWT under XWayland on a non-reparenting compositor: without this, Swing
+      # frames (RuneLite) never pick up resizes and paint at their initial size.
+      _JAVA_AWT_WM_NONREPARENTING = "1";
     };
 
     home-manager.sharedModules = [ homeModules.hyprland ];
