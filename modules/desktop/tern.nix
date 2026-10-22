@@ -27,12 +27,25 @@ in
         ]
       );
 
-      # 8376/udp: `tern remote serve` (QUIC). Inbound only; outbound works via conntrack.
-      networking.firewall.interfaces.tailscale0.allowedUDPPorts = [ 8376 ];
+      # 8376/udp: `tern remote serve` (QUIC), from my own tailnet devices only.
+      # Inbound only; outbound works via conntrack.
+      my.tailscale.ownDevicesOnly.allowedUDPPorts = [ 8376 ];
 
       # Tern's embedded WebKitGTK needs glib-networking for https.
       environment.sessionVariables.GIO_EXTRA_MODULES = [ "${pkgs.glib-networking}/lib/gio/modules" ];
 
-      home-manager.sharedModules = [ homeModules.tern ];
+      home-manager.sharedModules = [
+        homeModules.tern
+        {
+          # `tern remote install --user` writes this unit. Without --no-iroh the
+          # service also answers by endpoint id through iroh.stencil.so relays and
+          # hole punching, from anywhere and around the firewall.
+          xdg.configFile."systemd/user/tern-remote.service.d/no-iroh.conf".text = ''
+            [Service]
+            ExecStart=
+            ExecStart=%h/.local/opt/tern/tern remote serve --user --state-dir %h/.config/tern --no-iroh
+          '';
+        }
+      ];
     };
 }

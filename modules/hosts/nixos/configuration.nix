@@ -46,12 +46,12 @@ in
       networking = {
         hostName = "nixos";
         networkmanager.enable = true;
-        # 8376/udp: `tern remote serve` (QUIC) on the LAN as well as Tailscale.
-        firewall.interfaces.enp7s0.allowedUDPPorts = [
-          49152
-          8376
-        ];
+        firewall.interfaces.enp7s0.allowedUDPPorts = [ 49152 ];
       };
+
+      # SSH from my own tailnet devices only.
+      services.openssh.openFirewall = false;
+      my.tailscale.ownDevicesOnly.allowedTCPPorts = [ 22 ];
 
       time.timeZone = "Europe/Warsaw";
       i18n = {

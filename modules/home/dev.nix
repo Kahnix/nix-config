@@ -29,6 +29,7 @@
           neovim
           tree-sitter
           git-lfs
+          btop
           ripgrep
           fd
           jq

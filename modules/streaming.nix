@@ -49,7 +49,8 @@
         inherit applications;
       };
 
-      networking.firewall.interfaces.tailscale0 = {
+      # Moonlight, from my own tailnet devices only.
+      my.tailscale.ownDevicesOnly = {
         allowedTCPPorts = [
           47984
           47989
