@@ -17,9 +17,8 @@
       # this config's unfree list. nixpkgs still builds those modules locally,
       # which is why the nvidia module compiles per kernel bump.
       boot.kernelPackages =
-        (pkgs.linuxPackagesFor
-          inputs.chaotic.packages.${pkgs.stdenv.hostPlatform.system}.linux_cachyos-eevdf
-        ).extend
+        (pkgs.linuxPackagesFor inputs.chaotic.packages.${pkgs.stdenv.hostPlatform.system}.linux_cachyos-rc)
+        .extend
           (_final: _prev: { stdenv = pkgs.stdenv; });
     };
 }
