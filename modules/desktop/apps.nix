@@ -185,46 +185,6 @@ in
       '';
 
       programs = {
-        # Keyboard-first file manager. Stylix writes the base16 theme into
-        # theme.toml; the extra packages give yazi previews for video, PDF and
-        # archives. Its default `open` opener is xdg-open, so the handlers below
-        # decide what a file opens with.
-        yazi = {
-          enable = true;
-          enableFishIntegration = true;
-          # yazi's built-in previewers shell out to these: ffmpeg/ffprobe for video
-          # thumbnails, pdftoppm for PDF, 7zz for archives, magick for exotic images
-          # (avif/heif/jxl) and font files, file(1) for MIME spotting.
-          extraPackages = with pkgs; [
-            _7zz
-            ffmpeg
-            exiftool
-            file
-            imagemagick
-            poppler-utils
-          ];
-          settings = {
-            mgr = {
-              show_hidden = true;
-              sort_dir_first = true;
-            };
-
-            # Enter/o on text and code files runs this (yazi's `open` rules send
-            # text/* and code types to the `edit` opener). Spelled out rather than
-            # relying on $EDITOR: the compositor inherits its environment at login, so a
-            # session started before EDITOR changed keeps the old value for every
-            # spawn. `block = true` hands the terminal to hx and returns to yazi
-            # on quit.
-            opener.edit = [
-              {
-                run = "hx %s";
-                block = true;
-                desc = "Helix";
-              }
-            ];
-          };
-        };
-
         # Stylix fills zathurarc with the palette; zathura carries the mupdf backend.
         zathura.enable = true;
       };
