@@ -99,9 +99,10 @@ DMS settings are seeded only when absent in
 `~/.config/DankMaterialShell/settings.json`; wallpaper/session state lives in
 `~/.local/state/DankMaterialShell/session.json`. UI changes survive rebuilds.
 First launch prefers `~/Documents/wallpapers/31299713726712.jpg`, with a packaged
-dark gradient if it is absent. The Kanagawa theme is a managed file at
-`~/.config/DankMaterialShell/kanagawa-dragon.json`. DMS application-theme
-generation is disabled so it does not overwrite Stylix.
+gradient built from the active Stylix palette if it is absent. DMS's application
+theme is a managed file at `~/.config/DankMaterialShell/stylix.json`, generated
+from the same palette (Rosé Pine, set in `modules/system/theme.nix`); DMS
+application-theme generation is disabled so it does not overwrite Stylix.
 
 ### Login screen
 

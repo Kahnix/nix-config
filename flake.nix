@@ -16,7 +16,7 @@
     # derivation built by this flake's own lock.
     chaotic.url = "github:chaotic-cx/nyx/main";
 
-    # User-level config: shell, git, nvim, tmux, packages.
+    # User-level config: shell, git, helix, tmux, packages.
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 

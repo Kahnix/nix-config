@@ -151,7 +151,7 @@ in
           };
           curve = {
             _args = [
-              "kanagawa"
+              "smooth"
               {
                 type = "bezier";
                 points = [
@@ -172,27 +172,27 @@ in
               leaf = "windows";
               enabled = true;
               speed = 3;
-              bezier = "kanagawa";
+              bezier = "smooth";
               style = "slide";
             }
             {
               leaf = "fade";
               enabled = true;
               speed = 2;
-              bezier = "kanagawa";
+              bezier = "smooth";
             }
             {
               leaf = "workspaces";
               enabled = true;
               speed = 3;
-              bezier = "kanagawa";
+              bezier = "smooth";
               style = "slide";
             }
             {
               leaf = "layers";
               enabled = true;
               speed = 2;
-              bezier = "kanagawa";
+              bezier = "smooth";
               style = "fade";
             }
             {

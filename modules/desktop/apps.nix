@@ -35,8 +35,8 @@ in
     # wins. This is what yazi's built-in `edit` opener runs ("${EDITOR:-vi} %s",
     # blocking), and what git, ssh and everything else picks up.
     environment.variables = {
-      EDITOR = "nvim";
-      VISUAL = "nvim";
+      EDITOR = "hx";
+      VISUAL = "hx";
     };
 
     home-manager.sharedModules = [ homeModules.desktop-apps ];
@@ -213,13 +213,13 @@ in
             # text/* and code types to the `edit` opener). Spelled out rather than
             # relying on $EDITOR: the compositor inherits its environment at login, so a
             # session started before EDITOR changed keeps the old value for every
-            # spawn. `block = true` hands the terminal to nvim and returns to yazi
+            # spawn. `block = true` hands the terminal to hx and returns to yazi
             # on quit.
             opener.edit = [
               {
-                run = "nvim %s";
+                run = "hx %s";
                 block = true;
-                desc = "Neovim";
+                desc = "Helix";
               }
             ];
           };

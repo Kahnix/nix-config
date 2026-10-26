@@ -1,7 +1,8 @@
 { inputs, ... }:
 let
-  # Kanagawa Dragon everywhere Stylix reaches; Stylix also themes the Home
-  # Manager side through its Home Manager integration.
+  # Rosé Pine everywhere Stylix reaches; Stylix also themes the Home Manager
+  # side through its Home Manager integration. Moon and Dawn are the same
+  # palette with `rose-pine-moon.yaml` / `rose-pine-dawn.yaml`.
   stylix =
     { pkgs, ... }:
     {
@@ -9,7 +10,7 @@ let
         enable = true;
         autoEnable = true;
         polarity = "dark";
-        base16Scheme = "${pkgs.base16-schemes}/share/themes/kanagawa-dragon.yaml";
+        base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
 
         fonts = {
           serif = {

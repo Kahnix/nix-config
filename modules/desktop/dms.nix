@@ -91,8 +91,10 @@ in
       # Stylix exposes the active Base16 palette both with and without leading '#'.
       c = config.lib.stylix.colors.withHashtag;
 
-      dmsTheme = jsonFormat.generate "dms-kanagawa-dragon-theme.json" {
-        name = "Kanagawa Dragon";
+      # Derived from the live Stylix palette, so changing the scheme in
+      # modules/system/theme.nix re-colours DMS with no edits here.
+      dmsTheme = jsonFormat.generate "dms-stylix-theme.json" {
+        name = "Stylix";
         primary = c.base0D;
         primaryText = c.base00;
         primaryContainer = c.base0C;
@@ -114,10 +116,11 @@ in
         matugen_type = "scheme-neutral";
       };
 
-      # Deterministic fallback wallpaper matching the dark graphite/slate palette.
-      # DMS has no SVG image support, so generate a PNG at build time.
+      # Deterministic fallback wallpaper from the same palette (base00 ->
+      # base02 radial gradient). DMS has no SVG image support, so it is a
+      # build-time PNG.
       dmsWallpaper =
-        pkgs.runCommand "dms-kanagawa-dragon-wallpaper.png"
+        pkgs.runCommand "dms-stylix-wallpaper.png"
           {
             nativeBuildInputs = [ pkgs.imagemagick ];
           }
@@ -127,7 +130,7 @@ in
               $out
           '';
 
-      fallbackWallpaperPath = "${config.xdg.dataHome}/backgrounds/dms-kanagawa-dragon.png";
+      fallbackWallpaperPath = "${config.xdg.dataHome}/backgrounds/dms-stylix.png";
       userWallpaperPath = "${config.home.homeDirectory}/Documents/wallpapers/31299713726712.jpg";
 
       # Non-default DMS settings only.  Defaults are omitted so the file stays
@@ -135,7 +138,7 @@ in
       dmsSettings = {
         currentThemeName = "custom";
         # Keep the mutable settings valid across theme updates and store GC.
-        customThemeFile = "${config.xdg.configHome}/DankMaterialShell/kanagawa-dragon.json";
+        customThemeFile = "${config.xdg.configHome}/DankMaterialShell/stylix.json";
 
         # Stop DMS from driving external app theming; Stylix owns GTK/Qt/terminal
         # colours.  DMS_DISABLE_MATUGEN=1 is also set in the service environment.
@@ -259,14 +262,25 @@ in
       # Hard-disable DMS matugen so it never overrides Stylix.
       home.sessionVariables.DMS_DISABLE_MATUGEN = "1";
 
-      xdg.configFile."DankMaterialShell/kanagawa-dragon.json".source = dmsTheme;
-      xdg.dataFile."backgrounds/dms-kanagawa-dragon.png".source = dmsWallpaper;
+      xdg.configFile."DankMaterialShell/stylix.json".source = dmsTheme;
+      xdg.dataFile."backgrounds/dms-stylix.png".source = dmsWallpaper;
 
       # Seed DMS defaults once.  After first login the files are owned by DMS and
       # user changes (wallpaper, settings tweaks) survive rebuilds.
       home.activation.seedDmsConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         settingsFile="${config.xdg.configHome}/DankMaterialShell/settings.json"
         sessionFile="${config.xdg.stateHome}/DankMaterialShell/session.json"
+
+        # Renamed with the theme files; both files are user-owned after the
+        # first login, so rewrite the stale references rather than replace them.
+        for f in "$settingsFile" "$sessionFile"; do
+          if [ -f "$f" ] && grep -qE 'kanagawa-dragon\.(json|png)' "$f"; then
+            run sed -i -E \
+              -e 's/kanagawa-dragon\.json/stylix.json/g' \
+              -e 's/dms-kanagawa-dragon\.png/dms-stylix.png/g' \
+              "$f"
+          fi
+        done
 
         if [ ! -f "$settingsFile" ]; then
           run install -Dm600 ${settingsJson} "$settingsFile"

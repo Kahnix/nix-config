@@ -26,7 +26,6 @@
 
       config.home.packages =
         (with pkgs; [
-          neovim
           tree-sitter
           git-lfs
           btop
@@ -83,7 +82,141 @@
           ]
         );
 
-      # Stylix supplies gui.theme; lazygit.nvim reads this same config.
+      # Helix config is generated: ~/.config/helix/{config,languages}.toml are
+      # read-only store symlinks, so editor settings live here. Stylix's helix
+      # target writes themes/stylix.toml and defines `settings.theme` itself;
+      # setting theme here would be a second, conflicting definition.
+      config.programs.helix = {
+        enable = true;
+
+        # Shells get EDITOR/VISUAL from here on every host; NixOS also keeps
+        # `hx` in environment.variables because GUI apps inherit their
+        # environment from the compositor, not from a shell.
+        defaultEditor = true;
+
+        # hx only finds language servers on PATH. The Mason installs Neovim used
+        # lived under ~/.local/share/nvim and were never on PATH.
+        extraPackages = with pkgs; [
+          clang-tools # clangd
+          gopls
+          golangci-lint
+          golangci-lint-langserver
+          oxlint
+          oxfmt
+          # Not wired to any language: a repo that wants it sets
+          # `formatter = { command = "prettier", args = ["--stdin-filepath", "%{buffer_name}"] }`
+          # in its own .helix/languages.toml.
+          prettier
+          ruff
+          taplo
+          markdown-oxide # wikilinks/backlinks for the ~/Notes Obsidian vault
+          lldb # lldb-dap
+          delve # dlv
+        ];
+
+        settings = lib.mkMerge [
+          {
+            editor = {
+              scrolloff = 10;
+              cursorline = true;
+              bufferline = "multiple";
+              color-modes = true;
+              indent-guides.render = true;
+              soft-wrap.enable = true;
+              whitespace = {
+                render = {
+                  tab = "all";
+                  space = "none";
+                };
+                characters.tab = "→";
+              };
+              # Pickers show dotfiles, matching the old telescope `hidden = true`.
+              file-picker.hidden = false;
+              lsp.display-progress-messages = true;
+            };
+          }
+          # WSL has no Stylix, so no generated theme: the built-in rose_pine
+          # keeps it on the same palette as the desktop.
+          (lib.mkIf (!(config.stylix.enable or false)) { theme = "rose_pine"; })
+        ];
+
+        languages = {
+          language-server = {
+            nixd.config.nixd.formatting.command = [ "nixfmt" ];
+            clangd.args = [
+              "--background-index"
+              "--clang-tidy"
+              "--header-insertion=never"
+            ];
+            oxlint = {
+              command = "oxlint";
+              args = [ "--lsp" ];
+            };
+            oxfmt = {
+              command = "oxfmt";
+              args = [ "--lsp" ];
+            };
+          };
+
+          language = [
+            {
+              name = "nix";
+              language-servers = [ "nixd" ];
+              auto-format = true; # nixd runs nixfmt
+            }
+            # Helix's defaults list servers that are not installed on purpose
+            # (nil beside nixd, marksman beside markdown-oxide, and so on); a
+            # missing binary fails on every buffer, so name one server each.
+            {
+              name = "markdown";
+              language-servers = [ "markdown-oxide" ];
+            }
+            {
+              name = "python";
+              language-servers = [ "ruff" ];
+            }
+            {
+              name = "toml";
+              language-servers = [ "taplo" ];
+            }
+            {
+              name = "yaml";
+              language-servers = [ "yaml-language-server" ];
+            }
+            {
+              name = "html";
+              language-servers = [ "vscode-html-language-server" ];
+            }
+          ]
+          # oxlint adds diagnostics and fixes beside typescript-language-server;
+          # oxfmt owns formatting, so tsserver's formatter is switched off.
+          ++
+            map
+              (name: {
+                inherit name;
+                auto-format = true;
+                language-servers = [
+                  {
+                    name = "typescript-language-server";
+                    except-features = [ "format" ];
+                  }
+                  "oxlint"
+                  {
+                    name = "oxfmt";
+                    only-features = [ "format" ];
+                  }
+                ];
+              })
+              [
+                "javascript"
+                "jsx"
+                "typescript"
+                "tsx"
+              ];
+        };
+      };
+
+      # Stylix supplies gui.theme; lazygit reads this same config.
       config.programs.lazygit = {
         enable = true;
         settings.git.diffRenderers = [ { command = "delta --{{colorScheme}} --paging=never"; } ];
