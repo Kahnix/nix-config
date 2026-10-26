@@ -29,6 +29,7 @@ in
       gaming
       streaming
       virtualisation
+      windows-vm
       notes-sync
     ];
   };

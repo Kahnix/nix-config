@@ -1,0 +1,6 @@
+    <folder id="@FOLDER_ID@" label="@FOLDER_ID@" path="@FOLDER_PATH@" type="sendreceive" rescanIntervalS="3600" fsWatcherEnabled="true" fsWatcherDelayS="1" ignorePerms="false" autoNormalize="true">
+        <filesystemType>basic</filesystemType>
+        <device id="@SELF_ID@" introducedBy=""></device>
+        <device id="@PEER_ID@" introducedBy=""></device>
+        <markerName>.stfolder</markerName>
+    </folder>

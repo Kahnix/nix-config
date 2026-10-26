@@ -1,0 +1,29 @@
+<configuration version="@VERSION@">
+@FOLDERS@
+    <device id="@SELF_ID@" name="self" compression="metadata" introducer="false" skipIntroductionRemovals="false" introducedBy="">
+        <address>dynamic</address>
+        <paused>false</paused>
+        <autoAcceptFolders>false</autoAcceptFolders>
+    </device>
+    <device id="@PEER_ID@" name="peer" compression="metadata" introducer="false" skipIntroductionRemovals="false" introducedBy="">
+        <address>@PEER_ADDRESS@</address>
+        <paused>false</paused>
+        <autoAcceptFolders>false</autoAcceptFolders>
+    </device>
+    <gui enabled="true" tls="false" debugging="false">
+        <address>@GUI_ADDRESS@</address>
+        <apikey>@APIKEY@</apikey>
+        <theme>default</theme>
+    </gui>
+    <options>
+        <listenAddress>@LISTEN@</listenAddress>
+        <globalAnnounceEnabled>false</globalAnnounceEnabled>
+        <localAnnounceEnabled>false</localAnnounceEnabled>
+        <relaysEnabled>false</relaysEnabled>
+        <natEnabled>false</natEnabled>
+        <crashReportingEnabled>false</crashReportingEnabled>
+        <startBrowser>false</startBrowser>
+        <urAccepted>-1</urAccepted>
+        <autoUpgradeIntervalH>0</autoUpgradeIntervalH>
+    </options>
+</configuration>

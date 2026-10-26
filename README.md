@@ -32,7 +32,8 @@ feature brings its Home Manager half along through `home-manager.sharedModules`.
   appends to.
 - `pkgs/`: packages nixpkgs lacks, one directory each, exposed as
   `overlays.default` (applied on every host) and `packages.x86_64-linux`, so
-  `nix build .#wo-mic` builds one in isolation. Scripts are real `.sh` files.
+  `nix build .#wo-mic` builds one in isolation (`winvm` is also exposed for
+  `aarch64-darwin`). Scripts are real `.sh` files.
 
 Adding a file under `modules/` is enough for it to be evaluated; a host still
 has to list a feature for it to take effect. Files must be `git add`ed before
@@ -67,11 +68,6 @@ the `start-hyprland` watchdog launcher is used and `XDG_CURRENT_DESKTOP` is
 plain `Hyprland`. DMS follows `graphical-session.target`. Launcher changes take
 effect on the next login.
 
-The rice uses [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell),
-inspired by its [r/unixporn showcase](https://www.reddit.com/r/unixporn/comments/1mxj44y/hyprland_dankmaterialshell_meets_hyprland/):
-a compact floating top bar, workspace pills, Inter/JetBrains Mono typography,
-muted blue/teal accents, and opaque application windows. Hyprland uses the native
-dwindle layout, modest gaps and animations, and no compositor plugins.
 
 | Key | Hyprland action |
 | --- | --- |
@@ -145,26 +141,6 @@ mode and no launcher-wide hide-icons setting; neither is patched into DMS.
 
 ### Recording and peripherals
 
-The DMS Screen Recorder plugin is pinned and patched in
-`pkgs/dms-plugins/`. Its **Video encoder** setting defaults to Vulkan
-H.264 for NVIDIA 580; native-GPU and CPU H.264 remain selectable. The plugin's
-portal check requires `gdbus` from GLib and `grep`, both installed in the user
-profile. The Hyprland ScreenCast portal stays enabled; capture does not fall
-back to All screens. Update the pinned revision and codec patch through Nix,
-not `dms plugins update screenRecorder`. The previous writable Screen Recorder
-and Docker Manager checkouts are retained outside plugin discovery under
-`~/.local/state/nix-config/dms-plugin-backups/`.
-
-NVENC is unusable with NVIDIA 580 here: GPU Screen Recorder reports NVENC API
-13.0 while the FFmpeg it links against requires 13.1, so the plugin defaults
-to Vulkan Video. For a one-shot clip with the hardware encoder use
-`wf-recorder -c h264_nvenc -f ~/Videos/clip.mp4`, stopped with
-`pkill -INT wf-recorder`.
-
-Outputs use their preferred modes and automatic positions by default, with an
-explicit mode for HDMI-A-2. Run `hyprctl monitors all` to get connector names,
-then update `settings.monitor` in `modules/desktop/hyprland/hyprland.nix` for a fixed layout.
-
 To use a phone as a microphone, install WO Mic on the phone, start its Wi-Fi
 server, and run `wo-mic PHONE_IP` on the desktop with the IP shown in
 the app. Select `WO-Mic` as the input in Vesktop, a VM, or another application.
@@ -176,41 +152,29 @@ starting. This adds about 40 ms of headroom and prevents the client's
 single-packet startup / dropped-underrun-packet cycle from chopping audio.
 It does not change other applications' ALSA settings or require running as root.
 
-## Bloodborne co-op (BBSC)
+## Windows VM (winvm)
 
-`modules/bbsc.nix` installs [BBSC](https://github.com/Classmg22/BBSC) natively:
-`pkgs/bbsc/emulator.nix` is the BBSC shadPS4 fork built with `BBSC_VANILLA`
-(no built-in BBSC), `pkgs/bbsc/mod.nix` is the mod (upstream's Windows
-`bbsc.dll`) ported to `bbsc.so` (`mod-linux.patch`), and
-`pkgs/bbsc/launcher.nix` is the Qt launcher with its Accounts and Mods tabs,
-pointed at the fork. All three are pinned to the repository's only published
-commit; upstream's later Windows hotfix builds have no published source.
+`winvm` (`pkgs/winvm`, feature `windows-vm` on `nixos` and `macbook-pro-m4`)
+runs an unattended Windows 11 Pro VM in QEMU for building and testing Windows
+software: ARM64 under HVF on the Mac, x64 under KVM on the desktop. It installs
+from Microsoft's ISO (cached in `~/.cache/winvm`), provisions the toolchain, and
+syncs host folders two-way into `C:\src\<folder name>` through its own Syncthing
+pair (ports 22100/22101/8385, separate from notes-sync). VM state lives in
+`~/.local/share/winvm`; `winvm help` lists every command.
 
-Home Manager links the mod's files into the writable
-`~/.local/share/shadPS4/mods/CUSA03173/bbsc/` (its logs land in `logs/` there)
-and seeds, only when absent, the public BBSC server
-(`seamlessbloodborne.duckdns.org`): `host_overrides.json`, the server card in
-`servers/` and the online keys in `custom_configs/CUSA03173.json`. To use a
-friend's server instead, edit those three the way upstream's `JOIN-HOST`
-does. Gameplay P2P is pinned to UDP 41001 (`SHADPS4_P2P_PORT`), which the
-firewall opens.
 
-Start **BBSC Launcher**, add the folder holding your own Bloodborne dump
-(CUSA03173, app version 01.09), create an account under Settings > Accounts >
-the BBSC server card > Create Account on Server, then play: the host rings
-the Hunt Bell, guests ring the Kin Bell.
+`exec`/`gui` run in the guest copy of the current directory. `winvm rdp` opens
+Windows App (password on the clipboard); it takes the desktop session off the
+console, so `winvm screenshot` shows the sign-in screen until `winvm down; winvm up`.
 
-## STALKER GAMMA
-
-GAMMA (with the xrRazom co-op mod) lives in `/mnt/storage/Games/STALKER`:
-`Anomaly/` and the MO2 install `GAMMA/` from gamma-launcher. MO2's virtual file
-system costs ~70 s per launch under Wine, so the Steam shortcut does not use
-it: `gamma-deploy` (`pkgs/gamma-direct`) hardlinks Anomaly and the enabled MO2
-mods, in MO2 priority order, into `Play/`, sharing `Anomaly/appdata`, and the
-shortcut's launch option `gamma-direct %command%` starts
-`Play/bin/AnomalyDX11AVX.exe` from it, redeploying first when the MO2 mod list
-changed. Manage mods in MO2 as before; run `gamma-deploy` after editing a mod's
-files in place.
+The toolchain is pinned in `pkgs/winvm/tools.nix` and covers 
+VS 2022 Build Tools (MSVC, Windows 11 SDK, signtool), Git,
+gh, LLVM, NASM, CMake, Node 22, pnpm 10 (runs each repo's `packageManager`
+version), Rust (stable by default, `rust-toolchain.toml` where present), Go 1.26,
+.NET 8 and 9 SDKs, Azure CLI with the Artifact Signing client tools, Bun and jq.
+On the ARM guest Node, pnpm and Bun are x64 and cargo builds
+`x86_64-pc-windows-msvc` by default, because the shipped binaries and native npm
+packages are x64.
 
 ## Development Shell
 

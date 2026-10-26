@@ -14,6 +14,7 @@ in
       theme
 
       notes-sync
+      windows-vm
     ];
   };
 

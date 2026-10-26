@@ -20,5 +20,7 @@
   # Preloaded into Steam's 32-bit client, so it is built for i686.
   steam-voicechat-fix = pkgs.pkgsi686Linux.callPackage ./steam-voicechat-fix/package.nix { };
   stream-display-mode = pkgs.callPackage ./stream-display-mode/package.nix { };
+  # Windows 11 VM (QEMU, HVF on Apple Silicon / KVM on Linux) for building and testing the Windows app.
+  winvm = pkgs.callPackage ./winvm/package.nix { };
   wo-mic = pkgs.callPackage ./wo-mic/package.nix { };
 }

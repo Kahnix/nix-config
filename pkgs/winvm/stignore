@@ -1,0 +1,22 @@
+// winvm default; edited copy is pushed to the VM on every `winvm up`
+(?d).DS_Store
+(?d)node_modules
+(?d)target
+(?d).next
+(?d).turbo
+(?d).pnpm-store
+(?d)*.tsbuildinfo
+// build outputs (vite/tsc/turbo packages, Rustdesk-SVC releases)
+(?d)dist
+// per-machine toolchains and caches (nix direnv, Rustdesk-SVC .tools/.cache)
+(?d).direnv
+(?d).tools
+(?d).cache
+// rewritten per OS by tauri-build (vector, Silentsuite, kage-ss)
+(?d)/src-tauri/gen/schemas
+(?d)/apps/*/src-tauri/gen/schemas
+// vector
+(?d)/apps/*/out
+(?d)/apps/storybook/storybook-static
+(?d)/apps/vector-client/src-tauri/tauri.patched.conf.json
+(?d)build.log
