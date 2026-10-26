@@ -85,11 +85,18 @@ EOF
 # ---------- state helpers ----------
 
 vm_running() {
-  local pid
-  [ -s "$s/qemu.pid"] || return 1
+  local pid cmd
+  [ -s "$S/qemu.pid" ] || return 1
   pid=$(cat "$S/qemu.pid")
   kill -0 "$pid" 2>/dev/null || return 1
-  ps -p "$pid" -o command= 2>/dev/null | grep -q 'qemu-system-' || return 1
+  # QEMU unlinks its pidfile only on a clean exit, so after a SIGKILL or a host
+  # crash the PID can belong to something else. Require it to be this VM's qemu
+  # before trusting it: cmd_down kills `pid`.
+  cmd=$(ps -p "$pid" -o command= 2>/dev/null) || return 1
+  case "$cmd" in
+    *qemu-system-*) return 0 ;;
+  esac
+  return 1
 }
 
 require_vm() {
