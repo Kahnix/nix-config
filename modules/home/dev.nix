@@ -133,6 +133,10 @@
               # Pickers show dotfiles, matching the old telescope `hidden = true`.
               file-picker.hidden = true;
               lsp.display-progress-messages = true;
+              # hx paints block cursors itself as an inverted cell and hides
+              # the terminal cursor, so the terminal's own cursor rendering
+              # (animation, blink) only applies to bar/underline shapes.
+              cursor-shape.insert = "bar";
             };
           }
           # WSL has no Stylix, so no generated theme: the built-in
