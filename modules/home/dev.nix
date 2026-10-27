@@ -131,14 +131,22 @@
                 characters.tab = "→";
               };
               # Pickers show dotfiles, matching the old telescope `hidden = true`.
-              file-picker.hidden = false;
+              file-picker.hidden = true;
               lsp.display-progress-messages = true;
             };
           }
-          # WSL has no Stylix, so no generated theme: the built-in rose_pine
-          # keeps it on the same palette as the desktop.
-          (lib.mkIf (!(config.stylix.enable or false)) { theme = "rose_pine"; })
+          # WSL has no Stylix, so no generated theme: the built-in
+          # kanagawa-dragon keeps it on the same palette as the desktop, with
+          # the background dropped to match the transparent Stylix theme.
+          (lib.mkIf (!(config.stylix.enable or false)) { theme = "kanagawa-dragon-transparent"; })
         ];
+
+        themes = lib.mkIf (!(config.stylix.enable or false)) {
+          kanagawa-dragon-transparent = {
+            inherits = "kanagawa-dragon";
+            "ui.background" = { };
+          };
+        };
 
         languages = {
           language-server = {

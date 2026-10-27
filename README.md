@@ -101,7 +101,7 @@ DMS settings are seeded only when absent in
 First launch prefers `~/Documents/wallpapers/31299713726712.jpg`, with a packaged
 gradient built from the active Stylix palette if it is absent. DMS's application
 theme is a managed file at `~/.config/DankMaterialShell/stylix.json`, generated
-from the same palette (Rosé Pine, set in `modules/system/theme.nix`); DMS
+from the same palette (Kanagawa Dragon, set in `modules/system/theme.nix`); DMS
 application-theme generation is disabled so it does not overwrite Stylix.
 
 ### Login screen

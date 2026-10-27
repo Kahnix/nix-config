@@ -1,16 +1,15 @@
 { inputs, ... }:
 let
-  # Rosé Pine everywhere Stylix reaches; Stylix also themes the Home Manager
-  # side through its Home Manager integration. Moon and Dawn are the same
-  # palette with `rose-pine-moon.yaml` / `rose-pine-dawn.yaml`.
+  # Kanagawa Dragon everywhere Stylix reaches; Stylix also themes the Home
+  # Manager side through its Home Manager integration.
   stylix =
-    { pkgs, ... }:
+    { pkgs, lib, ... }:
     {
       stylix = {
         enable = true;
         autoEnable = true;
         polarity = "dark";
-        base16Scheme = "${pkgs.base16-schemes}/share/themes/rose-pine.yaml";
+        base16Scheme = "${pkgs.base16-schemes}/share/themes/kanagawa-dragon.yaml";
 
         fonts = {
           serif = {
@@ -48,6 +47,10 @@ let
           terminal = 1.0;
         };
       };
+
+      # Helix only: drop the editor background so the terminal shows through.
+      # Stylix derives this from opacity.terminal at normal priority, hence mkForce.
+      home-manager.sharedModules = [ { stylix.targets.helix.transparent = lib.mkForce true; } ];
     };
 in
 {
