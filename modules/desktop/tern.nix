@@ -5,6 +5,8 @@ in
 {
   flake.modules.homeManager.tern = {
     home.sessionVariables.TERMINAL = "tern";
+    # Tern adds every themes/NAME.css beside settings.json to its theme picker.
+    xdg.configFile."tern/themes/kanagawa-dragon.css".source = ./tern-themes/kanagawa-dragon.css;
   };
   # Tern (build.stencil.so/tern) is installed outside Nix into ~/.local/bin and
   # configured through ~/.config/tern/settings.json; this provides what its

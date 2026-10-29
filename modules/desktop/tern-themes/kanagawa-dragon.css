@@ -1,0 +1,65 @@
+/* Kanagawa Dragon (github.com/rebelot/kanagawa.nvim). Layer-2 theme variables;
+   the gruvbox base fills anything left unset. */
+@import "dark-gruvbox";
+
+:root {
+	--ink: #c5c9c5;
+	--t1: #c5c9c5;
+	--t2: #a6a69c;
+	--t3: #7a8382;
+	--t4: #625e5a;
+
+	--accent: #8ba4b0;
+	--accent-ink: #7fb4ca;
+	--accent-fill: #2d4f67;
+	--a1: #8ea4a2;
+	--a2: #8ba4b0;
+	--grad-ink: #0d0c0c;
+
+	--ok: #87a987;
+	--ok-fill: #4c5c43;
+	--bad: #c4746e;
+	--bad-fill: #8a3d38;
+	--warn: #c4b28a;
+	--live: #a292a3;
+	--live-fill: #6a5470;
+
+	--card: #1d1c19;
+	--raise: #282727;
+	--code-bg: #12120f;
+	--tbl-head: #12120f;
+
+	--tv-bg: #181616;
+	--tv-fg: #c5c9c5;
+	--tv-cur: #c8c093;
+	--tv-cur-ink: #181616;
+	--tv-sel-a: #2d4f67;
+	--tv-sel-b: #2d4f67;
+
+	--ansi0: #0d0c0c;
+	--ansi1: #c4746e;
+	--ansi2: #8a9a7b;
+	--ansi3: #c4b28a;
+	--ansi4: #8ba4b0;
+	--ansi5: #a292a3;
+	--ansi6: #8ea4a2;
+	--ansi7: #c8c093;
+	--ansi8: #a6a69c;
+	--ansi9: #e46876;
+	--ansi10: #87a987;
+	--ansi11: #e6c384;
+	--ansi12: #7fb4ca;
+	--ansi13: #938aa9;
+	--ansi14: #7aa89f;
+	--ansi15: #c5c9c5;
+
+	--tk-comment: #737c73;
+	--tk-keyword: #8992a7;
+	--tk-function: #8ba4b0;
+	--tk-variable: #c5c9c5;
+	--tk-string: #8a9a7b;
+	--tk-number: #a292a3;
+	--tk-type: #8ea4a2;
+	--tk-operator: #c4746e;
+	--tk-punct: #9e9b93;
+}
