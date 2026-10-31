@@ -256,6 +256,10 @@ try {
         Write-Host 'wrote .cargo\config.toml (build.target = x86_64-pc-windows-msvc)'
     }
 
+    # rustup is pinned in tools.json. Its self-update replaces rustup.exe from a
+    # detached process after exit, so the next rustup call can find no rustup.exe.
+    Invoke-Native rustup set auto-self-update disable
+
     # Default toolchain for repos without rust-toolchain.toml (Silentsuite, kage-ss,
     # vector-sdk, vector-crates); CI there uses latest stable.
     $toolchains = @(& rustup toolchain list)

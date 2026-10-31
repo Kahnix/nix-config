@@ -17,6 +17,8 @@
         "fd7a:115c:a1e0::153b:8749"
         "100.112.177.58" # iphone183
         "fd7a:115c:a1e0::c73b:b13b"
+        "100.124.183.4" # porsche-design-honor-magic-v2
+        "fd7a:115c:a1e0::153b:b705"
       ];
 
       chain = "tailnet-own-devices";

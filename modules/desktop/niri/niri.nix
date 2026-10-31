@@ -41,9 +41,18 @@ in
     };
 
   flake.modules.homeManager.niri =
-    { config, pkgs, ... }:
+    { config, lib, pkgs, ... }:
     let
       colors = config.lib.stylix.colors.withHashtag;
+      monitorKdl = "${config.xdg.configHome}/niri/monitor.kdl";
+      # First-boot layout for the desktop's ultrawide; nwg-displays owns the
+      # file afterwards, so it is only written when missing.
+      monitorSeed = pkgs.writeText "niri-monitor.kdl" ''
+        output "HDMI-A-2" {
+            mode "3440x1440@99.982"
+            scale 1
+        }
+      '';
     in
     {
       # niri reloads the file live when the symlink changes.
@@ -55,5 +64,15 @@ in
             --subst-var-by base0D '${colors.base0D}'
           niri validate -c $out
         '';
+
+      # GUI for resolution, refresh rate, scale, rotation, position and VRR.
+      # Apply writes monitor.kdl, which config.kdl includes; niri reloads it live.
+      home.packages = [ pkgs.nwg-displays ];
+
+      home.activation.niriMonitorSeed = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if [ ! -e ${lib.escapeShellArg monitorKdl} ]; then
+          run install -Dm644 ${monitorSeed} ${lib.escapeShellArg monitorKdl}
+        fi
+      '';
     };
 }

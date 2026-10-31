@@ -6,11 +6,17 @@ in
   # Noctalia: bar, launcher, control center, notifications, clipboard, OSD,
   # wallpaper, idle/lock screen and polkit agent; Noctalia Greeter for login.
   flake.modules.nixos.noctalia =
-    { config, ... }:
+    { config, pkgs, ... }:
     {
       # The screen_recorder plugin drives gpu-screen-recorder; the module adds the
       # setcap'd gsr-kms-server wrapper that direct monitor (KMS) capture needs.
-      programs.gpu-screen-recorder.enable = true;
+      programs.gpu-screen-recorder = {
+        enable = true;
+        # gsr assumes FFmpeg 9 (libavcodec 63) needs NVENC API 13.1 and hides
+        # every NVENC codec when the driver has less; the legacy_580 driver
+        # Pascal is stuck on has 13.0. FFmpeg 8 (libavcodec 62) asks for 13.0.
+        package = pkgs.gpu-screen-recorder.override { ffmpeg = pkgs.ffmpeg_8; };
+      };
 
       # greetd + Noctalia Greeter, in its own wlroots compositor. The palette is
       # declared here (a complete [appearance.palette] wins over synced colours);
@@ -68,11 +74,14 @@ in
     };
 
   flake.modules.homeManager.noctalia =
-    { config, lib, ... }:
+    { config, lib, pkgs, ... }:
     let
       wallpapers = "${config.home.homeDirectory}/Documents/wallpapers";
     in
     {
+      # Folds settings-UI changes back into ./settings.toml.
+      home.packages = [ pkgs.noctalia-snapshot ];
+
       # Runs noctalia.service for graphical-session.target, which niri.service
       # starts. Stylix's noctalia target adds a palette from the active scheme.
       programs.noctalia = {

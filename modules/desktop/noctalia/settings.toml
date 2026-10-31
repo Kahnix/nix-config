@@ -1,7 +1,7 @@
 # Noctalia defaults, written to ~/.config/noctalia/config.toml (validated at
 # build time). Changes made in the settings UI go to
-# ~/.local/state/noctalia/settings.toml and override these; copy keepers back
-# here from `noctalia config export merged`. Colours, theme mode, shell font
+# ~/.local/state/noctalia/settings.toml and override these; run
+# `noctalia-snapshot` to fold them back in here. Colours, theme mode, shell font
 # and popup opacity come from Stylix; home-relative paths are set in
 # noctalia.nix.
 

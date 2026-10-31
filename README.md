@@ -101,7 +101,8 @@ HDMI-A-2 runs 3440×1440 at 99.982 Hz, scale 1, with on-demand VRR for
 Noctalia's defaults are `modules/desktop/noctalia/settings.toml`, validated and
 written to `~/.config/noctalia/config.toml`. Changes made in its settings UI go to
 `~/.local/state/noctalia/settings.toml`, which overrides the defaults and
-survives rebuilds; copy keepers back from `noctalia config export merged`. Stylix's
+survives rebuilds; `noctalia-snapshot` folds them back into `settings.toml`
+(comments kept, keys owned by Nix/Stylix skipped). Stylix's
 Noctalia target supplies the palette (Kanagawa Dragon, set in
 `modules/system/theme.nix`), theme mode, shell font and popup opacity; Noctalia's
 own GTK/Qt/terminal templates are off so they do not overwrite Stylix. The

@@ -23,14 +23,9 @@ input {
     warp-mouse-to-focus
 }
 
-output "HDMI-A-2" {
-    mode "3440x1440@99.982"
-    scale 1
-
-    // VRR only while a window that asks for it (the steam_app rule below) is on
-    // screen. Inert on HDMI: Pascal drives G-Sync Compatible over DisplayPort only.
-    variable-refresh-rate on-demand=true
-}
+// Monitors are configured with nwg-displays, which writes ~/.config/niri/monitor.kdl
+// (seeded by niri.nix). Optional so `niri validate` passes at build time.
+include optional=true "monitor.kdl"
 
 layout {
     gaps 12

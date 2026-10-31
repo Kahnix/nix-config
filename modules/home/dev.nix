@@ -4,6 +4,7 @@
     {
       config,
       lib,
+      osConfig,
       pkgs,
       ...
     }:
@@ -125,6 +126,16 @@
               # (animation, blink) only applies to bar/underline shapes.
               cursor-shape.insert = "bar";
             };
+            # Ctrl-e: pick a file in yazi, starting at the current buffer, and
+            # open it. yazi takes over the terminal, so hx's alternate screen
+            # and bracketed paste are re-enabled before redrawing.
+            keys.normal.C-e = [
+              ":sh rm -f /tmp/hx-yazi-chooser"
+              ":insert-output yazi %{buffer_name} --chooser-file=/tmp/hx-yazi-chooser"
+              ":insert-output printf '\\033[?1049h\\033[?2004h' > /dev/tty"
+              ":open %sh{cat /tmp/hx-yazi-chooser}"
+              ":redraw"
+            ];
           }
           # WSL has no Stylix, so no generated theme: the built-in
           # kanagawa-dragon keeps it on the same palette as the desktop, with
@@ -141,7 +152,30 @@
 
         languages = {
           language-server = {
-            nixd.config.nixd.formatting.command = [ "nixfmt" ];
+            # Option completion (programs.git.<tab>) comes from this host's own
+            # configuration in the live flake checkout, not a store copy.
+            nixd = {
+              args = [ "--semantic-tokens=true" ];
+              config.nixd =
+                let
+                  flake = ''(builtins.getFlake "${config.home.homeDirectory}/nix-config")'';
+                  system =
+                    if pkgs.stdenv.hostPlatform.isDarwin then
+                      "${flake}.darwinConfigurations.macbook-pro-m4"
+                    else if osConfig.wsl.enable or false then
+                      "${flake}.nixosConfigurations.wsl"
+                    else
+                      "${flake}.nixosConfigurations.nixos";
+                in
+                {
+                  formatting.command = [ "nixfmt" ];
+                  nixpkgs.expr = "import ${flake}.inputs.nixpkgs { }";
+                  options = {
+                    ${if pkgs.stdenv.hostPlatform.isDarwin then "nix-darwin" else "nixos"}.expr = "${system}.options";
+                    home-manager.expr = "${system}.options.home-manager.users.type.getSubOptions [ ]";
+                  };
+                };
+            };
             clangd.args = [
               "--background-index"
               "--clang-tidy"
