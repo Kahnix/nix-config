@@ -27,10 +27,12 @@
             "default.clock.rate" = 48000;
             "default.clock.allowed-rates" = [ 48000 ];
           };
+          # channel_map=mono: without it the node keeps a stereo volume while
+          # pulse reports a mono map, and pavucontrol aborts on the mismatch.
           pipewire-pulse."50-wo-mic-audio"."pulse.cmd" = [
             {
               cmd = "load-module";
-              args = "module-alsa-source source_name=wo_mic source_properties=device.description=WO-Mic channels=1 rate=48000 format=s16le device=hw:Loopback,1,0 fragments=8 fragment_size=1920";
+              args = "module-alsa-source source_name=wo_mic source_properties=device.description=WO-Mic channels=1 channel_map=mono rate=48000 format=s16le device=hw:Loopback,1,0 fragments=8 fragment_size=1920";
               flags = [ "nofail" ];
             }
           ];

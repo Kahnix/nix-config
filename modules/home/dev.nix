@@ -9,21 +9,8 @@
     }:
     let
       system = pkgs.stdenv.hostPlatform.system;
-      omp =
-        (inputs.oh-my-pi.packages.${system}.omp.override {
-          withWaylandScreencast = config.my.omp.waylandScreencast;
-        }).overrideAttrs
-          (old: {
-            CARGO_PROFILE_RELEASE_LTO = "off";
-            CARGO_PROFILE_RELEASE_CODEGEN_UNITS = "16";
-            env = old.env // {
-              RUSTFLAGS = "${old.env.RUSTFLAGS or ""} -Zthreads=8";
-            };
-          });
     in
     {
-      options.my.omp.waylandScreencast = lib.mkEnableOption "omp's PipeWire-backed Wayland capture addon";
-
       config.home.packages =
         (with pkgs; [
           tree-sitter

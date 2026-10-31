@@ -1,5 +1,5 @@
 mode="$1"
 output="HDMI-A-2"
 
-# Lua-configured Hyprland uses eval for runtime monitor changes.
-hyprctl eval "hl.monitor({ output = '$output', mode = '$mode' })"
+# Temporary change; config.kdl is not modified.
+niri msg output "$output" mode "$mode"

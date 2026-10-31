@@ -2,6 +2,9 @@
 # Exposed as `overlays.default` (applied on every host) and as
 # `packages.x86_64-linux`, so each one builds on its own: `nix build .#wo-mic`.
 { pkgs }:
+let
+  javaAlsaDefault = import ./java-alsa-default.nix { inherit (pkgs) makeWrapper symlinkJoin; };
+in
 {
   # Bloodborne Seamless Co-op (github.com/Classmg22/BBSC) on Linux: the shadPS4
   # fork without its built-in BBSC, the bbsc mod ported to a Linux .so, and the
@@ -9,13 +12,11 @@
   bbsc-emulator = pkgs.callPackage ./bbsc/emulator.nix { };
   bbsc-launcher = pkgs.callPackage ./bbsc/launcher.nix { };
   bbsc-mod = pkgs.callPackage ./bbsc/mod.nix { };
-  bolt-launcher-alsa = pkgs.callPackage ./bolt-launcher-alsa/package.nix { };
-  dms-plugin-docker-manager = pkgs.callPackage ./dms-plugins/docker-manager.nix { };
-  dms-plugin-screen-recorder = pkgs.callPackage ./dms-plugins/screen-recorder.nix { };
+  bolt-launcher-alsa = javaAlsaDefault pkgs.bolt-launcher "bolt-launcher";
   dzgui = pkgs.callPackage ./dzgui/package.nix { };
   gamma-direct = pkgs.callPackage ./gamma-direct/package.nix { };
   gparted-with-display = pkgs.callPackage ./gparted-with-display/package.nix { };
-  hypr-screenshot = pkgs.callPackage ./hypr-screenshot/package.nix { };
+  niri-focus-or-spawn = pkgs.callPackage ./niri-focus-or-spawn/package.nix { };
   proton-cachyos-bin = pkgs.callPackage ./proton-cachyos-bin/package.nix { };
   # Preloaded into Steam's 32-bit client, so it is built for i686.
   steam-voicechat-fix = pkgs.pkgsi686Linux.callPackage ./steam-voicechat-fix/package.nix { };

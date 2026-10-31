@@ -1,0 +1,183 @@
+# Noctalia defaults, written to ~/.config/noctalia/config.toml (validated at
+# build time). Changes made in the settings UI go to
+# ~/.local/state/noctalia/settings.toml and override these; copy keepers back
+# here from `noctalia config export merged`. Colours, theme mode, shell font
+# and popup opacity come from Stylix; home-relative paths are set in
+# noctalia.nix.
+
+[audio]
+enable_overdrive = false
+enable_sounds = false
+
+# Blurred wallpaper copy for niri's overview backdrop (layer rule in config.kdl).
+[backdrop]
+enabled = true
+
+[bar.main]
+background_opacity = 1.0
+capsule = true
+capsule_fill = "on_tertiary"
+capsule_opacity = 0.36
+capsule_radius = 8.0
+capsule_thickness = 0.79
+start = ["launcher", "workspaces"]
+center = ["clock"]
+end = ["media", "tray", "notifications", "clipboard", "volume", "control-center", "lock_button"]
+font_scale = 0.95
+margin_edge = 8
+margin_ends = 12
+padding = 10
+position = "top"
+radius = 12
+reserve_space = true
+shadow = true
+thickness = 36
+widget_spacing = 8
+
+[calendar]
+enabled = true
+
+[calendar.account.personal_google]
+type = "google"
+
+[control_center]
+hidden_tabs = ["power", "bluetooth"]
+
+[[control_center.shortcuts]]
+type = "notification"
+
+[[control_center.shortcuts]]
+type = "wallpaper"
+
+[[control_center.shortcuts]]
+type = "screen_recorder"
+
+[dock]
+enabled = false
+
+[idle.behavior.lock]
+action = "lock"
+enabled = true
+timeout = 900
+
+[idle.behavior.screen-off]
+action = "screen_off"
+enabled = true
+timeout = 960
+
+[location]
+auto_locate = false
+address = "Lublin, PL"
+
+[lockscreen]
+enabled = true
+blurred_desktop = true
+blur_intensity = 0.55
+tint_intensity = 0.32
+
+[notification]
+enable_daemon = true
+layer = "top"
+offset_x = 14
+offset_y = 8
+show_actions = true
+show_app_name = true
+
+[osd]
+offset_x = 14
+offset_y = 8
+orientation = "horizontal"
+position = "top_right"
+
+[plugins]
+# screen_recorder drives gpu-screen-recorder (recording + replay buffer).
+enabled = ["noctalia/screen_recorder", "felipeartur/ai-usagebar"]
+
+[shell]
+clipboard_auto_paste = "auto"
+clipboard_enabled = true
+clipboard_history_max_entries = 250
+clipboard_image_action_command = "satty -f -"
+clipboard_keep_from_closed_apps = false
+corner_radius_scale = 0.85
+date_format = "%A, %d %B"
+niri_overview_type_to_launch_enabled = true
+panel_anchor_bar = "main"
+polkit_agent = true
+settings_show_advanced = true
+telemetry_enabled = false
+time_format = "{:%H:%M}"
+
+[shell.animation]
+enabled = true
+speed = 1.15
+
+# Push wallpaper changes to the login screen (passwordless; see noctalia.nix).
+[shell.greeter_sync]
+auto_sync = true
+
+[shell.launcher]
+app_grid = false
+categories = false
+compact = true
+provider_prefix = "/"
+show_app_origin_indicator = false
+show_icons = false
+sort_by_usage = true
+
+[shell.panel]
+borders = true
+clipboard_placement = "floating"
+clipboard_position = "center"
+control_center_placement = "attached"
+launcher_placement = "floating"
+launcher_position = "center"
+open_near_click_control_center = true
+session_placement = "attached"
+shadow = true
+transparency_mode = "glass"
+wallpaper_placement = "attached"
+
+[shell.shadow]
+alpha = 0.48
+direction = "down"
+
+# Stylix themes GTK, Qt and terminals; Noctalia's templates would overwrite them.
+[theme.templates]
+enable_builtin_templates = false
+enable_community_templates = false
+
+[wallpaper]
+enabled = true
+edge_smoothness = 0.25
+fill_color = "primary"
+fill_mode = "crop"
+transition = ["fade", "wipe", "disc"]
+transition_duration = 900
+transition_on_startup = true
+
+[wallpaper.automation]
+enabled = false
+
+[widget.clock]
+format = "{:%a  %d %b   %H:%M}"
+
+[widget.lock_button]
+type = "custom_button"
+glyph = "lock"
+tooltip = "Lock screen"
+
+[widget.lock_button.actions]
+left = "exec noctalia msg session lock"
+
+[widget.media]
+album_art_only = true
+hide_when_no_media = true
+
+[widget.network]
+show_label = false
+show_vpn_label = false
+vpn_status = "replace"
+
+[widget.notifications]
+hide_when_no_unread = true

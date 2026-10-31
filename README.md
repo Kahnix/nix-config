@@ -9,8 +9,9 @@ Personal NixOS, WSL, macOS, Home Manager, devenv, and direnv configuration.
 - `macbook-pro-m4`: nix-darwin for user `kacperdaniel` on `aarch64-darwin`.
 
 The shared Home Manager development profile installs oh-my-pi (`omp`) on all
-three hosts. The NixOS desktop enables its PipeWire-backed Wayland capture
-addon; WSL and macOS use the default build.
+three hosts from nixpkgs, prebuilt by Hydra (`cache.nixos.org`). Do not
+override it: any override changes its hash and forces a local build. On Linux
+it includes the PipeWire-backed Wayland capture addon.
 
 ## Layout
 
@@ -60,57 +61,59 @@ sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin/nix-d
 Every host collects garbage weekly (generations older than 14 days) and
 deduplicates the store.
 
-## Hyprland Desktop
+## Niri Desktop
 
-After rebuilding the desktop, **Hyprland + Quickshell (UWSM)** is the default
-login session. UWSM starts it from Hyprland's own `hyprland.desktop` entry, so
-the `start-hyprland` watchdog launcher is used and `XDG_CURRENT_DESKTOP` is
-plain `Hyprland`. DMS follows `graphical-session.target`. Launcher changes take
-effect on the next login.
+The desktop is [niri](https://github.com/YaLTeR/niri) with the
+[Noctalia](https://noctalia.dev) shell. Noctalia Greeter logs in to the `niri`
+session (`niri-session` → `niri.service` → `graphical-session.target`), and
+Home Manager's `noctalia.service` follows that target. X11 clients (Steam,
+Proton games) run through xwayland-satellite, which niri starts on demand.
 
-
-| Key | Hyprland action |
+| Key | Action |
 | --- | --- |
 | `Super + Return` / `Super + B` / `Super + E` | Terminal (raises the open Tern window) / browser / files |
-| `Super + Space` | Spotlight application launcher |
+| `Super + Space` | Application launcher |
 | `Super + Ctrl + Space` | Control center |
 | `Super + Ctrl + V` / `Super + Ctrl + D` | Clipboard / shell settings |
-| `Super + O` / `Super + Shift + /` | Window overview / hotkey reference |
+| `Super + O` / `Super + Shift + /` | Overview / hotkey reference |
 | `Super + Ctrl + L` | Lock |
-| `Super + H/J/K/L` or arrows | Focus a window |
-| `Super + Shift + H/J/K/L` or arrows | Move a window |
-| `Super + 1..9,0` / `Super + Shift + 1..9,0` | Switch / move to workspace 1–10 |
-| `Super + left/right mouse drag` | Move / resize a window |
-| `Super + T` / `Super + F` / `Super + Shift + F` | Floating / fullscreen / maximize |
-| `Super + R` / `Super + Shift + W` | Change split direction / toggle tabbed group |
-| `Alt + Tab` / `Super + Tab` | Next window / previous workspace |
+| `Super + H/J/K/L` or arrows | Focus column / window or workspace |
+| `Super + Shift + H/J/K/L` or arrows | Move column / window or workspace |
+| `Super + Ctrl + Shift + H/J/K/L` or arrows | Move window to monitor |
+| `Super + 1..9` / `Super + Shift + 1..9` | Switch / move to workspace 1–9 |
+| `Super + T` / `Super + F` / `Super + Shift + F` | Floating / fullscreen / maximize column |
+| `Super + R` / `Super + -` / `Super + =` | Cycle preset width / shrink / grow column |
+| `Super + [` / `Super + ]` / `Super + Shift + W` | Pull window into / push out of column / tabbed column |
+| `Alt + Tab` / `Super + Tab` | Window switcher / previous workspace |
 | `Super + Shift + S` / `Super + Alt + S` / `Super + Ctrl + S` | Region / window / output screenshot |
 | `Super + Shift + E` | Power/session menu |
-| `Super + Ctrl + Shift + E` | Log out through UWSM directly |
+| `Super + Ctrl + Shift + E` | Quit niri |
 
-Compositor settings live in `modules/desktop/hyprland/hyprland.nix`; key
-bindings are plain Lua in `modules/desktop/hyprland/binds.lua`, with a
-`.luarc.json` beside it that points lua-language-server at Hyprland's API stubs.
-The shell palette, first-launch defaults, plugins and service live in
-`modules/desktop/dms.nix`.
-The existing HDMI-A-2 mode is retained at 3440×1440, 99.982 Hz, scale 1.
+The Print Screen variants take the same screenshots; niri copies them to the
+clipboard and saves them to `~/Pictures/Screenshots`.
 
-DMS settings are seeded only when absent in
-`~/.config/DankMaterialShell/settings.json`; wallpaper/session state lives in
-`~/.local/state/DankMaterialShell/session.json`. UI changes survive rebuilds.
-First launch prefers `~/Documents/wallpapers/31299713726712.jpg`, with a packaged
-gradient built from the active Stylix palette if it is absent. DMS's application
-theme is a managed file at `~/.config/DankMaterialShell/stylix.json`, generated
-from the same palette (Kanagawa Dragon, set in `modules/system/theme.nix`); DMS
-application-theme generation is disabled so it does not overwrite Stylix.
+Compositor settings and binds are plain KDL in `modules/desktop/niri/config.kdl`;
+`niri.nix` fills in Stylix colours (`@base0D@` etc.) and runs `niri validate`
+at build time, so a broken config fails the rebuild instead of the session.
+HDMI-A-2 runs 3440×1440 at 99.982 Hz, scale 1, with on-demand VRR for
+`steam_app_*` windows (inert over HDMI on Pascal).
+
+Noctalia's defaults are `modules/desktop/noctalia/settings.toml`, validated and
+written to `~/.config/noctalia/config.toml`. Changes made in its settings UI go to
+`~/.local/state/noctalia/settings.toml`, which overrides the defaults and
+survives rebuilds; copy keepers back from `noctalia config export merged`. Stylix's
+Noctalia target supplies the palette (Kanagawa Dragon, set in
+`modules/system/theme.nix`), theme mode, shell font and popup opacity; Noctalia's
+own GTK/Qt/terminal templates are off so they do not overwrite Stylix. The
+wallpaper defaults to `~/Documents/wallpapers/31299713726712.jpg`.
 
 ### Login screen
 
-DankGreeter runs under greetd in a separate Hyprland instance. On greetd startup,
-the NixOS module copies the user's DMS settings, wallpaper, and custom theme into
-`/var/lib/dms-greeter`, so the login UI does not need access to the user's home.
-The initial user and UWSM session are seeded once; later selections are remembered.
-Automatic login is not enabled.
+Noctalia Greeter runs under greetd in its own wlroots compositor. Its palette is
+generated from Stylix in `modules/desktop/noctalia/noctalia.nix`; the shell's
+greeter auto-sync copies the wallpaper and monitor layout into
+`/var/lib/noctalia-greeter`, through a polkit rule that lets `kacper` run only
+that constrained helper without a password. Automatic login is not enabled.
 
 When replacing the greeter, apply at the next boot rather than restarting greetd
 under a running desktop:
@@ -122,23 +125,11 @@ sudo reboot
 
 ### Desktop services
 
-`systemctl --user status dms` shows the desktop shell. Portals use Hyprland
-for screen sharing and GTK for file selection, and Sunshine's display-mode
-helper uses Hyprland's Lua API.
-Driver, Proton, and game settings are unchanged by the desktop cutover.
-
-The Print Screen variants provide the same screenshot actions.
-
-Docker Manager is pinned in `pkgs/dms-plugins/` and installed system-wide by the
-nixpkgs `programs.dms-shell` module into `/etc/xdg/quickshell/dms-plugins`. Its bar widget uses DMS's
-visibility-command API to check the configured runtime executable with
-`command -v`, initially and every 30 seconds. It is hidden when the executable
-is absent; daemon health and container count do not control visibility.
-Change its pinned source and `docker-manager-visibility.patch` through Nix,
-not `dms plugins update dockerManager`.
-
-The built-in focused-window widget is retained. DMS 1.6.2 has no application-name-only
-mode and no launcher-wide hide-icons setting; neither is patched into DMS.
+`systemctl --user status noctalia` shows the desktop shell. It is also the
+notification daemon, polkit agent, idle/lock handler (lock after 15 min, screens
+off after 16) and screen recorder: its `noctalia/screen_recorder` plugin drives
+gpu-screen-recorder. Portals use GNOME for screen sharing and GTK for file
+selection. Sunshine's display-mode helper switches modes with `niri msg output`.
 
 ### Recording and peripherals
 

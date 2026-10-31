@@ -10,6 +10,7 @@
     "proton-ge-bin"
     "steam"
     "steam-original"
+    "ut1999"
     "steam-run"
     "steam-unwrapped"
     # gamma-launcher extracts GAMMA's .rar mod archives with it.
@@ -26,7 +27,6 @@
       boot.kernelModules = [ "ntsync" ];
 
       users.users.${config.my.user}.extraGroups = [ "gamemode" ];
-
       programs.steam = {
         enable = true;
 
@@ -94,7 +94,9 @@
       environment.systemPackages = with pkgs; [
         bolt-launcher-alsa
         dzgui
-        jagex-launcher
+        (import ../pkgs/java-alsa-default.nix {
+          inherit makeWrapper symlinkJoin;
+        } jagex-launcher "jagex-launcher")
         # STALKER GAMMA: installs/updates Anomaly + the GAMMA modpack natively
         # (/mnt/storage/Games/STALKER); MO2 then runs as a non-Steam Proton game.
         gamma-launcher
@@ -106,6 +108,7 @@
         prismlauncher
         protonup-qt
         wineWow64Packages.staging
+        ut1999
         winetricks
       ];
     };

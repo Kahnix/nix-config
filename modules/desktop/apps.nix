@@ -116,9 +116,6 @@ in
       ];
     in
     {
-      # Only the Linux desktop needs omp's PipeWire-backed Wayland capture addon.
-      my.omp.waylandScreencast = true;
-
       home.packages = with pkgs; [
         blueman
         cava
@@ -176,7 +173,7 @@ in
       # gtk-dark.css, which matches the dark desktop.
       gtk.colorScheme = "dark";
 
-      # Trim oversized GTK headerbars to match the compact Hyprland desktop.
+      # Trim oversized GTK headerbars to match the compact niri desktop.
       # Unknown selectors are ignored by GTK3/GTK4; Stylix defines @shade_color.
       stylix.targets.gtk.extraCss = ''
         headerbar { min-height: 38px; }

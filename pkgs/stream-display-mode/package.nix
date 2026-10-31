@@ -1,9 +1,9 @@
-{ hyprland, writeShellApplication }:
+{ niri, writeShellApplication }:
 
 # `stream-display-mode WxH@Hz`: switch the desktop monitor's mode for a
 # Moonlight session (Sunshine prep-cmd do/undo).
 writeShellApplication {
   name = "stream-display-mode";
-  runtimeInputs = [ hyprland ];
+  runtimeInputs = [ niri ];
   text = builtins.readFile ./stream-display-mode.sh;
 }

@@ -21,8 +21,8 @@ in
       pipewire
       wo-mic
 
-      hyprland
-      dms
+      niri
+      noctalia
       desktop-apps
       tern
 
