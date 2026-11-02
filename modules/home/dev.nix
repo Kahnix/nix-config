@@ -37,6 +37,7 @@
           redis
           sqlite
           tailwindcss-language-server
+          neovim
           typescript
           typescript-language-server
           vscode-langservers-extracted
@@ -77,10 +78,9 @@
       config.programs.helix = {
         enable = true;
 
-        # Shells get EDITOR/VISUAL from here on every host; NixOS also keeps
-        # `hx` in environment.variables because GUI apps inherit their
-        # environment from the compositor, not from a shell.
-        defaultEditor = true;
+        # Neovim (LazyVim) is EDITOR/VISUAL now; hx stays installed for quick
+        # edits. Setting this would define EDITOR a second time.
+        defaultEditor = false;
 
         # hx only finds language servers on PATH. The Mason installs Neovim used
         # lived under ~/.local/share/nvim and were never on PATH.
@@ -260,6 +260,31 @@
       config.programs.gh = {
         enable = true;
         settings.aliases.co = "pr checkout";
+      };
+
+      # Neovim keeps a writable config repo (~/.config/nvim, LazyVim + lazy.nvim),
+      # so only what must match the rest of the system is generated here: the
+      # editor/system toolchain above, and the Stylix palette.
+      config.home.sessionVariables = {
+        EDITOR = "nvim";
+        VISUAL = "nvim";
+      };
+
+      # Read-only store symlink into the repo; lua/plugins/theme.lua requires it
+      # and falls back to LazyVim's own theme where Stylix is off (WSL).
+      # withHashtag also carries helpers (`__functor`, rgb/hex variants), so the
+      # lua table is built from base00..base0F explicitly.
+      config.xdg.configFile."nvim/lua/palette.lua" = lib.mkIf (config.stylix.enable or false) {
+        text =
+          let
+            colors = config.lib.stylix.colors.withHashtag;
+            palette = lib.listToAttrs (
+              map
+                (digit: lib.nameValuePair "base0${digit}" colors."base0${digit}")
+                (lib.stringToCharacters "0123456789ABCDEF")
+            );
+          in
+          "return ${lib.generators.toLua { } palette};\n";
       };
     };
 }
