@@ -4,6 +4,13 @@ let
   nixSettings = {
     nixpkgs = {
       config.allowUnfreePackages = config.unfreePackages;
+      # gtk2 is flagged `broken` upstream as a removal notice (final release
+      # 2.24.33, December 2020; removal scheduled for NixOS 27.05), and current
+      # nixpkgs refuses to *evaluate* broken packages. It still evaluates and
+      # builds fine, so allowing it is a warning, not a lie. Nothing here uses
+      # gtk2 directly: lutris' FHS rootfs pulls it in transitively. Drop this
+      # once lutris no longer drags in gtk2, or start migrating then.
+      config.problems.handlers."gtk+".broken = "warn";
       overlays = [ inputs.self.overlays.default ];
     };
 

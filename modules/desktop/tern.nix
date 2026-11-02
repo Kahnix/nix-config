@@ -39,13 +39,15 @@ in
       home-manager.sharedModules = [
         homeModules.tern
         {
-          # `tern remote install --user` writes this unit. Without --no-iroh the
-          # service also answers by endpoint id through iroh.stencil.so relays and
-          # hole punching, from anywhere and around the firewall.
-          xdg.configFile."systemd/user/tern-remote.service.d/no-iroh.conf".text = ''
+          # `tern remote install --user` writes this unit. By default the service
+          # also answers by endpoint id through iroh-stencil relays and hole
+          # punching, from anywhere and around the firewall; --relay none keeps it
+          # to direct UDP 8376, reachable only over the tailnet. (Tern 0.9.9
+          # replaced the old --no-iroh flag with --relay none.)
+          xdg.configFile."systemd/user/tern-remote.service.d/no-relay.conf".text = ''
             [Service]
             ExecStart=
-            ExecStart=%h/.local/opt/tern/tern remote serve --user --state-dir %h/.config/tern --no-iroh
+            ExecStart=%h/.local/opt/tern/tern remote serve --user --state-dir %h/.config/tern --relay none
           '';
         }
       ];

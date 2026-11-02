@@ -103,7 +103,6 @@
         # Launches GAMMA without MO2's slow virtual file system (see the package).
         gamma-direct
         lsfg-vk-ui
-        lutris
         mangohud
         prismlauncher
         protonup-qt
