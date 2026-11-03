@@ -37,7 +37,6 @@
           redis
           sqlite
           tailwindcss-language-server
-          neovim
           typescript
           typescript-language-server
           vscode-langservers-extracted
@@ -78,12 +77,11 @@
       config.programs.helix = {
         enable = true;
 
-        # Neovim (LazyVim) is EDITOR/VISUAL now; hx stays installed for quick
-        # edits. Setting this would define EDITOR a second time.
-        defaultEditor = false;
+        # Sets EDITOR and VISUAL to hx.
+        defaultEditor = true;
 
-        # hx only finds language servers on PATH. The Mason installs Neovim used
-        # lived under ~/.local/share/nvim and were never on PATH.
+        # hx only finds language servers on PATH, so they are installed beside
+        # it rather than fetched by an editor plugin.
         extraPackages = with pkgs; [
           clang-tools # clangd
           gopls
@@ -118,7 +116,7 @@
                 };
                 characters.tab = "→";
               };
-              # Pickers show dotfiles, matching the old telescope `hidden = true`.
+              # Pickers show dotfiles.
               file-picker.hidden = true;
               lsp.display-progress-messages = true;
               # hx paints block cursors itself as an inverted cell and hides
@@ -260,14 +258,6 @@
       config.programs.gh = {
         enable = true;
         settings.aliases.co = "pr checkout";
-      };
-
-      # Neovim keeps a writable config repo (~/.config/nvim, LazyVim + lazy.nvim),
-      # so only what must match the rest of the system is generated here: the
-      # editor/system toolchain above, and the Stylix palette.
-      config.home.sessionVariables = {
-        EDITOR = "nvim";
-        VISUAL = "nvim";
       };
     };
 }

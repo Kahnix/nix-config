@@ -42,20 +42,13 @@ the flake can see them. `nix fmt` formats the tree with nixfmt.
 
 ## Editor
 
-Neovim is `EDITOR`/`VISUAL`. Its configuration is not in this repo: it lives in
-`~/.config/nvim` (its own git repo) as a [LazyVim](https://www.lazyvim.org)
-starter plus a few overrides. Plugins come from `lazy.nvim` and language
-servers/tools from `mason`, so the same config runs unchanged on a machine with
-no Nix installed.
+Helix is `EDITOR`/`VISUAL`. Its `config.toml` and `languages.toml` are generated
+by Home Manager in `modules/home/dev.nix`, and Stylix supplies the theme. The
+same module installs the LSP/formatter toolchain that Helix and Zed share.
 
-Nix contributes only what has to match the host: the `neovim` binary and the
-LSP/formatter toolchain that Helix and Zed also use (`modules/home/dev.nix`).
-The theme is Kanagawa Dragon from the plugin itself, the same base16 scheme
-`modules/system/theme.nix` points Stylix at, so terminal, helix and nvim agree
-without any generated file.
-
-Helix stays installed as `hx` for quick edits, with its config still generated
-here.
+Zed is installed on graphical hosts and reuses Helix's `extraPackages` instead
+of downloading its own language servers. Its settings and extensions live in
+`modules/home/zed.nix`, so NixOS and macOS render the same Zed setup.
 
 ## Apply
 

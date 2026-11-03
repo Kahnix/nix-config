@@ -35,8 +35,8 @@ in
     # wins. This is what yazi's built-in `edit` opener runs ("${EDITOR:-vi} %s",
     # blocking), and what git, ssh and everything else picks up.
     environment.variables = {
-      EDITOR = "nvim";
-      VISUAL = "nvim";
+      EDITOR = "hx";
+      VISUAL = "hx";
     };
 
     home-manager.sharedModules = [ homeModules.desktop-apps ];
