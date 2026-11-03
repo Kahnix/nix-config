@@ -1,5 +1,8 @@
 { inputs, ... }:
 {
+  # claude-code ships under Anthropic's proprietary licence.
+  unfreePackages = [ "claude-code" ];
+
   flake.modules.homeManager.dev =
     {
       config,
@@ -69,6 +72,8 @@
           }))
           omp
           herdr
+          # opencode's Claude Agent provider shells out to this binary.
+          claude-code
         ])
         ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
           with pkgs;
