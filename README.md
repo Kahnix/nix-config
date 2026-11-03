@@ -48,13 +48,11 @@ starter plus a few overrides. Plugins come from `lazy.nvim` and language
 servers/tools from `mason`, so the same config runs unchanged on a machine with
 no Nix installed.
 
-Nix contributes only what has to match the host:
-
-- the `neovim` binary and the LSP/formatter toolchain that Helix and Zed also
-  use (`modules/home/dev.nix`);
-- `~/.config/nvim/lua/palette.lua`, generated from Stylix so the editor, helix
-  and the terminal share one base16 palette. It is gitignored and read through
-  `pcall`; hosts without Stylix (WSL) fall back to LazyVim's default theme.
+Nix contributes only what has to match the host: the `neovim` binary and the
+LSP/formatter toolchain that Helix and Zed also use (`modules/home/dev.nix`).
+The theme is Kanagawa Dragon from the plugin itself, the same base16 scheme
+`modules/system/theme.nix` points Stylix at, so terminal, helix and nvim agree
+without any generated file.
 
 Helix stays installed as `hx` for quick edits, with its config still generated
 here.

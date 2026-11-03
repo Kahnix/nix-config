@@ -269,22 +269,5 @@
         EDITOR = "nvim";
         VISUAL = "nvim";
       };
-
-      # Read-only store symlink into the repo; lua/plugins/theme.lua requires it
-      # and falls back to LazyVim's own theme where Stylix is off (WSL).
-      # withHashtag also carries helpers (`__functor`, rgb/hex variants), so the
-      # lua table is built from base00..base0F explicitly.
-      config.xdg.configFile."nvim/lua/palette.lua" = lib.mkIf (config.stylix.enable or false) {
-        text =
-          let
-            colors = config.lib.stylix.colors.withHashtag;
-            palette = lib.listToAttrs (
-              map
-                (digit: lib.nameValuePair "base0${digit}" colors."base0${digit}")
-                (lib.stringToCharacters "0123456789ABCDEF")
-            );
-          in
-          "return ${lib.generators.toLua { } palette};\n";
-      };
     };
 }
