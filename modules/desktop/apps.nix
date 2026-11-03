@@ -126,6 +126,8 @@ in
         gdu
         gedit
         google-chrome
+        # Screenshots as PNG files, for agents: `grim shot.png` (niri is wlroots).
+        grim
         mission-center
         mpv
         nautilus

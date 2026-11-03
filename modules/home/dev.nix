@@ -57,7 +57,16 @@
           nix-search-tv
           nix-tree
           nvd
-          opencode
+          # nixpkgs pins a stale bun-deps hash for opencode 2.2.5, so the FOD
+          # never matches and the whole system build fails. Re-pin it to what the
+          # derivation actually produces.
+          # shortcut: local hash override, drop it once pkgs/by-name/op/opencode
+          # ships a matching node_modules outputHash.
+          (opencode.overrideAttrs (prev: {
+            node_modules = prev.node_modules.overrideAttrs (_: {
+              outputHash = "sha256-prx9dX7kUvs/E3zopkaPk5LXh3xJAy5sZeum/W8L7cA=";
+            });
+          }))
           omp
           herdr
         ])

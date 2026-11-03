@@ -79,8 +79,14 @@ in
           "input"
           "networkmanager"
           "video"
+          "ydotool"
         ];
       };
+
+      # The only way to inject input on Wayland: a uinput device from a daemon.
+      # Clients (already in the `ydotool` group) then move/click/type at the
+      # compositor's scale, so headless UI checks don't need an X server.
+      programs.ydotool.enable = true;
 
       services.logind.settings.Login = {
         HandleHibernateKey = "ignore";

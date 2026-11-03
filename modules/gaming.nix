@@ -30,18 +30,6 @@
       programs.steam = {
         enable = true;
 
-        # The 32-bit client's SILK/Speex voice decoder clobbers EBX (the i386 GOT
-        # base) before calling memmove through its PLT stub, so the indirect jump
-        # reads a decoded-voice buffer and segfaults the client the moment a
-        # non-Steam player speaks in CS 1.6 (halflife#3895 / #3898, unfixed
-        # upstream since 2025). The preload (pkgs/steam-voicechat-fix) rewrites
-        # that stub to a direct jump -- in the client process only, never in a
-        # game process. Drop the override if Valve ever fixes it, or to trade the
-        # crash risk for ABI-patch risk.
-        package = pkgs.steam.override {
-          extraEnv.LD_PRELOAD = "${pkgs.steam-voicechat-fix}/lib/libsteam_voicechat_fix.so";
-        };
-
         dedicatedServer.openFirewall = true;
         localNetworkGameTransfers.openFirewall = true;
         remotePlay.openFirewall = true;
