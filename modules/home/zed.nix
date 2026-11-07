@@ -5,6 +5,7 @@
       config,
       lib,
       osConfig,
+      pkgs,
       ...
     }:
     {
@@ -67,6 +68,12 @@
             };
             antigravity-acp = {
               type = "registry";
+              # The bundled Python/OpenSSL does not consult NixOS's certificate
+              # store, so the Cloud Code calls made after login fail with
+              # CERTIFICATE_VERIFY_FAILED (surfaced as "Internal error").
+              env = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+                SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
+              };
               default_config_options = {
                 mode = "yolo";
                 thinking_level = "medium";
@@ -143,7 +150,6 @@
           };
           lsp.eslint.settings.workingDirectory.mode = "auto";
 
-          # Stylix sets "Base16 Kanagawa Dragon" at normal priority.
           theme = lib.mkForce "Zedokai Darker";
           terminal.shell = "system";
           telemetry = {

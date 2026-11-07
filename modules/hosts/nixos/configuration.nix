@@ -15,6 +15,7 @@ in
       ssh
       tailscale
       nix-ld
+      cachyos-settings
 
       kernel
       nvidia
