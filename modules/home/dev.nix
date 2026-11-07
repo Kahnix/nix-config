@@ -149,17 +149,13 @@
               ":redraw"
             ];
           }
-          # WSL has no Stylix, so no generated theme: the built-in
-          # kanagawa-dragon keeps it on the same palette as the desktop, with
-          # the background dropped to match the transparent Stylix theme.
-          (lib.mkIf (!(config.stylix.enable or false)) { theme = "kanagawa-dragon-transparent"; })
+          # WSL has no Stylix, so load the same transparent Gruvbox Paper theme
+          # directly instead of Stylix's generated themes/stylix.toml.
+          (lib.mkIf (!(config.stylix.enable or false)) { theme = "gruvbox-paper"; })
         ];
 
         themes = lib.mkIf (!(config.stylix.enable or false)) {
-          kanagawa-dragon-transparent = {
-            inherits = "kanagawa-dragon";
-            "ui.background" = { };
-          };
+          gruvbox-paper = builtins.fromTOML (builtins.readFile ./gruvbox-paper.toml);
         };
 
         languages = {

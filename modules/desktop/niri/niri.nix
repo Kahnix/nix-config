@@ -41,7 +41,12 @@ in
     };
 
   flake.modules.homeManager.niri =
-    { config, lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       colors = config.lib.stylix.colors.withHashtag;
       monitorKdl = "${config.xdg.configHome}/niri/monitor.kdl";
@@ -57,13 +62,14 @@ in
     {
       # niri reloads the file live when the symlink changes.
       xdg.configFile."niri/config.kdl".source =
-        pkgs.runCommand "niri-config.kdl" { nativeBuildInputs = [ pkgs.niri ]; } ''
-          substitute ${./config.kdl} $out \
-            --subst-var-by base02 '${colors.base02}' \
-            --subst-var-by base0C '${colors.base0C}' \
-            --subst-var-by base0D '${colors.base0D}'
-          niri validate -c $out
-        '';
+        pkgs.runCommand "niri-config.kdl" { nativeBuildInputs = [ pkgs.niri ]; }
+          ''
+            substitute ${./config.kdl} $out \
+              --subst-var-by base02 '${colors.base02}' \
+              --subst-var-by base0C '${colors.base0C}' \
+              --subst-var-by base0D '${colors.base0D}'
+            niri validate -c $out
+          '';
 
       # GUI for resolution, refresh rate, scale, rotation, position and VRR.
       # Apply writes monitor.kdl, which config.kdl includes; niri reloads it live.

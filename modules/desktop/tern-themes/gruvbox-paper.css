@@ -1,0 +1,69 @@
+/* Gruvbox Paper: matte charcoal ink + soft e-ink parchment browns & washed
+   earth accents. Layer-2 theme variables; dark-gruvbox fills anything unset. */
+@import "dark-gruvbox";
+
+:root {
+	--ink: #e6decb;
+	--t1: #e6decb;
+	--t2: #cdc8b1;
+	--t3: #a89984;
+	--t4: #757069;
+
+	--accent: #c6a67a;
+	--accent-ink: #d6be96;
+	--accent-fill: #4a3c25;
+	--a1: #b38e6f;
+	--a2: #cbb586;
+	--grad-ink: #121212;
+
+	--ok: #97ad7e;
+	--ok-fill: #3d4933;
+	--bad: #c47b6d;
+	--bad-fill: #5c342d;
+	--warn: #cbb586;
+	--live: #b4909b;
+	--live-fill: #523d44;
+
+	--tn-page: #121212;
+	--tn-pop: #242424;
+	--tn-sel: #a89984;
+	--card: #1e1e1d;
+	--raise: #242424;
+	--rail: rgb(198, 166, 122);
+	--code-bg: #121212;
+	--tbl-head: #141414;
+
+	--tv-bg: #191919;
+	--tv-fg: #e6decb;
+	--tv-cur: #eae3ce;
+	--tv-cur-ink: #191919;
+	--tv-sel-a: #363431;
+	--tv-sel-b: #363431;
+
+	--ansi0: #191919;
+	--ansi1: #c47b6d;
+	--ansi2: #97ad7e;
+	--ansi3: #cbb586;
+	--ansi4: #88a2ac;
+	--ansi5: #b4909b;
+	--ansi6: #8aa89b;
+	--ansi7: #cdc8b1;
+	--ansi8: #757069;
+	--ansi9: #d48a7b;
+	--ansi10: #a6bc8d;
+	--ansi11: #d8c498;
+	--ansi12: #99b3bd;
+	--ansi13: #c4a0ab;
+	--ansi14: #9bb8ab;
+	--ansi15: #f8f9e8;
+
+	--tk-comment: #757069;
+	--tk-keyword: #b4909b;
+	--tk-function: #88a2ac;
+	--tk-variable: #e6decb;
+	--tk-string: #97ad7e;
+	--tk-number: #c6906a;
+	--tk-type: #cbb586;
+	--tk-operator: #c47b6d;
+	--tk-punct: #a89984;
+}

@@ -44,7 +44,12 @@ the flake can see them. `nix fmt` formats the tree with nixfmt.
 
 Helix is `EDITOR`/`VISUAL`. Its `config.toml` and `languages.toml` are generated
 by Home Manager in `modules/home/dev.nix`, and Stylix supplies the theme. The
-same module installs the LSP/formatter toolchain that Helix and Zed share.
+same module installs the LSP/formatter toolchain that Helix, Mitos, and Zed share.
+
+Mitos (`ms` / `mitos`) is installed alongside Helix on every host via
+`modules/home/mitos.nix`. It inherits Helix's `settings`, `languages`, `themes`,
+and `extraPackages` (migrated to Mitos's canonical config schema and validated
+at build time), while accepting Mitos-specific overrides under `programs.mitos`.
 
 Zed is installed on graphical hosts and reuses Helix's `extraPackages` instead
 of downloading its own language servers. Its settings and extensions live in
@@ -113,7 +118,7 @@ written to `~/.config/noctalia/config.toml`. Changes made in its settings UI go 
 `~/.local/state/noctalia/settings.toml`, which overrides the defaults and
 survives rebuilds; `noctalia-snapshot` folds them back into `settings.toml`
 (comments kept, keys owned by Nix/Stylix skipped). Stylix's
-Noctalia target supplies the palette (Kanagawa Dragon, set in
+Noctalia target supplies the palette (Gruvbox Paper, set in
 `modules/system/theme.nix`), theme mode, shell font and popup opacity; Noctalia's
 own GTK/Qt/terminal templates are off so they do not overwrite Stylix. The
 wallpaper defaults to `~/Documents/wallpapers/31299713726712.jpg`.

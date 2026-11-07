@@ -12,6 +12,7 @@ in
       nix
       user
       theme
+      tern
 
       notes-sync
       windows-vm

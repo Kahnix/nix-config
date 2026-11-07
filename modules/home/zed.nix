@@ -25,7 +25,6 @@
           "html"
           "material-icon-theme"
           "nix"
-          "zedokai"
         ];
 
         # Merged into ~/.config/zed/settings.json by the Home Manager module.
@@ -150,7 +149,8 @@
           };
           lsp.eslint.settings.workingDirectory.mode = "auto";
 
-          theme = lib.mkForce "Zedokai Darker";
+          # Stylix sets userSettings.theme ("Base16 Gruvbox Paper") and writes
+          # themes/stylix.json at normal priority.
           terminal.shell = "system";
           telemetry = {
             diagnostics = false;

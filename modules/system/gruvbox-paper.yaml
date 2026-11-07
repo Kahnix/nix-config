@@ -1,0 +1,21 @@
+system: "base16"
+name: "Gruvbox Paper"
+author: "Kacper Daniel (inspired by William Jansson and Prashant Tak)"
+variant: "dark"
+palette:
+  base00: "#191919" # Matte charcoal ink background
+  base01: "#242424" # Elevated charcoal surface (bars, sidebars, popups)
+  base02: "#363431" # Selection & active element surface
+  base03: "#757069" # Warm graphite-stone (comments, line numbers, outlines)
+  base04: "#a89984" # Washed taupe / warm stone (muted UI foreground)
+  base05: "#e6decb" # Soft e-ink parchment foreground
+  base06: "#eae3ce" # Linen parchment highlight foreground
+  base07: "#f8f9e8" # Cream paper brightest foreground
+  base08: "#c47b6d" # Washed terracotta clay (variables, tags, errors, diff-)
+  base09: "#c6906a" # Warm sienna / cinnamon brown (constants, numbers, attrs)
+  base0A: "#cbb586" # Oatmeal / antique brass (types, classes, search)
+  base0B: "#97ad7e" # Soft dry sage (strings, diff+, success)
+  base0C: "#8aa89b" # Weathered celadon (escapes, regex, secondary accent)
+  base0D: "#88a2ac" # Dusty mineral slate (functions, primary UI accent)
+  base0E: "#b4909b" # Washed rosewood (keywords, storage)
+  base0F: "#b38e6f" # E-ink walnut / sepia brown (embedded, special punct)

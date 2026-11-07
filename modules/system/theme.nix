@@ -1,6 +1,6 @@
 { inputs, ... }:
 let
-  # Kanagawa Dragon everywhere Stylix reaches; Stylix also themes the Home
+  # Gruvbox Paper everywhere Stylix reaches; Stylix also themes the Home
   # Manager side through its Home Manager integration.
   stylix =
     { pkgs, lib, ... }:
@@ -9,7 +9,7 @@ let
         enable = true;
         autoEnable = true;
         polarity = "dark";
-        base16Scheme = "${pkgs.base16-schemes}/share/themes/kanagawa-dragon.yaml";
+        base16Scheme = ./gruvbox-paper.yaml;
 
         fonts = {
           serif = {

@@ -74,7 +74,12 @@ in
     };
 
   flake.modules.homeManager.noctalia =
-    { config, lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       wallpapers = "${config.home.homeDirectory}/Documents/wallpapers";
     in

@@ -3,10 +3,26 @@ let
   homeModules = config.flake.modules.homeManager;
 in
 {
-  flake.modules.homeManager.tern = {
-    home.sessionVariables.TERMINAL = "tern";
-    # Tern adds every themes/NAME.css beside settings.json to its theme picker.
-    xdg.configFile."tern/themes/kanagawa-dragon.css".source = ./tern-themes/kanagawa-dragon.css;
+  flake.modules.homeManager.tern =
+    { lib, pkgs, ... }:
+    let
+      inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
+    in
+    {
+      home.sessionVariables = lib.mkIf isLinux { TERMINAL = "tern"; };
+      # Tern adds every themes/NAME.css beside settings.json to its theme picker:
+      # ~/.config/tern on Linux, ~/Library/Application Support/Tern on macOS.
+      xdg.configFile = lib.mkIf isLinux {
+        "tern/themes/gruvbox-paper.css".source = ./tern-themes/gruvbox-paper.css;
+      };
+      home.file = lib.mkIf isDarwin {
+        "Library/Application Support/Tern/themes/gruvbox-paper.css".source =
+          ./tern-themes/gruvbox-paper.css;
+      };
+    };
+
+  flake.modules.darwin.tern = {
+    home-manager.sharedModules = [ homeModules.tern ];
   };
   # Tern (build.stencil.so/tern) is installed outside Nix into ~/.local/bin and
   # configured through ~/.config/tern/settings.json; this provides what its

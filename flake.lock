@@ -459,6 +459,26 @@
         "type": "github"
       }
     },
+    "mitos": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793970453,
+        "narHash": "sha256-0d9RQPckw9quH+FvwqFwcaKdm9uQ1Dz4g1GUo8TlJXg=",
+        "owner": "mitos-editor",
+        "repo": "mitos",
+        "rev": "629302b37cd0ebbc526a55b455b2916c1acaa0d5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mitos-editor",
+        "repo": "mitos",
+        "type": "github"
+      }
+    },
     "nixos-wsl": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -576,6 +596,7 @@
         "home-manager": "home-manager_2",
         "import-tree": "import-tree",
         "jagex-launcher": "jagex-launcher",
+        "mitos": "mitos",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_2",
         "stylix": "stylix"
