@@ -53,6 +53,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Mitos modal text editor (Helix fork).
+    mitos = {
+      url = "github:mitos-editor/mitos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Outputs are assembled by flake-parts from every module under ./modules.
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
