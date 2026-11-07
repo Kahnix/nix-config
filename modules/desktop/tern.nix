@@ -46,7 +46,7 @@ in
           xdg.configFile."systemd/user/tern-remote.service.d/no-relay.conf".text = ''
             [Service]
             ExecStart=
-            ExecStart=%h/.local/opt/tern/tern remote serve --user --state-dir %h/.config/tern --no-iroh
+            ExecStart=%h/.local/opt/tern/tern remote serve --user --state-dir %h/.config/tern --relay none
           '';
         }
       ];
