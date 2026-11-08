@@ -146,6 +146,7 @@ in
         telegram-desktop
         # GUI file manager (Super + E). Yazi stays installed for use from a shell.
         # tumbler/volman/archive-plugin give Thunar thumbnails, mounts and archives.
+        ytmdesktop
         thunar
         thunar-archive-plugin
         thunar-volman

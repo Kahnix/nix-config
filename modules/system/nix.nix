@@ -37,6 +37,12 @@ let
           "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
           "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
         ];
+        # 16 cores but 15 GB of RAM: 16 concurrent heavy builds (zed's Rust
+        # workspace, Qt apps) spend their time in swap.
+        max-jobs = 6;
+        # One failing derivation must not discard the builds that already
+        # finished; the rest of the system still gets built and activated.
+        keep-going = true;
       };
       # Weekly: drop generations older than two weeks, then dedupe the store.
       gc = {
