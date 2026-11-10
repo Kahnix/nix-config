@@ -73,6 +73,12 @@ After a `rebuild` that changes Doom, Linux keeps the old daemon until
 `systemctl --user restart emacs`; macOS restarts it during activation, which
 drops unsaved buffers (auto-save files remain).
 
+TypeScript buffers use the project's own tooling when present: TypeScript 7's
+built-in server (`node_modules/.bin/tsc --lsp`, falling back to
+typescript-language-server), oxlint beside it through
+[rassumfrassum](https://github.com/joaotavora/rassumfrassum) when there is an
+`.oxlintrc.json`, and oxfmt for `SPC c f` when there is an `.oxfmtrc.json`.
+
 ## Apply
 
 [nh](https://github.com/nix-community/nh) drives rebuilds and shows a package

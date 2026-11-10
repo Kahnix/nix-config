@@ -128,6 +128,20 @@
           nixd
           nixfmt
           lua-language-server
+          # Runs several language servers behind one Eglot connection
+          # (TypeScript + oxlint, see doomdir/config.el).
+          # shortcut: rass 0.3.5 (and upstream master) sends
+          # `previousResultId: null` on its first diagnostics pull, which
+          # TypeScript 7's server rejects, so type errors never arrive. Omit
+          # the key until a pull has returned an id; drop once fixed upstream.
+          (rassumfrassum.overrideAttrs (prev: {
+            postPatch = (prev.postPatch or "") + ''
+              substituteInPlace src/rassumfrassum/frassum.py \
+                --replace-fail \
+                  "'previousResultId': state.inflight_pulls.get(id(server))," \
+                  "**({'previousResultId': p} if (p := state.inflight_pulls.get(id(server))) is not None else {}),"
+            '';
+          }))
           typescript
           typescript-language-server
           vscode-langservers-extracted
