@@ -23,3 +23,20 @@
        (doom-run-hooks hook)
        (set hook nil))
      (mapc #'require '(eglot popup etags ffap compile grep)))))
+
+;; nix-ts-mode aligns a line inside { ... } with the previous binding, but on
+;; an empty line there is no node to start from, so it returned nil and RET or
+;; `o' left the new line at column 0. Find that binding from the parent instead.
+(after! nix-ts-mode
+  (defadvice! +nix-ts-prev-sibling-on-blank-line-a (fn node parent bol &rest args)
+    :around #'nix-ts-mode--prev-sibling-not-comment
+    (if node
+        (apply fn node parent bol args)
+      (let (binding any)
+        (dolist (child (treesit-node-children parent t))
+          (when (< (treesit-node-start child) bol)
+            (setq any child)
+            (unless (equal (treesit-node-type child) "comment")
+              (setq binding child))))
+        (when-let* ((anchor (or binding any)))
+          (treesit-node-start anchor))))))
