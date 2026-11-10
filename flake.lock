@@ -531,26 +531,6 @@
         "type": "github"
       }
     },
-    "mitos": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1794140504,
-        "narHash": "sha256-EHsJWSj6RICjZfvfcrVdhbusN1LpRqBf0HFjzzY8FVI=",
-        "owner": "mitos-editor",
-        "repo": "mitos",
-        "rev": "1dff6c44f0747e3b2310977c31428cd3a608f546",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mitos-editor",
-        "repo": "mitos",
-        "type": "github"
-      }
-    },
     "nix-doom-emacs-unstraightened": {
       "inputs": {
         "doomdir": "doomdir",
@@ -690,7 +670,6 @@
         "home-manager": "home-manager_2",
         "import-tree": "import-tree",
         "jagex-launcher": "jagex-launcher",
-        "mitos": "mitos",
         "nix-doom-emacs-unstraightened": "nix-doom-emacs-unstraightened",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_2",

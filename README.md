@@ -55,6 +55,17 @@ Zed is installed on graphical hosts and reuses Helix's `extraPackages` instead
 of downloading its own language servers. Its settings and extensions live in
 `modules/home/zed.nix`, so NixOS and macOS render the same Zed setup.
 
+Doom Emacs (`emacs`) is installed on every host by
+[nix-doom-emacs-unstraightened](https://github.com/marienz/nix-doom-emacs-unstraightened)
+in `modules/home/doom/doom.nix`. Doom, its modules and their packages are
+pinned by `flake.lock` and built into the store: there is no `doom sync`, and
+`~/.config/emacs` is unused. The DOOMDIR is `modules/home/doom/doomdir`
+(`init.el`, `config.el`, `packages.el`); edit it and `rebuild`. Font and theme
+come from Stylix through a generated `nix.el`; language servers are Helix's
+`extraPackages` plus the ones in `dev.nix`, on Emacs's own `PATH`. Local state
+lives in `~/.local/share/nix-doom`, `~/.cache/doom` and `~/.local/state/doom`.
+GUI builds: NS on macOS, pgtk on NixOS; WSL gets `emacs-nox`.
+
 ## Apply
 
 [nh](https://github.com/nix-community/nh) drives rebuilds and shows a package
