@@ -16,6 +16,9 @@
     let
       isWsl = osConfig.wsl.enable or false;
       stylix = config.stylix.enable or false;
+      # macOS daemon socket; see launchd.agents.emacs below. Its own directory:
+      # Emacs creates it 0700 and refuses one others can read (~/.cache/emacs).
+      emacsSocket = "${config.xdg.cacheHome}/emacs-server/server";
 
       # Same font as Stylix's monospace; the "Mono" family has one-cell icons.
       font = if stylix then config.stylix.fonts.monospace.name else "BerkeleyMono Nerd Font";
@@ -108,9 +111,10 @@
           [ epkgs.treesit-grammars.with-all-grammars ] ++ lib.optional stylix (base16-stylix-theme epkgs);
 
         # Eglot and apheleia only find servers and formatters on Emacs's PATH,
-        # and a GUI Emacs started from the Dock or niri does not get the login
-        # shell's. Reuses Helix's toolchain plus the servers dev.nix installs
-        # for every editor.
+        # and the daemon (launchd on macOS) or a GUI Emacs started from the Dock
+        # does not get the login shell's. Reuses Helix's toolchain plus the
+        # servers dev.nix installs for every editor; direnv for envrc, rustup
+        # for its rust-analyzer proxy.
         extraBinPackages = [
           config.programs.git.package
           pkgs.ripgrep
@@ -118,6 +122,8 @@
         ]
         ++ config.programs.helix.extraPackages
         ++ (with pkgs; [
+          config.programs.direnv.package
+          rustup
           nil
           nixd
           nixfmt
@@ -127,6 +133,42 @@
           vscode-langservers-extracted
           yaml-language-server
         ]);
+      };
+
+      # One long-lived Emacs per login (launchd agent on macOS, systemd user
+      # service on Linux), so startup and Doom's lazy loading are paid once;
+      # Unstraightened sets services.emacs.package to the Doom build. On Linux
+      # a rebuild does not restart it (unsaved buffers); `systemctl --user
+      # restart emacs` picks up a new build. On macOS, activation reloads the
+      # agent whenever the build changes, restarting Emacs (unsaved buffers
+      # are lost; auto-save files stay).
+      services.emacs = {
+        enable = true;
+        # niri imports WAYLAND_DISPLAY into the systemd user session; starting
+        # before that would give a daemon that cannot open pgtk frames.
+        startWithUserSession = if isWsl then true else "graphical";
+        client.enable = !isWsl;
+      };
+
+      # launchd starts the agent without TMPDIR, so the daemon would put its
+      # socket in /tmp/emacs<uid>/ while emacsclient looks under $TMPDIR
+      # (/var/folders/...). Give both the same path. Linux needs nothing:
+      # systemd sets XDG_RUNTIME_DIR for the service and the shell alike.
+      launchd.agents.emacs.config.ProgramArguments = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (
+        lib.mkForce [
+          "${config.services.emacs.package}/bin/emacs"
+          "--fg-daemon=${emacsSocket}"
+        ]
+      );
+      home.sessionVariables = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+        EMACS_SOCKET_NAME = emacsSocket;
+      };
+
+      # Clients open instantly once the daemon is up: `e` in the terminal,
+      # `ec` as a GUI frame (returns the shell immediately).
+      programs.fish.shellAliases = {
+        e = "emacsclient -t";
+        ec = "emacsclient -c -n";
       };
     };
 }

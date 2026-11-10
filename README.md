@@ -66,6 +66,13 @@ come from Stylix through a generated `nix.el`; language servers are Helix's
 lives in `~/.local/share/nix-doom`, `~/.cache/doom` and `~/.local/state/doom`.
 GUI builds: NS on macOS, pgtk on NixOS; WSL gets `emacs-nox`.
 
+Emacs runs as a daemon from login (`services.emacs`: a launchd agent on macOS,
+a systemd user service on Linux), so Doom's startup and lazy loading are paid
+once. Open clients with `e` (terminal, `emacsclient -t`) or `ec` (GUI frame).
+After a `rebuild` that changes Doom, Linux keeps the old daemon until
+`systemctl --user restart emacs`; macOS restarts it during activation, which
+drops unsaved buffers (auto-save files remain).
+
 ## Apply
 
 [nh](https://github.com/nix-community/nh) drives rebuilds and shows a package

@@ -11,18 +11,11 @@
 (setq which-key-idle-delay 0.05
       which-key-idle-secondary-delay 0.05)
 
-;; Doom defers most global modes (flycheck, smartparens, projectile, evil
-;; bindings, ...) until the first file is opened, and the first code buffer
-;; then loads eglot and its helpers, so that first `SPC f f' took ~3-5s. Do
-;; both as soon as Emacs is idle after startup, like Doom does for a daemon.
-(unless (daemonp)
-  (run-with-idle-timer
-   0.5 nil
-   (lambda ()
-     (dolist (hook '(doom-first-input-hook doom-first-buffer-hook doom-first-file-hook))
-       (doom-run-hooks hook)
-       (set hook nil))
-     (mapc #'require '(eglot popup etags ffap compile grep)))))
+;; Emacs runs as a daemon (services.emacs in ../doom.nix), which loads
+;; everything in `doom-incremental-packages' at startup. Queue the heavy
+;; packages Doom only loads on first use (~1.5s for magit, ~0.5s for eglot),
+;; so the first `SPC g g' or code buffer in a client is instant.
+(doom-load-packages-incrementally '(magit eglot popup etags ffap compile grep))
 
 ;; nix-ts-mode aligns a line inside { ... } with the previous binding, but on
 ;; an empty line there is no node to start from, so it returned nil and RET or
