@@ -82,6 +82,18 @@ in
     }:
     let
       wallpapers = "${config.home.homeDirectory}/Documents/wallpapers";
+      colors = config.lib.stylix.colors;
+      # Vector logo rendered at the monitor's native 3440x1440, tinted from the
+      # Stylix scheme, so it follows the theme and never gets upscaled.
+      nixosWallpaper =
+        pkgs.runCommand "nixos-wallpaper.png" { nativeBuildInputs = [ pkgs.imagemagick ]; }
+          ''
+            magick -size 3440x1440 xc:'#${colors.base00}' \
+              \( -background none -density 1200 \
+                 ${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg \
+                 -resize x700 -fill '#${colors.base02}' -colorize 100 \) \
+              -gravity center -composite -depth 8 $out
+          '';
     in
     {
       # Folds settings-UI changes back into ./settings.toml.
@@ -97,7 +109,7 @@ in
           {
             wallpaper = {
               directory = wallpapers;
-              default.path = "${wallpapers}/31299713726712.jpg";
+              default.path = "${nixosWallpaper}";
             };
           }
         ];

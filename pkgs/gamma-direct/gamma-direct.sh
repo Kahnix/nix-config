@@ -4,6 +4,20 @@
 # entry does: working directory bin/, SteamAppId 41700 (xrRazom's Steam
 # sessions run as Call of Pripyat). Redeploys first when the MO2 mod list or
 # mod set changed since the last deploy.
+#
+# Mod Organizer itself is one `--mo2` away (`gamma-direct --mo2 %command%`, or
+# `touch ~/.config/gamma-direct/mo2` to let plain launches open MO2 until that
+# file is removed): the command Steam built is passed through untouched, so MO2
+# starts in the same Proton prefix with its window and the slow usvfs start.
+
+mo2_marker="${XDG_CONFIG_HOME:-$HOME/.config}/gamma-direct/mo2"
+if [ "${1:-}" = "--mo2" ]; then
+  shift
+  exec "$@"
+fi
+if [ -e "$mo2_marker" ]; then
+  exec "$@"
+fi
 
 root="${GAMMA_ROOT:-/mnt/storage/Games/STALKER}"
 play="$root/Play"

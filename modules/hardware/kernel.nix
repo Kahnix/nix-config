@@ -16,9 +16,15 @@
       # point the module set back at our stdenv: nvidia and friends must obey
       # this config's unfree list. nixpkgs still builds those modules locally,
       # which is why the nvidia module compiles per kernel bump.
+      # Stay on a stable kernel, not linux_cachyos-rc: the GTX 1070 is stuck on
+      # the legacy_580 NVIDIA driver, and 580.196.07 does not compile on
+      # 7.4-rc1 (drm_atomic_helper_{plane,crtc}_reset and the .reset members of
+      # drm_{plane,crtc}_funcs are gone) but did on 7.3.x. Move to a newer
+      # kernel only after checking that nvidia-kernel-modules builds for it.
       boot.kernelPackages =
-        (pkgs.linuxPackagesFor inputs.chaotic.packages.${pkgs.stdenv.hostPlatform.system}.linux_cachyos-rc)
-        .extend
+        (pkgs.linuxPackagesFor
+          inputs.chaotic.packages.${pkgs.stdenv.hostPlatform.system}.linux_cachyos-eevdf
+        ).extend
           (_final: _prev: { stdenv = pkgs.stdenv; });
     };
 }

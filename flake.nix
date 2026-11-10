@@ -2,8 +2,10 @@
   description = "Kacper's NixOS, WSL, and dev configs";
 
   inputs = {
-    # Shared rolling package set for all hosts.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # Shared package set for all hosts. nixos-unstable (not nixpkgs-unstable):
+    # the channel only advances once Hydra has built and tested the release
+    # jobs, so heavy packages (zed, telegram, ...) are in cache.nixos.org.
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # NixOS on WSL.
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
@@ -53,10 +55,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Mitos modal text editor (Helix fork).
-    mitos = {
-      url = "github:mitos-editor/mitos";
-      inputs.nixpkgs.follows = "nixpkgs";
+    # Doom Emacs built into the Nix store without straight.el.
+    nix-doom-emacs-unstraightened = {
+      url = "github:marienz/nix-doom-emacs-unstraightened";
+      inputs.nixpkgs.follows = "";
     };
 
     # Outputs are assembled by flake-parts from every module under ./modules.

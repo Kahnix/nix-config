@@ -260,7 +260,7 @@
       # Stylix supplies gui.theme; lazygit reads this same config.
       config.programs.lazygit = {
         enable = true;
-        settings.git.diffRenderers = [ { command = "delta --{{colorScheme}} --paging=never"; } ];
+        settings.git.diffRenderers = [ { command = "delta --{{colorScheme}} --paging=never -s"; } ];
       };
 
       # Generated git credential helper tracks the current gh store path,
