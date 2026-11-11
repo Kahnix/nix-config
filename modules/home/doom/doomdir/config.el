@@ -25,6 +25,27 @@
 ;; so the first `SPC g g' or code buffer in a client is instant.
 (doom-load-packages-incrementally '(magit eglot popup etags ffap compile grep))
 
+;; Windows of `emacsclient -t' frames in Rex panes are Rex panes: splitting
+;; opens a pane on this daemon, deleting closes it (github:Kahnix/emrex).
+(require 'emrex)
+(emrex-mode 1)
+
+;; Eglot's default for nix-mode lists nil first (eglot-alternatives
+;; '("nil" "rnix-lsp" "nixd")), so nil wins whenever it is installed. nil has
+;; no nixpkgs package completion and no version inlay hints, which is why the
+;; nixd settings in nix.el had no effect. Pin nixd for both nix modes.
+(set-eglot-client! '(nix-mode nix-ts-mode) '("nixd"))
+
+;; nixd answers each package in a nix file with its version as an inlay hint
+;; ("omp  18.16.0"); Eglot only paints them once the mode is on. The rest of
+;; the nixd setup -- where nixpkgs and the option sets live -- is generated
+;; into nix.el by ../doom.nix, because it names this machine.
+(add-hook 'eglot-managed-mode-hook
+          (lambda ()
+            (when (and (fboundp 'eglot-inlay-hints-mode)
+                       (memq major-mode '(nix-mode nix-ts-mode)))
+              (eglot-inlay-hints-mode 1))))
+
 ;; nix-ts-mode aligns a line inside { ... } with the previous binding, but on
 ;; an empty line there is no node to start from, so it returned nil and RET or
 ;; `o' left the new line at column 0. Find that binding from the parent instead.
@@ -93,3 +114,22 @@
   (defun +ts-use-oxfmt-h ()
     (when (+ts--project-file ".oxfmtrc.json")
       (setq-local +format-with 'oxfmt))))
+
+;; Org notes and todos (`:lang org'): `SPC n n' or `SPC X' captures (pick a
+;; template, write, `C-c C-c' to file it, `C-c C-k' to throw it away), `SPC n a'
+;; is the agenda and `SPC n t' the TODO list. Doom keeps all of it under ~/org,
+;; which nothing here created, so capture filled its buffer and then failed to
+;; save ("Opening output file: No such file or directory") while the agenda and
+;; TODO list had no files to scan.
+(setq org-directory (expand-file-name "~/org")
+      org-agenda-files (list org-directory))
+(make-directory org-directory t)
+
+;; Doom's "t" template writes `* [ ] ...' -- a checkbox, which neither
+;; `org-todo-list' nor the agenda ever match. Capture a real TODO keyword
+;; instead; "p t"/"p n" stay project-local (todo.org/notes.org at the repo
+;; root) and "j" logs into journal.org.
+(setq org-capture-templates
+      (cons '("t" "Todo" entry (file+headline +org-capture-todo-file "Inbox")
+              "* TODO %?\n%i\n%a" :prepend t)
+            (assoc-delete-all "t" org-capture-templates)))

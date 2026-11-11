@@ -56,6 +56,19 @@
           }
         );
 
+      # Where nixd, Emacs's Nix language server, finds nixpkgs and this
+      # machine's option sets: the flake checkout and the configuration name
+      # from modules/home/dev.nix (keep the host names in sync with it).
+      flakePath = "${config.home.homeDirectory}/nix-config";
+      nixdSystem =
+        if pkgs.stdenv.hostPlatform.isDarwin then
+          "darwinConfigurations.macbook-pro-m4"
+        else if isWsl then
+          "nixosConfigurations.wsl"
+        else
+          "nixosConfigurations.nixos";
+      nixdOptions = if pkgs.stdenv.hostPlatform.isDarwin then "nix-darwin" else "nixos";
+
       # Loaded by doomdir/config.el. WSL has no Stylix, so it falls back to
       # doom-themes' Gruvbox.
       nixEl = pkgs.writeText "nix.el" (
@@ -77,6 +90,23 @@
               (setq doom-theme 'doom-gruvbox)
             ''
         )
+        + ''
+          ;; nixd asks the client for its settings over
+          ;; workspace/configuration; the only default is `import <nixpkgs>',
+          ;; and the daemon has no NIX_PATH, so package completion and the
+          ;; version hints came up empty.  Same expressions as
+          ;; modules/home/dev.nix gives Helix.
+          (setq-default
+           eglot-workspace-configuration
+           '(:nixd
+             (:nixpkgs (:expr "import (builtins.getFlake \"${flakePath}\").inputs.nixpkgs { }")
+              :formatting (:command ["nixfmt"])
+              :options
+              (:${nixdOptions}
+               (:expr "(builtins.getFlake \"${flakePath}\").${nixdSystem}.options")
+               :home-manager
+               (:expr "(builtins.getFlake \"${flakePath}\").${nixdSystem}.options.home-manager.users.type.getSubOptions [ ]")))))
+        ''
       );
     in
     {
@@ -106,9 +136,15 @@
 
         # Every grammar nixpkgs packages, for the +tree-sitter module flags;
         # otherwise Doom would try to compile them into ~/.local at runtime.
+        # emrex (github:Kahnix/emrex, the `emrex` flake input) makes windows of
+        # Emacs frames in Rex panes into Rex panes; doomdir/config.el turns it on.
         extraPackages =
           epkgs:
-          [ epkgs.treesit-grammars.with-all-grammars ] ++ lib.optional stylix (base16-stylix-theme epkgs);
+          [
+            epkgs.treesit-grammars.with-all-grammars
+            (inputs.emrex.lib.mkEmrex epkgs)
+          ]
+          ++ lib.optional stylix (base16-stylix-theme epkgs);
 
         # Eglot and apheleia only find servers and formatters on Emacs's PATH,
         # and the daemon (launchd on macOS) or a GUI Emacs started from the Dock

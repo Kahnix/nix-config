@@ -241,6 +241,26 @@
         "type": "github"
       }
     },
+    "emrex": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794402592,
+        "narHash": "sha256-GKcc5NrCtADq52hlLqaEP7q6t0IcV3qmbqBG3qBkQGo=",
+        "owner": "Kahnix",
+        "repo": "emrex",
+        "rev": "3b126223cebbd03c0af948378bf872313729bb88",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Kahnix",
+        "repo": "emrex",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -666,6 +686,7 @@
         "cachyos-settings-nix": "cachyos-settings-nix",
         "chaotic": "chaotic",
         "darwin": "darwin",
+        "emrex": "emrex",
         "flake-parts": "flake-parts_3",
         "home-manager": "home-manager_2",
         "import-tree": "import-tree",

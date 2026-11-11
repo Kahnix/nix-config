@@ -79,6 +79,18 @@ typescript-language-server), oxlint beside it through
 [rassumfrassum](https://github.com/joaotavora/rassumfrassum) when there is an
 `.oxlintrc.json`, and oxfmt for `SPC c f` when there is an `.oxfmtrc.json`.
 
+In [Rex](https://www.superlogical.com/rex), Emacs windows are Rex panes:
+`emrex` ([Kahnix/emrex](https://github.com/Kahnix/emrex), the Emacs counterpart of
+[neorex](https://github.com/alexrlocke/neorex)) makes `e` in a Rex pane one
+window of the shared daemon. `C-x 2`/`C-x 3`, `C-w s`/`C-w v`, `:split` and
+`:vsplit` open a pane beside it on the same buffer; `C-x 0`, `C-w c`, `:close`
+and `:q` close it, and closing the pane in Rex deletes the window; `C-x 1` and
+`:only` close the other Emacs panes in the Rex window; `C-x o` and `C-w
+w`/`W`/`h`/`j`/`k`/`l` move focus through Rex. `display-buffer` (`C-x 4 b`,
+xref, compilation errors) uses another Emacs pane of the Rex window, and splits
+inside the pane only when there is none. Doom's popups and other side windows
+stay inside their pane, and frames outside Rex behave as before.
+
 ## Apply
 
 [nh](https://github.com/nix-community/nh) drives rebuilds and shows a package
