@@ -25,8 +25,7 @@ let
         # matches, so extra caches can only save builds, never change them.
         # cache.nixos.org is the NixOS default; nix-community covers that org's
         # flake outputs; nyx-cache carries the CachyOS kernels from
-        # chaotic-cx/nyx (see modules/hardware/kernel.nix); doom-emacs-
-        # unstraightened has Doom's pinned Emacs packages (modules/home/doom).
+        # chaotic-cx/nyx (see modules/hardware/kernel.nix).
         # The third-party attic cache that used to be listed here
         # (attic.xuyh0120.win/lantian) is down after a server compromise
         # (xddxdd/nix-cachyos-kernel#110),
@@ -34,12 +33,10 @@ let
         extra-substituters = [
           "https://nix-community.cachix.org"
           "https://nyx-cache.chaotic.cx/"
-          "https://doom-emacs-unstraightened.cachix.org"
         ];
         extra-trusted-public-keys = [
           "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
           "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
-          "doom-emacs-unstraightened.cachix.org-1:O5oOlRPnmQEvVaFyuMTmthCEooHbrg54WgSLR07tmg4="
         ];
         # 16 cores but 15 GB of RAM: 16 concurrent heavy builds (zed's Rust
         # workspace, Qt apps) spend their time in swap.

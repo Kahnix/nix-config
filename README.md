@@ -55,42 +55,6 @@ Zed is installed on graphical hosts and reuses Helix's `extraPackages` instead
 of downloading its own language servers. Its settings and extensions live in
 `modules/home/zed.nix`, so NixOS and macOS render the same Zed setup.
 
-Doom Emacs (`emacs`) is installed on every host by
-[nix-doom-emacs-unstraightened](https://github.com/marienz/nix-doom-emacs-unstraightened)
-in `modules/home/doom/doom.nix`. Doom, its modules and their packages are
-pinned by `flake.lock` and built into the store: there is no `doom sync`, and
-`~/.config/emacs` is unused. The DOOMDIR is `modules/home/doom/doomdir`
-(`init.el`, `config.el`, `packages.el`); edit it and `rebuild`. Font and theme
-come from Stylix through a generated `nix.el`; language servers are Helix's
-`extraPackages` plus the ones in `dev.nix`, on Emacs's own `PATH`. Local state
-lives in `~/.local/share/nix-doom`, `~/.cache/doom` and `~/.local/state/doom`.
-GUI builds: NS on macOS, pgtk on NixOS; WSL gets `emacs-nox`.
-
-Emacs runs as a daemon from login (`services.emacs`: a launchd agent on macOS,
-a systemd user service on Linux), so Doom's startup and lazy loading are paid
-once. Open clients with `e` (terminal, `emacsclient -t`) or `ec` (GUI frame).
-After a `rebuild` that changes Doom, Linux keeps the old daemon until
-`systemctl --user restart emacs`; macOS restarts it during activation, which
-drops unsaved buffers (auto-save files remain).
-
-TypeScript buffers use the project's own tooling when present: TypeScript 7's
-built-in server (`node_modules/.bin/tsc --lsp`, falling back to
-typescript-language-server), oxlint beside it through
-[rassumfrassum](https://github.com/joaotavora/rassumfrassum) when there is an
-`.oxlintrc.json`, and oxfmt for `SPC c f` when there is an `.oxfmtrc.json`.
-
-In [Rex](https://www.superlogical.com/rex), Emacs windows are Rex panes:
-`emrex` ([Kahnix/emrex](https://github.com/Kahnix/emrex), the Emacs counterpart of
-[neorex](https://github.com/alexrlocke/neorex)) makes `e` in a Rex pane one
-window of the shared daemon. `C-x 2`/`C-x 3`, `C-w s`/`C-w v`, `:split` and
-`:vsplit` open a pane beside it on the same buffer; `C-x 0`, `C-w c`, `:close`
-and `:q` close it, and closing the pane in Rex deletes the window; `C-x 1` and
-`:only` close the other Emacs panes in the Rex window; `C-x o` and `C-w
-w`/`W`/`h`/`j`/`k`/`l` move focus through Rex. `display-buffer` (`C-x 4 b`,
-xref, compilation errors) uses another Emacs pane of the Rex window, and splits
-inside the pane only when there is none. Doom's popups and other side windows
-stay inside their pane, and frames outside Rex behave as before.
-
 ## Apply
 
 [nh](https://github.com/nix-community/nh) drives rebuilds and shows a package

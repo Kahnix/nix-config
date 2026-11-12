@@ -55,18 +55,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # emrex: Emacs windows as Rex panes (own package, Kahnix/emrex).
-    emrex = {
-      url = "github:Kahnix/emrex";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Doom Emacs built into the Nix store without straight.el.
-    nix-doom-emacs-unstraightened = {
-      url = "github:marienz/nix-doom-emacs-unstraightened";
-      inputs.nixpkgs.follows = "";
-    };
-
     # Outputs are assembled by flake-parts from every module under ./modules.
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
