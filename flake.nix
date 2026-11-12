@@ -26,10 +26,6 @@
     darwin.url = "github:nix-darwin/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Bun2nix
-    bunnix.url = "github:aster-void/bunnix";
-    bunnix.inputs.nixpkgs.follows = "nixpkgs";
-
     # Stylix
     stylix = {
       url = "github:nix-community/stylix";

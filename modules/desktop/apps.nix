@@ -159,7 +159,6 @@ in
         wf-recorder
         discord
         firefox-bin
-        gparted-with-display
       ];
 
       # Stylix does not cover icon themes in this revision, so set it by hand: GTK3

@@ -15,7 +15,6 @@ in
   bolt-launcher-alsa = javaAlsaDefault pkgs.bolt-launcher "bolt-launcher";
   dzgui = pkgs.callPackage ./dzgui/package.nix { };
   gamma-direct = pkgs.callPackage ./gamma-direct/package.nix { };
-  gparted-with-display = pkgs.callPackage ./gparted-with-display/package.nix { };
   niri-focus-or-spawn = pkgs.callPackage ./niri-focus-or-spawn/package.nix { };
   noctalia-snapshot = pkgs.callPackage ./noctalia-snapshot/package.nix { };
   proton-cachyos-bin = pkgs.callPackage ./proton-cachyos-bin/package.nix { };

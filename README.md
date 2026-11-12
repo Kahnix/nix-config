@@ -51,8 +51,8 @@ Mitos (`ms` / `mitos`) is installed alongside Helix on every host via
 and `extraPackages` (migrated to Mitos's canonical config schema and validated
 at build time), while accepting Mitos-specific overrides under `programs.mitos`.
 
-Zed is installed on graphical hosts and reuses Helix's `extraPackages` instead
-of downloading its own language servers. Its settings and extensions live in
+Zed is installed on graphical hosts as the unwrapped cache.nixos.org build and
+fetches its own language servers. Its settings and extensions live in
 `modules/home/zed.nix`, so NixOS and macOS render the same Zed setup.
 
 ## Apply

@@ -2,7 +2,6 @@
   # Zed beside Helix (hx stays EDITOR). Skipped on WSL, which has no desktop.
   flake.modules.homeManager.dev =
     {
-      config,
       lib,
       osConfig,
       pkgs,
@@ -11,10 +10,6 @@
     {
       programs.zed-editor = lib.mkIf (!(osConfig.wsl.enable or false)) {
         enable = true;
-
-        # Same language servers as hx, pinned by flake.lock, instead of the
-        # binaries Zed would otherwise download into ~/.local/share/zed.
-        extraPackages = config.programs.helix.extraPackages;
 
         # Extensions referenced by the settings below; Zed installs them on
         # first start. Add others here if you want them on every host.

@@ -12,10 +12,16 @@ in
       # setcap'd gsr-kms-server wrapper that direct monitor (KMS) capture needs.
       programs.gpu-screen-recorder = {
         enable = true;
-        # gsr assumes FFmpeg 9 (libavcodec 63) needs NVENC API 13.1 and hides
-        # every NVENC codec when the driver has less; the legacy_580 driver
-        # Pascal is stuck on has 13.0. FFmpeg 8 (libavcodec 62) asks for 13.0.
-        package = pkgs.gpu-screen-recorder.override { ffmpeg = pkgs.ffmpeg_8; };
+        # gsr hard-codes "libavcodec 63 needs NVENC API 13.1" and hides every
+        # NVENC codec on the legacy_580 driver (13.0), yet FFmpeg 9 encodes
+        # h264/hevc_nvenc on it fine. Lowering the gate keeps the cached FFmpeg 9;
+        # overriding to FFmpeg 8 instead compiles FFmpeg on every nixpkgs bump.
+        package = pkgs.gpu-screen-recorder.overrideAttrs (prev: {
+          postPatch = (prev.postPatch or "") + ''
+            substituteInPlace src/codec_query/nvenc.c \
+              --replace-fail "NVENCAPI_PACKED_VERSION(13, 1)" "NVENCAPI_PACKED_VERSION(13, 0)"
+          '';
+        });
       };
 
       # greetd + Noctalia Greeter, in its own wlroots compositor. The palette is

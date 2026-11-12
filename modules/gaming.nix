@@ -104,7 +104,6 @@
         gamma-direct
         lsfg-vk-ui
         mangohud
-        prismlauncher
         protonup-qt
         wineWow64Packages.staging
         ut1999

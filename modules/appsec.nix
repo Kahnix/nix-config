@@ -1,7 +1,4 @@
 {
-  # CodeQL CLI: GitHub CodeQL Terms and Conditions.
-  unfreePackages = [ "codeql" ];
-
   # Application-security tooling beside the dev setup, on every host.
   flake.modules.homeManager.dev =
     { lib, pkgs, ... }:
@@ -11,7 +8,6 @@
         [
           # semgrep is left out: nixpkgs' 1.180.0 fails to build (patchelf) and,
           # once patched, crashes on import against mcp 2.x.
-          codeql # data-flow queries; also the language server for .ql files
           ast-grep # structural search and rewrite (sg)
           nuclei # templated web scanning
           ffuf # web fuzzing
