@@ -56,9 +56,11 @@
           nix-init
           nix-inspect
           nix-melt
+          optinix
           nix-output-monitor
           nix-search-tv
           nix-tree
+          leetcode-cli
           nvd
           omp
           herdr
@@ -112,6 +114,7 @@
               color-modes = true;
               indent-guides.render = true;
               soft-wrap.enable = true;
+              line-number = "relative";
               whitespace = {
                 render = {
                   tab = "all";
@@ -245,6 +248,33 @@
               ];
         };
       };
+
+      # leetcode-cli: `leetcode edit <id>` writes solutions into
+      # ~/Documents/learning/leetcode (cache stays in ~/.leetcode). Cookies are
+      # left empty so it reads them from Chrome; LEETCODE_SESSION and
+      # LEETCODE_CSRF env vars override that. $EDITOR (hx) overrides `editor`.
+      # Read-only symlink: `leetcode edit -l <lang>` would try to rewrite it.
+      config.home.file.".leetcode/leetcode.toml".source =
+        (pkgs.formats.toml { }).generate "leetcode.toml"
+          {
+            code = {
+              editor = "hx";
+              lang = "typescript";
+              comment_problem_desc = true;
+              comment_leading = "//";
+              test = true;
+            };
+            cookies = {
+              csrf = "";
+              session = "";
+              site = "leetcode.com";
+            };
+            storage = {
+              root = "~/.leetcode";
+              code = "${config.home.homeDirectory}/Documents/learning/leetcode";
+              scripts = "scripts";
+            };
+          };
 
       # Stylix supplies gui.theme; lazygit reads this same config.
       config.programs.lazygit = {
@@ -389,8 +419,22 @@
           let
             c = config.lib.stylix.colors.withHashtag;
             ansi = [
-              "base00" "base08" "base0B" "base0A" "base0D" "base0E" "base0C" "base05"
-              "base03" "base08" "base0B" "base0A" "base0D" "base0E" "base0C" "base07"
+              "base00"
+              "base08"
+              "base0B"
+              "base0A"
+              "base0D"
+              "base0E"
+              "base0C"
+              "base05"
+              "base03"
+              "base08"
+              "base0B"
+              "base0A"
+              "base0D"
+              "base0E"
+              "base0C"
+              "base07"
             ];
           in
           ''
@@ -400,9 +444,7 @@
             selection-background = ${c.base02}
             selection-foreground = ${c.base05}
           ''
-          + lib.concatStrings (
-            lib.imap0 (i: name: "palette = ${toString i}=${c.${name}}\n") ansi
-          );
+          + lib.concatStrings (lib.imap0 (i: name: "palette = ${toString i}=${c.${name}}\n") ansi);
       };
 
       # Generated git credential helper tracks the current gh store path,
