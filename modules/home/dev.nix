@@ -1,7 +1,10 @@
 { inputs, ... }:
 {
   # claude-code ships under Anthropic's proprietary licence.
-  unfreePackages = [ "claude-code" ];
+  unfreePackages = [
+    "claude-code"
+    "antigravity-cli"
+  ];
 
   flake.modules.homeManager.dev =
     {
@@ -65,6 +68,7 @@
           omp
           herdr
           claude-code
+          antigravity-cli
         ])
         ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
           with pkgs;
@@ -181,6 +185,20 @@
               "--clang-tidy"
               "--header-insertion=never"
             ];
+            # vscode-json-language-server ships no schema catalog, so tsconfig
+            # gets no completion/hover until a schema is mapped to the file name.
+            vscode-json-language-server.config.json = {
+              validate.enable = true;
+              schemas = [
+                {
+                  fileMatch = [
+                    "tsconfig.json"
+                    "tsconfig.*.json"
+                  ];
+                  url = "https://json.schemastore.org/tsconfig.json";
+                }
+              ];
+            };
             oxlint = {
               command = "oxlint";
               args = [ "--lsp" ];
