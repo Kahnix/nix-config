@@ -45,6 +45,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    antigravity-nix = {
+      url = "github:jacopone/antigravity-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # CachyOS sysctl/udev/systemd tuning as a NixOS module; areas enabled in modules/system/cachyos-settings.nix.
     cachyos-settings-nix = {
       url = "github:Daaboulex/cachyos-settings-nix";
