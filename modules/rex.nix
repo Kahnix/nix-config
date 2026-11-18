@@ -16,7 +16,13 @@ in
 
       # Personal Rex server as a systemd user service on Linux (no GUI yet;
       # on macOS the Rex.app GUI runs its own server).
-      services.rex.enable = lib.mkIf pkgs.stdenv.hostPlatform.isLinux true;
+      services.rex = {
+        enable = lib.mkIf pkgs.stdenv.hostPlatform.isLinux true;
+        # Serve the API over the tailnet as rex.<tailnet>.ts.net, so the Mac
+        # can connect with `rex -S rex.<tailnet>.ts.net`. Only the Tailscale
+        # account that enrolled the node may connect.
+        tailscale.enable = lib.mkIf pkgs.stdenv.hostPlatform.isLinux true;
+      };
     };
 
   flake.modules.darwin.rex = {
