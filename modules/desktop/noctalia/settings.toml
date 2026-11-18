@@ -22,7 +22,7 @@ capsule_radius = 8.0
 capsule_thickness = 0.79
 start = ["launcher", "workspaces"]
 center = ["clock"]
-end = ["media", "tray", "notifications", "clipboard", "volume", "control-center", "lock_button"]
+end = ["media", "ai_usage", "tray", "notifications", "clipboard", "volume", "control-center", "lock_button"]
 font_scale = 0.95
 margin_edge = 8
 margin_ends = 12
@@ -158,6 +158,15 @@ transition_on_startup = true
 
 [wallpaper.automation]
 enabled = false
+
+# ai-usagebar (modules/home/ai-usage.nix): all three plans in one capsule;
+# click opens the panel with every window and its reset time.
+[widget.ai_usage]
+type = "felipeartur/ai-usagebar:bar"
+vendor = "auto"
+auto_providers = ["anthropic", "antigravity", "opencode-go"]
+provider_limit = 3
+visualization = "gauge"
 
 [widget.clock]
 format = "{:%a  %d %b   %H:%M}"

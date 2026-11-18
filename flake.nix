@@ -68,6 +68,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # AI plan quotas (Claude, Antigravity, OpenCode Go): CLI + TUI built from
+    # source on Linux; macOS uses the release bundle for its menu-bar app.
+    ai-usagebar = {
+      url = "github:akitaonrails/ai-usagebar";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Outputs are assembled by flake-parts from every module under ./modules.
     flake-parts = {
       url = "github:hercules-ci/flake-parts";

@@ -1,90 +1,95 @@
 { inputs, ... }:
-{
-  # Unified AI usage view: OpenCode, Claude Code, and Antigravity, read from
-  # the local data each harness already writes, so it works offline on every
-  # host. `ai-usage` (fish alias: `usage`).
-  flake.modules.homeManager.ai-usage =
-    { pkgs, ... }:
-    let
-      # Pinned so a rebuild never silently changes the accounting tool.
-      ccusage = "ccusage@20.0.51";
+let
+  # Real plan quotas for Claude, Antigravity, and OpenCode Go, read with the
+  # logins those tools already have. One tool drives every surface: the macOS
+  # menu bar, the Noctalia bar, and a TUI/CLI for headless hosts.
+  version = "1.52.2";
 
-      # npx runs with its own user-owned cache: ~/.npm can contain root-owned
-      # entries (any past `sudo npm` run) that make installs fail with EACCES.
-      aiUsage = pkgs.writeShellApplication {
-        name = "ai-usage";
-        runtimeInputs = [
-          pkgs.jq
-          pkgs.nodejs # npx
-        ];
-        text = ''
-          set -euo pipefail
-          export npm_config_cache="''${HOME}/.cache/npm"
-
-          # OpenCode Go subscription limits, from the running background server.
-          openCodeQuota() {
-            command -v opencode >/dev/null 2>&1 || return 0
-            opencode api get /api/experimental/usage/limits 2>/dev/null | jq -r '
-              .data.go | "OpenCode Go quota: rolling \(.rolling.percent)%  weekly \(.weekly.percent)%  monthly \(.monthly.percent)%"'
-          }
-
-          case "''${1:-all}" in
-            all)
-              # Today across every harness, then quotas and the active
-              # Claude billing block with its burn-rate projection.
-              npx -y ${ccusage} daily --last 1
-              echo
-              openCodeQuota || true
-              npx -y ${ccusage} blocks --active
-              ;;
-            quota)
-              openCodeQuota || true
-              npx -y ${ccusage} blocks --active
-              npx -y ${ccusage} antigravity daily --last 1
-              ;;
-            claude | opencode | antigravity)
-              npx -y ${ccusage} "''${1}" daily --last 1
-              ;;
-            statusline)
-              # Compact one-liner for a bar or tmux status; recomputed at most
-              # every 15 minutes, served from cache in between.
-              cache="''${XDG_CACHE_HOME:-''${HOME}/.cache}/ai-usage/statusline"
-              mkdir -p "$(dirname "$cache")"
-              if [ -f "$cache" ] && find "$cache" -mmin -15 | grep -q .; then
-                cat "$cache"
-                exit 0
-              fi
-              quota=""
-              if command -v opencode >/dev/null 2>&1; then
-                quota=$(opencode api get /api/experimental/usage/limits 2>/dev/null \
-                  | jq -r '.data.go | "\(.weekly.percent)%w/\(.monthly.percent)%m"' || true)
-              fi
-              occost=$(npx -y ${ccusage} opencode daily --last 1 --json 2>/dev/null \
-                | jq -r '((.totals.totalCost*100|round)/100 | tostring)' || true)
-              cccost=$(npx -y ${ccusage} claude daily --last 1 --json 2>/dev/null \
-                | jq -r '((.totals.totalCost*100|round)/100 | tostring)' || true)
-              agycost=$(npx -y ${ccusage} antigravity daily --last 1 --json 2>/dev/null \
-                | jq -r '((.totals.totalCost*100|round)/100 | tostring)' || true)
-              parts=()
-              if [ -n "$quota" ]; then parts+=("OC $quota \$$occost"); fi
-              if [ -n "$cccost" ]; then parts+=("CC \$$cccost"); fi
-              if [ -n "$agycost" ]; then parts+=("AGY \$$agycost"); fi
-              line=$(IFS=' · '; echo "''${parts[*]}")
-              printf '%s\n' "$line" > "$cache"
-              cat "$cache"
-              ;;
-            *)
-              echo "usage: ai-usage [all|quota|claude|opencode|antigravity|statusline]" >&2
-              exit 1
-              ;;
-          esac
-        '';
+  # macOS: the signed release bundle, which is the only build that ships the
+  # menu-bar app (AI Usage.app). CLI and TUI come from the same archive so all
+  # three stay on one version. Bump `version` and the hash together.
+  darwinBundle =
+    pkgs:
+    pkgs.stdenvNoCC.mkDerivation {
+      pname = "ai-usagebar";
+      inherit version;
+      src = pkgs.fetchurl {
+        url = "https://github.com/akitaonrails/ai-usagebar/releases/download/v${version}/ai-usagebar-macos-aarch64.tar.gz";
+        sha256 = "ffa70d0e4a7be4ddbe684c84eaced1d816fdd17c82bfff1e53176b8bd5663d62";
       };
+      sourceRoot = ".";
+      # Re-signing or stripping would break the bundle's code signature,
+      # which the Keychain checks before handing over Claude's credentials.
+      dontFixup = true;
+      installPhase = ''
+        mkdir -p $out/bin $out/Applications
+        cp ai-usagebar ai-usagebar-tui $out/bin/
+        cp -R "AI Usage.app" $out/Applications/
+      '';
+    };
+
+  package =
+    pkgs:
+    if pkgs.stdenv.hostPlatform.isDarwin then
+      darwinBundle pkgs
+    else
+      inputs.ai-usagebar.packages.${pkgs.stdenv.hostPlatform.system}.default;
+in
+{
+  flake.modules.homeManager.ai-usage =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    let
+      # Only the three services in use; the rest default to on and would show
+      # credential errors.
+      settings = {
+        anthropic.enabled = true;
+        antigravity.enabled = true;
+        opencode-go.enabled = true;
+        openai.enabled = false;
+        copilot.enabled = false;
+        zai.enabled = false;
+        openrouter.enabled = false;
+      };
+      configFile = (pkgs.formats.toml { }).generate "ai-usagebar.toml" settings;
+      target = "${config.xdg.configHome}/ai-usagebar/config.toml";
     in
     {
-      config.home.packages = [ aiUsage ];
+      home.packages = [ (package pkgs) ];
 
-      # One word in any shell on any host.
-      config.programs.fish.shellAliases.usage = "ai-usage";
+      # `usage` in any shell; `ai-usagebar-tui` for the tabbed view over SSH.
+      programs.fish.shellAliases.usage = "ai-usagebar usage";
+
+      # A real file, not a store symlink: the tray's Settings window saves
+      # into it. Each switch resets it to the values above, so make lasting
+      # changes here.
+      home.activation.aiUsagebarConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        run mkdir -p "$(dirname ${lib.escapeShellArg target})"
+        run install -m 600 ${configFile} ${lib.escapeShellArg target}
+      '';
+    };
+
+  # Menu-bar app, started at login. copyApps puts it in
+  # ~/Applications/Home Manager Apps, which gives it a stable path for the
+  # Keychain and menu-bar managers. Leave the app's own "Start at Login" off,
+  # or it starts twice.
+  flake.modules.homeManager.darwin-desktop =
+    { config, ... }:
+    {
+      launchd.agents.ai-usagebar-tray = {
+        enable = true;
+        config = {
+          ProgramArguments = [
+            "/usr/bin/open"
+            "-g"
+            "${config.home.homeDirectory}/Applications/Home Manager Apps/AI Usage.app"
+          ];
+          RunAtLoad = true;
+        };
+      };
     };
 }
