@@ -4,6 +4,8 @@
   unfreePackages = [
     "claude-code"
     "antigravity-cli"
+    "antigravity"
+    "antigravity-ide"
   ];
 
   flake.modules.homeManager.dev =
@@ -23,6 +25,7 @@
           tree-sitter
           git-lfs
           btop
+          wl-clipboard
           ripgrep
           fd
           jq
@@ -76,6 +79,9 @@
             gcc
             # Linux FHS wrapper; macOS installs the burp-suite Homebrew cask.
             burpsuite
+            # Antigravity app; nixpkgs' `antigravity` is only an alias for
+            # antigravity-ide, so the desktop app comes from the flake.
+            inputs.antigravity-nix.packages.${system}.google-antigravity
           ]
         );
 
