@@ -25,7 +25,6 @@
           tree-sitter
           git-lfs
           btop
-          wl-clipboard
           ripgrep
           fd
           jq
@@ -79,6 +78,8 @@
             gcc
             # Linux FHS wrapper; macOS installs the burp-suite Homebrew cask.
             burpsuite
+            wl-clipboard
+            inputs.opencode-hex.${system}.hex
             # Antigravity app; nixpkgs' `antigravity` is only an alias for
             # antigravity-ide, so the desktop app comes from the flake.
             inputs.antigravity-nix.packages.${system}.google-antigravity

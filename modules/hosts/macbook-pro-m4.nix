@@ -34,7 +34,10 @@ in
           cleanup = "uninstall";
           upgrade = true;
         };
-        casks = [ "burp-suite" ];
+        casks = [
+          "burp-suite"
+          "anomalyco/tap/hex"
+        ];
       };
 
       # Keep the native macOS menu bar visible.

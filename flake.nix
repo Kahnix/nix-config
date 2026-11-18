@@ -59,9 +59,9 @@
 
     # Hex voice agent for opencode
     opencode-hex = {
-      url ="https://github.com/anomalyco/hex/";
+      url = "github:anomalyco/hex";
       inputs.nixpkgs.follows = "nixpkgs";
-    }
+    };
 
     # Outputs are assembled by flake-parts from every module under ./modules.
     flake-parts = {

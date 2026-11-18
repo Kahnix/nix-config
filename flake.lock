@@ -385,6 +385,27 @@
         "type": "github"
       }
     },
+    "home-manager_3": {
+      "inputs": {
+        "nixpkgs": [
+          "opencode-hex",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787797243,
+        "narHash": "sha256-8+Q7NOB7RPajRjA4pbCDLzqH+MTjnG9x6LUPLfL2joA=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "99c9ec63390f1d8c14d95d9e8b17cc29cfbd4e11",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "import-tree": {
       "locked": {
         "lastModified": 1788467110,
@@ -526,6 +547,27 @@
         "type": "github"
       }
     },
+    "opencode-hex": {
+      "inputs": {
+        "home-manager": "home-manager_3",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795003685,
+        "narHash": "sha256-8BDpDDwTJxK8uSkgTzcZ6ugvDhTe3tvn7YhoWE3yIFo=",
+        "owner": "anomalyco",
+        "repo": "hex",
+        "rev": "0ec0438c22bdc152bb78a3488b89a8a0963a1f36",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anomalyco",
+        "repo": "hex",
+        "type": "github"
+      }
+    },
     "ponytail": {
       "flake": false,
       "locked": {
@@ -571,6 +613,7 @@
         "jagex-launcher": "jagex-launcher",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_2",
+        "opencode-hex": "opencode-hex",
         "ponytail": "ponytail",
         "rex": "rex",
         "stylix": "stylix"
