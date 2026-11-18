@@ -12,7 +12,8 @@ in
       nix
       user
       theme
-      tern
+      ghostty
+      rex
 
       notes-sync
       windows-vm

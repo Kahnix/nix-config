@@ -25,7 +25,8 @@ in
       niri
       noctalia
       desktop-apps
-      tern
+      ghostty
+      rex
 
       gaming
       streaming

@@ -20,9 +20,7 @@ in
       upower.enable = true;
       gvfs.enable = true;
       gnome.gnome-keyring.enable = true;
-      # AT-SPI bus. omp's computer use enumerates windows and reads accessibility
-      # trees over it; without the bus those calls fail with the nixpkgs-documented
-      # "org.a11y.Bus was not provided by any .service files".
+      # AT-SPI bus for desktop accessibility.
       gnome.at-spi2-core.enable = true;
     };
 

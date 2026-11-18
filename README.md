@@ -8,11 +8,6 @@ Personal NixOS, WSL, macOS, Home Manager, devenv, and direnv configuration.
 - `wsl`: NixOS-WSL for user `kacper` on `x86_64-linux`.
 - `macbook-pro-m4`: nix-darwin for user `kacperdaniel` on `aarch64-darwin`.
 
-The shared Home Manager development profile installs oh-my-pi (`omp`) on all
-three hosts from nixpkgs, prebuilt by Hydra (`cache.nixos.org`). Do not
-override it: any override changes its hash and forces a local build. On Linux
-it includes the PipeWire-backed Wayland capture addon.
-
 ## Layout
 
 The flake follows the [dendritic pattern](https://discourse.nixos.org/t/the-dendritic-pattern/61271):
@@ -86,7 +81,7 @@ Proton games) run through xwayland-satellite, which niri starts on demand.
 
 | Key | Action |
 | --- | --- |
-| `Super + Return` / `Super + B` / `Super + E` | Terminal (raises the open Tern window) / browser / files |
+| `Super + Return` / `Super + B` / `Super + E` | Terminal (Ghostty) / browser / files |
 | `Super + Space` | Application launcher |
 | `Super + Ctrl + Space` | Control center |
 | `Super + Ctrl + V` / `Super + Ctrl + D` | Clipboard / shell settings |

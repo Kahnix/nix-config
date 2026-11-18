@@ -65,9 +65,9 @@
           nix-tree
           leetcode-cli
           nvd
-          omp
           herdr
           claude-code
+          opencode
           antigravity-cli
         ])
         ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
@@ -298,133 +298,6 @@
       config.programs.lazygit = {
         enable = true;
         settings.git.diffRenderers = [ { command = "delta --{{colorScheme}} --paging=never -s"; } ];
-      };
-
-      # omp paints with its own 67 color tokens and never asks the terminal for
-      # its palette, so Stylix cannot reach it the way it reaches helix or zed.
-      # Generate a theme from the same base16 colors; the file name is the
-      # theme ID that `theme.dark` selects (`omp config set theme.dark stylix`).
-      # `terminal` is for hosts that paint the terminal themselves (Tern);
-      # omp's TUI always draws on the terminal's own background.
-      config.home.file.".omp/agent/themes/stylix.json" = lib.mkIf (config.stylix.enable or false) {
-        text = builtins.toJSON (
-          let
-            c = config.lib.stylix.colors.withHashtag;
-          in
-          {
-            name = "stylix";
-            vars = {
-              bg0 = c.base00;
-              bg1 = c.base01;
-              bg2 = c.base02;
-              fg3 = c.base03;
-              fg4 = c.base04;
-              fg5 = c.base05;
-              fg7 = c.base07;
-              red = c.base08;
-              orange = c.base09;
-              yellow = c.base0A;
-              green = c.base0B;
-              cyan = c.base0C;
-              blue = c.base0D;
-              purple = c.base0E;
-              brown = c.base0F;
-            };
-            colors = {
-              accent = "yellow";
-              border = "bg2";
-              borderAccent = "blue";
-              borderMuted = "bg1";
-              success = "green";
-              error = "red";
-              warning = "orange";
-              muted = "fg4";
-              dim = "fg3";
-              text = "fg5";
-              thinkingText = "fg3";
-              selectedBg = "bg2";
-              userMessageBg = "bg1";
-              userMessageText = "fg5";
-              customMessageBg = "bg1";
-              customMessageText = "fg5";
-              customMessageLabel = "purple";
-              toolPendingBg = "bg1";
-              toolSuccessBg = "bg1";
-              toolErrorBg = "bg1";
-              toolTitle = "fg5";
-              toolOutput = "fg4";
-              mdHeading = "yellow";
-              mdLink = "blue";
-              mdLinkUrl = "fg3";
-              mdCode = "purple";
-              mdCodeBlock = "cyan";
-              mdCodeBlockBorder = "fg3";
-              mdQuote = "fg4";
-              mdQuoteBorder = "fg3";
-              mdHr = "bg2";
-              mdListBullet = "yellow";
-              toolDiffAdded = "green";
-              toolDiffRemoved = "red";
-              toolDiffContext = "fg4";
-              link = "blue";
-              syntaxComment = "fg3";
-              syntaxKeyword = "purple";
-              syntaxFunction = "blue";
-              syntaxVariable = "fg5";
-              syntaxString = "green";
-              syntaxNumber = "orange";
-              syntaxType = "yellow";
-              syntaxOperator = "fg5";
-              syntaxPunctuation = "fg4";
-              thinkingOff = "bg2";
-              thinkingMinimal = "fg3";
-              thinkingLow = "cyan";
-              thinkingMedium = "blue";
-              thinkingHigh = "purple";
-              thinkingXhigh = "brown";
-              bashMode = "cyan";
-              statusLineBg = "bg1";
-              statusLineSep = "bg2";
-              statusLineModel = "purple";
-              statusLinePath = "cyan";
-              statusLineGitClean = "green";
-              statusLineGitDirty = "yellow";
-              statusLineContext = "blue";
-              statusLineSpend = "cyan";
-              statusLineStaged = "green";
-              statusLineDirty = "yellow";
-              statusLineUntracked = "cyan";
-              statusLineOutput = "brown";
-              statusLineCost = "brown";
-              statusLineSubagents = "yellow";
-              pythonMode = "yellow";
-            };
-            terminal = {
-              background = "bg0";
-              foreground = "fg5";
-              chrome = "bg1";
-              widget = "bg2";
-              ansi = [
-                "bg0"
-                "red"
-                "green"
-                "yellow"
-                "blue"
-                "purple"
-                "cyan"
-                "fg5"
-                "fg3"
-                "red"
-                "green"
-                "yellow"
-                "blue"
-                "purple"
-                "cyan"
-                "fg7"
-              ];
-            };
-          }
-        );
       };
 
       # Rex (the macOS terminal multiplexer app) keeps its palette in its own

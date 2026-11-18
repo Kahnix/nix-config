@@ -124,15 +124,12 @@ window-rule {
 }
 
 binds {
-    // Each Tern window owns its own sessions, so a second window opens an empty
-    // "Default" one; raise the existing window and launch only when there is none.
-    // Tern lives in ~/.local/bin, which is on shell PATHs only.
-    Mod+Return repeat=false hotkey-overlay-title="Terminal (Tern)" { spawn-sh "niri-focus-or-spawn so.stencil.tern ~/.local/bin/tern"; }
+    Mod+Return repeat=false hotkey-overlay-title="Terminal (Ghostty)" { spawn "ghostty"; }
     Mod+B repeat=false hotkey-overlay-title="Browser" { spawn "firefox"; }
     Mod+E repeat=false hotkey-overlay-title="Files" { spawn "thunar"; }
     Mod+Shift+G repeat=false hotkey-overlay-title="Steam" { spawn "steam"; }
     Mod+Shift+V repeat=false hotkey-overlay-title="Virtual machines" { spawn "virt-manager"; }
-    Mod+Ctrl+T repeat=false hotkey-overlay-title="System monitor" { spawn-sh "~/.local/bin/tern -e btop"; }
+    Mod+Ctrl+T repeat=false hotkey-overlay-title="System monitor" { spawn "ghostty" "-e" "btop"; }
 
     Mod+Space repeat=false hotkey-overlay-title="Application launcher" { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
     Mod+Ctrl+Space repeat=false hotkey-overlay-title="Control center" { spawn "noctalia" "msg" "panel-toggle" "control-center"; }

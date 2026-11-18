@@ -51,12 +51,24 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Ponytail AI agent skills.
+    ponytail = {
+      url = "github:DietrichGebert/ponytail";
+      flake = false;
+    };
+
     # Outputs are assembled by flake-parts from every module under ./modules.
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
     import-tree.url = "github:vic/import-tree";
+
+    # Rex terminal multiplexer server/CLI (prebuilt release binaries).
+    rex = {
+      url = "https://pkgs.superlogical.com/rex/nix/preview.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # Dendritic layout: every .nix file under ./modules is a flake-parts module.

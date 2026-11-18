@@ -137,23 +137,5 @@
           ];
         };
       };
-
-      # Ghostty is the macOS terminal (the NixOS desktop uses Tern).
-      # Stylix owns its palette, font, size, and opacity.
-      programs.ghostty = {
-        enable = true;
-        package = pkgs.ghostty-bin;
-        enableFishIntegration = true;
-
-        settings = {
-          "background-blur" = 16;
-          "window-padding-x" = 14;
-          "window-padding-y" = 12;
-          "confirm-close-surface" = false;
-          keybind = [ "shift+enter=text:\\x1b\\r" ];
-          # Hides the titlebar but keeps the frame and rounded corners.
-          "macos-titlebar-style" = "hidden";
-        };
-      };
     };
 }
