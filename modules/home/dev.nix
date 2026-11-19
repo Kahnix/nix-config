@@ -68,6 +68,9 @@
           leetcode-cli
           nvd
           herdr
+          # hc: herdr-app's terminal core. Needed on every machine the desktop
+          # app reaches (hc machine add), not only where the app runs.
+          herdr-core
           claude-code
           opencode
           antigravity-cli
@@ -79,6 +82,7 @@
             # Linux FHS wrapper; macOS installs the burp-suite Homebrew cask.
             burpsuite
             wl-clipboard
+            herdr-desktop
             # Upstream's `history_stats_button_opens_and_closes_the_dialog`
             # UI test fails in the build sandbox, so skip the check suite.
             (inputs.opencode-hex.packages.${system}.hex.overrideAttrs (_: {
