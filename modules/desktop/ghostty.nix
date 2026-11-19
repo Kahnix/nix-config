@@ -30,7 +30,7 @@ in
           "macos-titlebar-style" = "hidden";
         }
         // lib.optionalAttrs isLinux {
-          # Niri draws no client-side decorations; on macOS this would break
+          # No client-side title bar under Hyprland. On macOS this would break
           # native fullscreen, so it stays Linux-only.
           "window-decoration" = false;
         };

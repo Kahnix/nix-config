@@ -79,7 +79,11 @@
             # Linux FHS wrapper; macOS installs the burp-suite Homebrew cask.
             burpsuite
             wl-clipboard
-            inputs.opencode-hex.packages.${system}.hex
+            # Upstream's `history_stats_button_opens_and_closes_the_dialog`
+            # UI test fails in the build sandbox, so skip the check suite.
+            (inputs.opencode-hex.packages.${system}.hex.overrideAttrs (_: {
+              doCheck = false;
+            }))
             # Antigravity app; nixpkgs' `antigravity` is only an alias for
             # antigravity-ide, so the desktop app comes from the flake.
             inputs.antigravity-nix.packages.${system}.google-antigravity

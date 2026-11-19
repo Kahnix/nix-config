@@ -71,60 +71,80 @@ sudo nix --extra-experimental-features "nix-command flakes" run nix-darwin/nix-d
 Every host collects garbage weekly (generations older than 14 days) and
 deduplicates the store.
 
-## Niri Desktop
+## Hyprland Desktop
 
-The desktop is [niri](https://github.com/YaLTeR/niri) with the
-[Noctalia](https://noctalia.dev) shell. Noctalia Greeter logs in to the `niri`
-session (`niri-session` → `niri.service` → `graphical-session.target`), and
-Home Manager's `noctalia.service` follows that target. X11 clients (Steam,
-Proton games) run through xwayland-satellite, which niri starts on demand.
+The desktop is [Hyprland](https://hyprland.org) (Lua config) with a custom
+[Quickshell](https://quickshell.org) shell. ReGreet (greetd + cage) logs in to
+the `Hyprland (UWSM)` session; UWSM brings up `graphical-session.target`, which
+starts the shell and the other user services. X11 clients (Steam, Proton games)
+run through Xwayland.
 
 | Key | Action |
 | --- | --- |
 | `Super + Return` / `Super + B` / `Super + E` | Terminal (Ghostty) / browser / files |
-| `Super + Space` | Application launcher |
+| `Super + Space` | Application launcher (`Tab` switches to clipboard) |
+| `Super + Ctrl + V` | Clipboard history (`Shift + Del` removes an entry) |
 | `Super + Ctrl + Space` | Control center |
-| `Super + Ctrl + V` / `Super + Ctrl + D` | Clipboard / shell settings |
-| `Super + O` / `Super + Shift + /` | Overview / hotkey reference |
-| `Super + Ctrl + L` | Lock |
-| `Super + H/J/K/L` or arrows | Focus column / window or workspace |
-| `Super + Shift + H/J/K/L` or arrows | Move column / window or workspace |
+| `Super + Shift + E` / `Super + Ctrl + L` | Session menu / lock |
+| `Super + H/J/K/L` or arrows | Focus window |
+| `Super + Shift + H/J/K/L` or arrows | Move window |
 | `Super + Ctrl + Shift + H/J/K/L` or arrows | Move window to monitor |
-| `Super + 1..9` / `Super + Shift + 1..9` | Switch / move to workspace 1–9 |
-| `Super + T` / `Super + F` / `Super + Shift + F` | Floating / fullscreen / maximize column |
-| `Super + R` / `Super + -` / `Super + =` | Cycle preset width / shrink / grow column |
-| `Super + [` / `Super + ]` / `Super + Shift + W` | Pull window into / push out of column / tabbed column |
-| `Alt + Tab` / `Super + Tab` | Window switcher / previous workspace |
+| `Super + 1..0` / `Super + Shift + 1..0` | Switch / move to workspace 1–10 |
+| `Super + T` / `Super + F` / `Super + Shift + F` | Floating / fullscreen / maximize |
+| `Super + R` / `Super + C` | Toggle split / centre window |
+| `Super + -` / `Super + =` (`+ Shift`: height) | Shrink / grow window |
+| `Super + Shift + W` / `Super + [` / `Super + ]` | Group (tabs) / previous / next tab |
+| `Alt + Tab` / `Super + Tab` | Cycle windows / previous workspace |
 | `Super + Shift + S` / `Super + Alt + S` / `Super + Ctrl + S` | Region / window / output screenshot |
-| `Super + Shift + E` | Power/session menu |
-| `Super + Ctrl + Shift + E` | Quit niri |
+| `Super + Shift + P` | Monitor off |
+| `Super + Ctrl + Shift + E` | Log out |
 
-The Print Screen variants take the same screenshots; niri copies them to the
-clipboard and saves them to `~/Pictures/Screenshots`.
+The Print Screen variants take the same screenshots; `hypr-screenshot` (hyprshot)
+copies them to the clipboard and saves them to `~/Pictures/Screenshots`.
 
-Compositor settings and binds are plain KDL in `modules/desktop/niri/config.kdl`;
-`niri.nix` fills in Stylix colours (`@base0D@` etc.) and runs `niri validate`
-at build time, so a broken config fails the rebuild instead of the session.
-HDMI-A-2 runs 3440×1440 at 99.982 Hz, scale 1, with on-demand VRR for
-`steam_app_*` windows (inert over HDMI on Pascal).
+Compositor settings are in `modules/desktop/hyprland/hyprland.nix` and binds in
+`binds.lua`. Check a change without logging in with
+`Hyprland --verify-config -c ~/.config/hypr/hyprland.lua`. HDMI-A-2 runs
+3440×1440 at 99.982 Hz, scale 1, with VRR and direct scanout for fullscreen
+`steam_app_*` windows (VRR is inert over HDMI on Pascal).
 
-Noctalia's defaults are `modules/desktop/noctalia/settings.toml`, validated and
-written to `~/.config/noctalia/config.toml`. Changes made in its settings UI go to
-`~/.local/state/noctalia/settings.toml`, which overrides the defaults and
-survives rebuilds; `noctalia-snapshot` folds them back into `settings.toml`
-(comments kept, keys owned by Nix/Stylix skipped). Stylix's
-Noctalia target supplies the palette (Gruvbox Paper, set in
-`modules/system/theme.nix`), theme mode, shell font and popup opacity; Noctalia's
-own GTK/Qt/terminal templates are off so they do not overwrite Stylix. The
-wallpaper defaults to `~/Documents/wallpapers/31299713726712.jpg`.
+### Shell
+
+`modules/desktop/quickshell/shell` is the whole shell, plain QML:
+
+- **Bar** (`Bar.qml`): floating islands. Left: launcher and workspaces, each
+  occupied one showing its windows' icons (red when one is urgent), then the
+  focused window. Centre: clock. Right: now playing (spinning cover, cava
+  spectrum while playing), CPU/RAM/GPU load (click for Mission Center), and
+  status: recording timer, keep-awake, AI quota rings, tray, volume (scroll to
+  change, right-click for pavucontrol), notifications and power. Below 2400 px
+  wide (Sunshine's 1680×1050 mode) it drops the title, track name and load.
+- **Control center** (`ControlCenter.qml`): do not disturb, keep awake
+  (idle inhibitor), screen recording, Bluetooth; output and mic volume; now
+  playing; per-window AI quotas from `ai-usagebar usage --json`; notification
+  history.
+- **Launcher** (`Launcher.qml`): apps ranked by match and launch count, and the
+  cliphist clipboard history. Apps start through `uwsm app`, so they live in
+  their own scopes and survive shell restarts.
+- Notifications with toasts (`Notifs.qml`, `Toasts.qml`), volume OSD, session
+  menu and the wallpaper.
+
+Colours, fonts and the wallpaper come from Stylix: `quickshell.nix` generates
+`Stylix.qml` from the active scheme (Gruvbox Paper, `modules/system/theme.nix`);
+`Theme.qml` maps it to semantic colours and holds sizes and glyphs. Panels are
+toggled with `qs ipc call shell launcher|clipboard|controlCenter|session|dnd`.
+To iterate on the QML without rebuilding, stop the service and run a copy:
+
+```sh
+systemctl --user stop quickshell
+cp -r ~/.config/quickshell /tmp/qs && chmod -R u+w /tmp/qs
+qs -p /tmp/qs   # edit /tmp/qs/*.qml; it reloads on save
+```
 
 ### Login screen
 
-Noctalia Greeter runs under greetd in its own wlroots compositor. Its palette is
-generated from Stylix in `modules/desktop/noctalia/noctalia.nix`; the shell's
-greeter auto-sync copies the wallpaper and monitor layout into
-`/var/lib/noctalia-greeter`, through a polkit rule that lets `kacper` run only
-that constrained helper without a password. Automatic login is not enabled.
+ReGreet runs under greetd in cage, themed by Stylix with the shell's wallpaper.
+It remembers the last user and session. Automatic login is not enabled.
 
 When replacing the greeter, apply at the next boot rather than restarting greetd
 under a running desktop:
@@ -136,11 +156,12 @@ sudo reboot
 
 ### Desktop services
 
-`systemctl --user status noctalia` shows the desktop shell. It is also the
-notification daemon, polkit agent, idle/lock handler (lock after 15 min, screens
-off after 16) and screen recorder: its `noctalia/screen_recorder` plugin drives
-gpu-screen-recorder. Portals use GNOME for screen sharing and GTK for file
-selection. Sunshine's display-mode helper switches modes with `niri msg output`.
+`systemctl --user status quickshell` shows the shell; it is also the
+notification daemon. Around it: hypridle (lock after 15 min, screens off after
+16, lock before sleep), hyprlock, hyprpolkitagent, cliphist and udiskie. Portals
+use Hyprland's for screen sharing and GTK for file selection. Screen recording
+(control center) uses gpu-screen-recorder with NVENC into `~/Videos/Recordings`.
+Sunshine's display-mode helper switches modes with `hyprctl eval`.
 
 ### Recording and peripherals
 

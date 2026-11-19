@@ -22,8 +22,8 @@ in
       pipewire
       wo-mic
 
-      niri
-      noctalia
+      hyprland
+      quickshell
       desktop-apps
       ghostty
       rex

@@ -57,7 +57,10 @@
       };
 
       config = {
-        services.tailscale.enable = true;
+        services.tailscale = {
+          enable = true;
+          extraSetFlags = [ "--operator=${config.my.user}" ];
+        };
         environment.systemPackages = [ pkgs.tailscale ];
 
         networking.firewall = lib.mkIf (allowedTCPPorts != [ ] || allowedUDPPorts != [ ]) {

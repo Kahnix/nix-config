@@ -15,8 +15,7 @@ in
   bolt-launcher-alsa = javaAlsaDefault pkgs.bolt-launcher "bolt-launcher";
   dzgui = pkgs.callPackage ./dzgui/package.nix { };
   gamma-direct = pkgs.callPackage ./gamma-direct/package.nix { };
-  niri-focus-or-spawn = pkgs.callPackage ./niri-focus-or-spawn/package.nix { };
-  noctalia-snapshot = pkgs.callPackage ./noctalia-snapshot/package.nix { };
+  hypr-screenshot = pkgs.callPackage ./hypr-screenshot/package.nix { };
   proton-cachyos-bin = pkgs.callPackage ./proton-cachyos-bin/package.nix { };
   # Preloaded into Steam's 32-bit client, so it is built for i686.
   steam-voicechat-fix = pkgs.pkgsi686Linux.callPackage ./steam-voicechat-fix/package.nix { };

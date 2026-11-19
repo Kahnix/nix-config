@@ -124,11 +124,12 @@ in
         gdu
         gedit
         google-chrome
-        # Screenshots as PNG files, for agents: `grim shot.png` (niri is wlroots).
+        # Screenshots as PNG files, for agents: `grim shot.png` (Hyprland has wlr-screencopy).
         grim
         mission-center
         mpv
         nautilus
+        nwg-displays
         obsidian
         ouch
         pavucontrol
@@ -172,7 +173,7 @@ in
       # gtk-dark.css, which matches the dark desktop.
       gtk.colorScheme = "dark";
 
-      # Trim oversized GTK headerbars to match the compact niri desktop.
+      # Trim oversized GTK headerbars to match the compact Hyprland desktop.
       # Unknown selectors are ignored by GTK3/GTK4; Stylix defines @shade_color.
       stylix.targets.gtk.extraCss = ''
         headerbar { min-height: 38px; }

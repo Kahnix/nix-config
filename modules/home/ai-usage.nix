@@ -2,7 +2,7 @@
 let
   # Real plan quotas for Claude, Antigravity, and OpenCode Go, read with the
   # logins those tools already have. One tool drives every surface: the macOS
-  # menu bar, the Noctalia bar, and a TUI/CLI for headless hosts.
+  # menu bar, the Quickshell bar and control center, and a TUI/CLI for headless hosts.
   version = "1.52.2";
 
   # macOS: the signed release bundle, which is the only build that ships the
@@ -33,7 +33,12 @@ let
     if pkgs.stdenv.hostPlatform.isDarwin then
       darwinBundle pkgs
     else
-      inputs.ai-usagebar.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      # Upstream's Linux derivation links rusqlite against system sqlite but
+      # never adds it to buildInputs, so the link fails on -lsqlite3.
+      inputs.ai-usagebar.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.pkg-config ];
+        buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.sqlite ];
+      });
 in
 {
   flake.modules.homeManager.ai-usage =
