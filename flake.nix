@@ -56,9 +56,27 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Ponytail AI agent skills.
+    # AI agent skills, shared by Zed, OpenCode, Claude Code and Antigravity.
     ponytail = {
       url = "github:DietrichGebert/ponytail";
+      flake = false;
+    };
+    taste-skill = {
+      url = "github:Leonxlnx/taste-skill";
+      flake = false;
+    };
+    cloudflare-skills = {
+      url = "github:cloudflare/skills";
+      flake = false;
+    };
+    supabase-skills = {
+      url = "github:supabase/agent-skills";
+      flake = false;
+    };
+    # Oxlint rules that reject low-evidence TypeScript, by Cloudflare's
+    # Dillon Mulroy. The skill vendors the plugin into a project.
+    anti-slop = {
+      url = "git+https://github.com/dmmulroy/anti-slop";
       flake = false;
     };
 

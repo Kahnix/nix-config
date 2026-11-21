@@ -50,6 +50,17 @@ Zed is installed on graphical hosts as the unwrapped cache.nixos.org build and
 fetches its own language servers. Its settings and extensions live in
 `modules/home/zed.nix`, so NixOS and macOS render the same Zed setup.
 
+Agent skills are shared by every agent: Zed and OpenCode read
+`~/.agents/skills` directly, and `ai-skills-sync` links the same tree into
+`~/.claude/skills` (Claude Code and OpenCode's `claude-agent`) and
+`~/.gemini/config/skills` (Antigravity), so all four see one set.
+`modules/home/ai-skills.nix` pins Ponytail, Cloudflare, Supabase, the Taste
+skill and Dillon Mulroy's anti-slop skill, and installs the skills vendored
+under `modules/home/skills/`. Update the packs with `nix flake update ponytail
+taste-skill cloudflare-skills supabase-skills anti-slop`; add a new skill to
+`modules/home/skills/` and its name to the list, instead of running `npx skills
+add`.
+
 ## Apply
 
 [nh](https://github.com/nix-community/nh) drives rebuilds and shows a package

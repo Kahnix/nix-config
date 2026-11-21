@@ -108,6 +108,7 @@
         # it rather than fetched by an editor plugin.
         extraPackages = with pkgs; [
           clang-tools # clangd
+          qt6.qtdeclarative
           gopls
           golangci-lint
           golangci-lint-langserver
@@ -312,7 +313,9 @@
       # Stylix supplies gui.theme; lazygit reads this same config.
       config.programs.lazygit = {
         enable = true;
-        settings.git.diffRenderers = [ { command = "delta --{{colorScheme}} --paging=never -s"; } ];
+        settings.git.diffRenderers = [
+          { command = "delta --{{colorScheme}} --paging=never "; }
+        ];
       };
 
       # Rex (the macOS terminal multiplexer app) keeps its palette in its own

@@ -20,6 +20,22 @@
         "type": "github"
       }
     },
+    "anti-slop": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1795180902,
+        "narHash": "sha256-GUyPkrK93zhMhd0qKms7aifHd62xI8pkXA4f087/RuY=",
+        "ref": "refs/heads/main",
+        "rev": "63dbb09f73438e550a6991dc6d778f979ffbf183",
+        "revCount": 38,
+        "type": "git",
+        "url": "https://github.com/dmmulroy/anti-slop"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://github.com/dmmulroy/anti-slop"
+      }
+    },
     "antigravity-nix": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -166,6 +182,22 @@
         "owner": "chaotic-cx",
         "ref": "main",
         "repo": "nyx",
+        "type": "github"
+      }
+    },
+    "cloudflare-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794930949,
+        "narHash": "sha256-A3tzJg4lXaQz4RN0d+N/nKwNm4DqUzG1S0w5l6FKWCg=",
+        "owner": "cloudflare",
+        "repo": "skills",
+        "rev": "5108325ecceabc899c761e07aa617b09c02445ee",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cloudflare",
+        "repo": "skills",
         "type": "github"
       }
     },
@@ -663,10 +695,12 @@
     "root": {
       "inputs": {
         "ai-usagebar": "ai-usagebar",
+        "anti-slop": "anti-slop",
         "antigravity-nix": "antigravity-nix",
         "berkeley-mono-nerd": "berkeley-mono-nerd",
         "cachyos-settings-nix": "cachyos-settings-nix",
         "chaotic": "chaotic",
+        "cloudflare-skills": "cloudflare-skills",
         "darwin": "darwin",
         "flake-parts": "flake-parts_3",
         "home-manager": "home-manager_2",
@@ -677,7 +711,9 @@
         "opencode-hex": "opencode-hex",
         "ponytail": "ponytail",
         "rex": "rex",
-        "stylix": "stylix"
+        "stylix": "stylix",
+        "supabase-skills": "supabase-skills",
+        "taste-skill": "taste-skill"
       }
     },
     "std": {
@@ -740,6 +776,22 @@
         "type": "github"
       }
     },
+    "supabase-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790944488,
+        "narHash": "sha256-MKa/ZwI2yfwiqI76uNg7QsX9F6MF2nctOEme6UtwtQM=",
+        "owner": "supabase",
+        "repo": "agent-skills",
+        "rev": "c9be0e931b7930f7d02126d04774d904c381e7d7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "supabase",
+        "repo": "agent-skills",
+        "type": "github"
+      }
+    },
     "systems": {
       "locked": {
         "lastModified": 1681028828,
@@ -768,6 +820,22 @@
         "owner": "nix-systems",
         "ref": "future-26.11",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "taste-skill": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794054801,
+        "narHash": "sha256-7w2pcrS5g3ACXiAoJL3oe+hiVy+aDmUnx3PxeRZ9rVg=",
+        "owner": "Leonxlnx",
+        "repo": "taste-skill",
+        "rev": "f6b76575f949707b4e3c37cd86cb44b0b98643e8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Leonxlnx",
+        "repo": "taste-skill",
         "type": "github"
       }
     },
