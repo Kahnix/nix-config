@@ -24,6 +24,16 @@
       programs.vscode = lib.mkIf (!(osConfig.wsl.enable or false)) {
         enable = true;
 
+        # Chromium/Electron only auto-detects gnome-keyring under GNOME/XFCE;
+        # on Hyprland it falls back to "basic" unless told explicitly.
+        package =
+          if pkgs.stdenv.hostPlatform.isLinux then
+            pkgs.vscode.override {
+              commandLineArgs = "--password-store=gnome-libsecret";
+            }
+          else
+            pkgs.vscode;
+
         # Extensions live in VS Code's marketplace / Settings Sync rather than
         # Nix (except Stylix's theme extension) to avoid duplicate versions and
         # let VS Code manage updates directly.
