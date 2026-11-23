@@ -57,7 +57,13 @@ let
 
       # Helix only: drop the editor background so the terminal shows through.
       # Stylix derives this from opacity.terminal at normal priority, hence mkForce.
-      home-manager.sharedModules = [ { stylix.targets.helix.transparent = lib.mkForce true; } ];
+      home-manager.sharedModules = [
+        { stylix.targets.helix.transparent = lib.mkForce true; }
+        # Home Manager removed programs.wayprompt because nixpkgs dropped the
+        # package. Stylix's target still writes to it and trips the removal
+        # assertion, so turn the target off until Stylix catches up.
+        { stylix.targets.wayprompt.enable = false; }
+      ];
     };
 in
 {

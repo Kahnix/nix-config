@@ -6,7 +6,6 @@ let
     base
     dev
     shell
-    opencode
     ai-usage
   ];
 
