@@ -48,10 +48,15 @@
           # every other UI preference free to change in VS Code.
           mutableUserSettings = true;
 
-          # Stylix supplies workbench.colorTheme ("Stylix"), editor/chat/markdown
-          # fontFamily and fontSize, and terminal.integrated.fontSize.
+          # Stylix's vscode target is disabled above so workbench.colorTheme stays
+          # user-managed; keep the system fonts pinned here.
           userSettings = {
+            "editor.fontFamily" = "BerkeleyMono Nerd Font";
+            "editor.fontSize" = 12;
             "terminal.integrated.fontFamily" = "BerkeleyMono Nerd Font";
+            "terminal.integrated.fontSize" = 12;
+            "chat.fontFamily" = "Inter";
+            "markdown.preview.fontFamily" = "Inter";
 
             "eslint.workingDirectories" = [ { mode = "auto"; } ];
             # Only run oxlint in repos with an oxlint config so it stays quiet in

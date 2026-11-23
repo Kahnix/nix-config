@@ -32,10 +32,12 @@ let
             # Noto 3D emoji (googlefonts/noto-emoji 3D/fonts), pinned to a commit.
             # Its internal family is "Noto Color Emoji", so the name below is unchanged.
             package = pkgs.runCommandLocal "noto-3d-emoji" { } ''
-              install -Dm444 -t $out/share/fonts/truetype ${pkgs.fetchurl {
-                url = "https://media.githubusercontent.com/media/googlefonts/noto-emoji/1ffdd21391dd1f25c081fa93a9dea0c7c029442b/3D/fonts/Noto-3D-128.ttf";
-                hash = "sha256-b0MSp8AtDJ3ogJXuZeMg/+kxbS2NVuTFFecYH8pe1Dk=";
-              }}
+              install -Dm444 -t $out/share/fonts/truetype ${
+                pkgs.fetchurl {
+                  url = "https://media.githubusercontent.com/media/googlefonts/noto-emoji/1ffdd21391dd1f25c081fa93a9dea0c7c029442b/3D/fonts/Noto-3D-128.ttf";
+                  hash = "sha256-b0MSp8AtDJ3ogJXuZeMg/+kxbS2NVuTFFecYH8pe1Dk=";
+                }
+              }
             '';
             name = "Noto Color Emoji";
           };
@@ -63,6 +65,8 @@ let
         # package. Stylix's target still writes to it and trips the removal
         # assertion, so turn the target off until Stylix catches up.
         { stylix.targets.wayprompt.enable = false; }
+        # Let VS Code own workbench.colorTheme instead of Stylix resetting it on rebuild.
+        { stylix.targets.vscode.enable = false; }
       ];
     };
 in
