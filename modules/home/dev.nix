@@ -45,6 +45,7 @@
           redis
           sqlite
           tailwindcss-language-server
+          neovim # config is ~/.config/nvim (own repo), not managed here
           typescript
           typescript-language-server
           vscode-langservers-extracted
