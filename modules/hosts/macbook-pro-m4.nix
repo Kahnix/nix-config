@@ -37,6 +37,9 @@ in
         casks = [
           "burp-suite"
           "anomalyco/tap/hex"
+          # Tiling WM; not in nixpkgs. Fully-qualified because the core
+          # "spaceman" cask is an unrelated app.
+          "anomalyco/tap/spaceman"
         ];
       };
 

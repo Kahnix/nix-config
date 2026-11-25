@@ -83,6 +83,9 @@ in
           "supabase"
           "supabase-postgres-best-practices"
         ]
+        // pack "${inputs.janestreet-skills}" [
+          "socratic-tutor"
+        ]
         // pack "${inputs.anti-slop}/skills" [
           "install-anti-slop"
         ]

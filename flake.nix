@@ -73,6 +73,10 @@
       url = "github:supabase/agent-skills";
       flake = false;
     };
+    janestreet-skills = {
+      url = "github:janestreet/agent_skills";
+      flake = false;
+    };
     # Oxlint rules that reject low-evidence TypeScript, by Cloudflare's
     # Dillon Mulroy. The skill vendors the plugin into a project.
     anti-slop = {
