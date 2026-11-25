@@ -270,6 +270,24 @@ in
               };
               no_focus = true;
             }
+            # RuneLite's Swing tooltips, dropdowns, and sidebar popovers spawn as
+            # heavyweight Xwayland sub-windows titled `win0`, `win1`, ... (or
+            # untitled). Focusing, sliding, or decorating/blurring them makes
+            # Swing dismiss or misrender them.
+            {
+              name = "runelite-popups";
+              match = {
+                class = "^net-runelite-(launcher-Launcher|client-RuneLite)$";
+                title = "^(win[0-9]+)?$";
+              };
+              float = true;
+              no_initial_focus = true;
+              no_anim = true;
+              no_blur = true;
+              no_shadow = true;
+              border_size = 0;
+              rounding = 0;
+            }
             # Proton games run through Xwayland and never announce a content
             # type, so tag them: render.direct_scanout = 2 only scans out
             # fullscreen "game" windows. Verify with `hyprctl monitors`

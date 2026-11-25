@@ -12,7 +12,7 @@ in
   bbsc-emulator = pkgs.callPackage ./bbsc/emulator.nix { };
   bbsc-launcher = pkgs.callPackage ./bbsc/launcher.nix { };
   bbsc-mod = pkgs.callPackage ./bbsc/mod.nix { };
-  bolt-launcher-alsa = javaAlsaDefault pkgs.bolt-launcher "bolt-launcher";
+  bolt-launcher-alsa = javaAlsaDefault pkgs.bolt-launcher "bolt-launcher" "java";
   dzgui = pkgs.callPackage ./dzgui/package.nix { };
   gamma-direct = pkgs.callPackage ./gamma-direct/package.nix { };
   hypr-screenshot = pkgs.callPackage ./hypr-screenshot/package.nix { };

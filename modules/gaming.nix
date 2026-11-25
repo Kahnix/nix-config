@@ -88,7 +88,7 @@
         dzgui
         (import ../pkgs/java-alsa-default.nix {
           inherit makeWrapper symlinkJoin;
-        } jagex-launcher "jagex-launcher")
+        } jagex-launcher "jagex-launcher" "RuneLite")
         # STALKER GAMMA: installs/updates Anomaly + the GAMMA modpack natively
         # (/mnt/storage/Games/STALKER); MO2 then runs as a non-Steam Proton game.
         gamma-launcher
